@@ -13,7 +13,10 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-      <RecommendedSection />
+
+      <SectionWrapper>
+        <RecommendedSection />
+      </SectionWrapper>
 
       <SectionWrapper>
         <NewSection />
@@ -27,11 +30,23 @@ export default function Home() {
         <AppDownloadSection />
       </SectionWrapper>
 
-      <ReviewsSection />
-      <StatsSection />
-      <BusinessSection />
-      <BrowseCitySection />
+      <SectionWrapper>
+        <ReviewsSection />
+      </SectionWrapper>
+
+      <SectionWrapper>
+        <StatsSection />
+      </SectionWrapper>
+
+      <SectionWrapper>
+        <BusinessSection />
+      </SectionWrapper>
+
+      <SectionWrapper>
+        <BrowseCitySection />
+      </SectionWrapper>
     </>
   );
 }
+
 

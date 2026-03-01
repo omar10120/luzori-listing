@@ -1,3 +1,5 @@
+export type CenterRate = "recently_viewed" | "recommended" | "new_to" | "trending";
+
 export interface Business {
     id: string;
     name: string;

@@ -14,6 +14,7 @@ const RecommendedSection: React.FC = () => {
         const getCenters = async () => {
             try {
                 const data = await fetchCenters("recommended");
+                console.log(data);
                 setBusinesses(data);
             } catch (error) {
                 console.error("RecommendedSection Error:", error);

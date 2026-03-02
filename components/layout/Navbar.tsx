@@ -37,7 +37,13 @@ const Navbar: React.FC = () => {
                 </a>
 
                 {/* Desktop right side */}
-                <div className="hidden items-center gap-4 sm:flex">
+                <div className="hidden items-center gap-6 sm:flex">
+                    <a
+                        href="/register"
+                        className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                        Login / Register
+                    </a>
                     <Button variant="outline" size="sm">
                         {NAV_CTA_TEXT}
                     </Button>

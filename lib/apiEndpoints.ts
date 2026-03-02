@@ -4,6 +4,7 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.
 
 export const API_ENDPOINTS = {
     CENTERS: `${API_BASE_URL}/center_api/centers`,
+    REGISTER: `${API_BASE_URL}/center_api/auth/register`,
 };
 
 export interface CenterRequestParams {

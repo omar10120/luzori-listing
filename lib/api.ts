@@ -50,3 +50,34 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
         return []; // Return empty array on failure to prevent UI crash
     }
 };
+
+export const registerCenter = async (formData: FormData): Promise<{ success: boolean; message: string }> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.REGISTER, {
+            method: "POST",
+            body: formData,
+            // When sending FormData, the browser automatically sets the Content-Type
+            // including the boundary, so we should NOT set it manually.
+        });
+
+        const json = await response.json();
+
+        if (!response.ok) {
+            return {
+                success: false,
+                message: json.message || "Registration failed",
+            };
+        }
+
+        return {
+            success: true,
+            message: json.message || "Registered successfully",
+        };
+    } catch (error) {
+        console.error("Registration Error:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred during registration",
+        };
+    }
+};

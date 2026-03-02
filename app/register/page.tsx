@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Eye, EyeOff, Camera, Upload, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Container from "@/components/ui/Container";
-import Button from "@/components/ui/Button";
 import { registerCenter } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -103,7 +102,7 @@ const RegisterPage = () => {
                                 <label className="text-sm font-medium text-gray-300 ml-1">Name Center</label>
                                 <input
                                     type="text"
-                                    placeholder="Nada AlWard Salon"
+                                    placeholder="name of center"
                                     className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-4 px-6 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -115,7 +114,7 @@ const RegisterPage = () => {
                                 <label className="text-sm font-medium text-gray-300 ml-1">Domain Center</label>
                                 <input
                                     type="text"
-                                    placeholder="nada-alward-salon"
+                                    placeholder="center-name"
                                     className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-4 px-6 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
                                     value={formData.domain}
                                     onChange={(e) => setFormData({ ...formData, domain: e.target.value })}
@@ -127,7 +126,7 @@ const RegisterPage = () => {
                                 <label className="text-sm font-medium text-gray-300 ml-1">Email Center</label>
                                 <input
                                     type="email"
-                                    placeholder="NadaAlWardSalon@gmail.com"
+                                    placeholder="[EMAIL_ADDRESS]"
                                     className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-4 px-6 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}

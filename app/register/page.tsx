@@ -93,7 +93,7 @@ const RegisterPage = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     className="w-full bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[2rem] p-8 md:p-12 shadow-2xl overflow-hidden"
                 >
-                    <h1 className="text-2xl font-medium text-white text-center mb-10">Register</h1>
+                    <h1 className="text-xl font-medium text-white text-center mb-10">Register</h1>
 
                     <form onSubmit={handleSubmit} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-7">
@@ -250,13 +250,13 @@ const RegisterPage = () => {
                                 type="submit"
                                 disabled={isSubmitting}
                                 className={cn(
-                                    "bg-[#2a5a54] hover:bg-[#1f4540] text-white font-semibold text-lg py-4 px-20 rounded-full shadow-lg transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed",
+                                    "bg-[#2a5a54] hover:bg-[#1f4540] text-white font-semibold text-lg py-2 px-6 rounded-full shadow-lg transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed",
                                     !isSubmitting && "hover:scale-105"
                                 )}
                             >
                                 {isSubmitting ? (
                                     <div className="flex items-center gap-3">
-                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                        <div className="w-1 h-1 border-1 border-white/30 border-t-white rounded-full animate-spin" />
                                         Connecting...
                                     </div>
                                 ) : "Register"}

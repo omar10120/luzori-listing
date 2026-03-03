@@ -93,7 +93,7 @@ const RegisterPage = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     className="w-full bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[2rem] p-8 md:p-12 shadow-2xl overflow-hidden"
                 >
-                    <h1 className="text-3xl font-medium text-white text-center mb-10">Register</h1>
+                    <h1 className="text-2xl font-medium text-white text-center mb-10">Register</h1>
 
                     <form onSubmit={handleSubmit} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-7">
@@ -103,7 +103,7 @@ const RegisterPage = () => {
                                 <input
                                     type="text"
                                     placeholder="name of center"
-                                    className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-4 px-6 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
+                                    className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-2 px-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 />
@@ -115,7 +115,7 @@ const RegisterPage = () => {
                                 <input
                                     type="text"
                                     placeholder="center-name"
-                                    className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-4 px-6 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
+                                    className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-2 px-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
                                     value={formData.domain}
                                     onChange={(e) => setFormData({ ...formData, domain: e.target.value })}
                                 />
@@ -127,7 +127,7 @@ const RegisterPage = () => {
                                 <input
                                     type="email"
                                     placeholder="[EMAIL_ADDRESS]"
-                                    className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-4 px-6 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
+                                    className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-2 px-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 />
@@ -138,14 +138,14 @@ const RegisterPage = () => {
                                 <label className="text-sm font-medium text-gray-300 ml-1">Phone Center</label>
                                 <div className="relative">
                                     <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 pr-3 border-r border-gray-400">
-                                        <img src="https://flagcdn.com/ae.svg" alt="UAE" className="w-5 h-3 object-cover rounded-sm" />
+                                        <Image src="https://flagcdn.com/ae.svg" width={200} height={200} alt="UAE" className="w-5 h-3 object-cover rounded-sm" />
                                         <span className="text-sm font-semibold text-gray-700">+971</span>
                                         <ChevronDown size={14} className="text-gray-500" />
                                     </div>
                                     <input
                                         type="tel"
                                         placeholder="503140232"
-                                        className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-4 pl-32 pr-6 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none font-semibold"
+                                        className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-2 pl-32 pr-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none font-semibold"
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                     />
@@ -159,7 +159,7 @@ const RegisterPage = () => {
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         placeholder="************"
-                                        className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-4 px-6 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
+                                        className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-2 px-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
                                         value={formData.password}
                                         onChange={(e) => {
                                             setFormData({ ...formData, password: e.target.value, password_confirmation: e.target.value });
@@ -180,7 +180,7 @@ const RegisterPage = () => {
                                 <label className="text-sm font-medium text-gray-300 ml-1">Currency</label>
                                 <div className="relative">
                                     <select
-                                        className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-4 px-6 text-gray-900 appearance-none focus:ring-2 focus:ring-[#d4af37] transition-all outline-none font-medium"
+                                        className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-2 px-4 text-gray-900 appearance-none focus:ring-2 focus:ring-[#d4af37] transition-all outline-none font-medium"
                                         value={formData.currency}
                                         onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
                                     >

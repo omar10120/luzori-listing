@@ -103,7 +103,7 @@ const RegisterPage = () => {
                                 <input
                                     type="text"
                                     placeholder="name of center"
-                                    className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
+                                    className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none  text-sm"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 />
@@ -115,7 +115,7 @@ const RegisterPage = () => {
                                 <input
                                     type="text"
                                     placeholder="center-name"
-                                    className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
+                                    className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none  text-sm"
                                     value={formData.domain}
                                     onChange={(e) => setFormData({ ...formData, domain: e.target.value })}
                                 />
@@ -127,7 +127,7 @@ const RegisterPage = () => {
                                 <input
                                     type="email"
                                     placeholder="[EMAIL_ADDRESS]"
-                                    className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
+                                    className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none  text-sm"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 />
@@ -139,13 +139,13 @@ const RegisterPage = () => {
                                 <div className="relative">
                                     <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 pr-3 border-r border-gray-400">
                                         <Image src="https://flagcdn.com/ae.svg" width={200} height={200} alt="UAE" className="w-5 h-3 object-cover rounded-sm object-cover" />
-                                        <span className="text-xs font-semibold text-gray-700">+971</span>
+                                        <span className="text-xs  text-gray-700">+971</span>
                                         <ChevronDown size={14} className="text-gray-500" />
                                     </div>
                                     <input
                                         type="tel"
                                         placeholder="503140232"
-                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 pl-24 pr-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none font-semibold"
+                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 pl-24 pr-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none  text-sm"
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                     />
@@ -159,7 +159,7 @@ const RegisterPage = () => {
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         placeholder="************"
-                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
+                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none  text-sm"
                                         value={formData.password}
                                         onChange={(e) => {
                                             setFormData({ ...formData, password: e.target.value, password_confirmation: e.target.value });
@@ -180,7 +180,7 @@ const RegisterPage = () => {
                                 <label className="text-xs font-medium text-gray-300 ml-1">Currency</label>
                                 <div className="relative">
                                     <select
-                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 appearance-none focus:ring-2 focus:ring-[#d4af37] transition-all outline-none font-medium"
+                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 appearance-none focus:ring-2 focus:ring-[#d4af37] transition-all outline-none  text-sm font-medium"
                                         value={formData.currency}
                                         onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
                                     >
@@ -250,7 +250,7 @@ const RegisterPage = () => {
                                 type="submit"
                                 disabled={isSubmitting}
                                 className={cn(
-                                    "bg-[#2a5a54] hover:bg-[#1f4540] text-white font-semibold text-base py-1 px-3 rounded-full shadow-lg transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed",
+                                    "bg-[#2a5a54] hover:bg-[#1f4540] text-white  text-base py-1 px-3 rounded-full shadow-lg transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed",
                                     !isSubmitting && "hover:scale-105"
                                 )}
                             >

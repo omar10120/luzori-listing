@@ -250,7 +250,7 @@ const RegisterPage = () => {
                                 type="submit"
                                 disabled={isSubmitting}
                                 className={cn(
-                                    "bg-[#2a5a54] hover:bg-[#1f4540] text-white font-semibold text-lg py-1 px-2 rounded-full shadow-lg transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed",
+                                    "bg-[#2a5a54] hover:bg-[#1f4540] text-white font-semibold text-lg py-1 px-3 rounded-full shadow-lg transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed",
                                     !isSubmitting && "hover:scale-105"
                                 )}
                             >

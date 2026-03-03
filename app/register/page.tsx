@@ -93,17 +93,17 @@ const RegisterPage = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     className="w-full bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[2rem] p-8 md:p-12 shadow-2xl overflow-hidden"
                 >
-                    <h1 className="text-xl font-medium text-white text-center mb-10">Register</h1>
+                    <h1 className="text-xl font-medium text-white text-center mb-10">Become Business</h1>
 
                     <form onSubmit={handleSubmit} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-7">
                             {/* Name Center */}
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-300 ml-1">Name Center</label>
+                                <label className="text-xs font-medium text-gray-300 ml-1">Name Center</label>
                                 <input
                                     type="text"
                                     placeholder="name of center"
-                                    className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-2 px-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
+                                    className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                 />
@@ -111,11 +111,11 @@ const RegisterPage = () => {
 
                             {/* Domain Center */}
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-300 ml-1">Domain Center</label>
+                                <label className="text-xs font-medium text-gray-300 ml-1">Domain Center</label>
                                 <input
                                     type="text"
                                     placeholder="center-name"
-                                    className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-2 px-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
+                                    className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
                                     value={formData.domain}
                                     onChange={(e) => setFormData({ ...formData, domain: e.target.value })}
                                 />
@@ -123,11 +123,11 @@ const RegisterPage = () => {
 
                             {/* Email Center */}
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-300 ml-1">Email Center</label>
+                                <label className="text-xs font-medium text-gray-300 ml-1">Email Center</label>
                                 <input
                                     type="email"
                                     placeholder="[EMAIL_ADDRESS]"
-                                    className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-2 px-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
+                                    className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 />
@@ -135,17 +135,17 @@ const RegisterPage = () => {
 
                             {/* Phone Center */}
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-300 ml-1">Phone Center</label>
+                                <label className="text-xs font-medium text-gray-300 ml-1">Phone Center</label>
                                 <div className="relative">
                                     <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 pr-3 border-r border-gray-400">
                                         <Image src="https://flagcdn.com/ae.svg" width={200} height={200} alt="UAE" className="w-5 h-3 object-cover rounded-sm object-cover" />
-                                        <span className="text-sm font-semibold text-gray-700">+971</span>
+                                        <span className="text-xs font-semibold text-gray-700">+971</span>
                                         <ChevronDown size={14} className="text-gray-500" />
                                     </div>
                                     <input
                                         type="tel"
                                         placeholder="503140232"
-                                        className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-2 pl-32 pr-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none font-semibold"
+                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-2 pl-32 pr-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none font-semibold"
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                     />
@@ -154,12 +154,12 @@ const RegisterPage = () => {
 
                             {/* Password */}
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-300 ml-1">Password</label>
+                                <label className="text-xs font-medium text-gray-300 ml-1">Password</label>
                                 <div className="relative">
                                     <input
                                         type={showPassword ? "text" : "password"}
                                         placeholder="************"
-                                        className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-2 px-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
+                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none"
                                         value={formData.password}
                                         onChange={(e) => {
                                             setFormData({ ...formData, password: e.target.value, password_confirmation: e.target.value });
@@ -177,10 +177,10 @@ const RegisterPage = () => {
 
                             {/* Currency */}
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-gray-300 ml-1">Currency</label>
+                                <label className="text-xs font-medium text-gray-300 ml-1">Currency</label>
                                 <div className="relative">
                                     <select
-                                        className="w-full bg-[#f3d3b0]/90 border-none rounded-2xl py-2 px-4 text-gray-900 appearance-none focus:ring-2 focus:ring-[#d4af37] transition-all outline-none font-medium"
+                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 appearance-none focus:ring-2 focus:ring-[#d4af37] transition-all outline-none font-medium"
                                         value={formData.currency}
                                         onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
                                     >
@@ -197,8 +197,8 @@ const RegisterPage = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
                             {/* Logo Upload */}
                             <div className="space-y-3">
-                                <span className="text-sm font-medium text-gray-300">Logo Center</span>
-                                <label className="group relative flex flex-col items-center justify-center w-full h-32 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl cursor-pointer hover:bg-white/10 hover:border-[#d4af37]/50 transition-all overflow-hidden">
+                                <span className="text-xs font-medium text-gray-300">Logo Center</span>
+                                <label className="group relative flex flex-col items-center justify-center w-full h-32 bg-white/5 border-2 border-dashed border-white/20 rounded cursor-pointer hover:bg-white/10 hover:border-[#d4af37]/50 transition-all overflow-hidden">
                                     {logo ? (
                                         <Image src={URL.createObjectURL(logo)} className="absolute inset-0 w-full h-full object-fit" alt="Logo preview" width={200} height={200} />
                                     ) : (
@@ -213,8 +213,8 @@ const RegisterPage = () => {
 
                             {/* Primary Image Upload */}
                             <div className="space-y-3">
-                                <span className="text-sm font-medium text-gray-300">Primary Image</span>
-                                <label className="group relative flex flex-col items-center justify-center w-full h-32 bg-white/5 border-2 border-dashed border-white/20 rounded-2xl cursor-pointer hover:bg-white/10 hover:border-[#d4af37]/50 transition-all overflow-hidden  ">
+                                <span className="text-xs font-medium text-gray-300">Primary Image</span>
+                                <label className="group relative flex flex-col items-center justify-center w-full h-32 bg-white/5 border-2 border-dashed border-white/20 rounded cursor-pointer hover:bg-white/10 hover:border-[#d4af37]/50 transition-all overflow-hidden  ">
                                     {primaryImage ? (
                                         <Image src={URL.createObjectURL(primaryImage)} className="absolute inset-0 w-full h-full object-fit" width={200} height={200} alt="Primary preview" />
                                     ) : (
@@ -234,7 +234,7 @@ const RegisterPage = () => {
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 className={cn(
-                                    "p-4 rounded-xl text-center text-sm font-medium backdrop-blur-md border",
+                                    "p-4 rounded-xl text-center text-xs font-medium backdrop-blur-md border",
                                     statusMessage.type === 'success'
                                         ? "bg-green-500/20 text-green-200 border-green-500/30"
                                         : "bg-red-500/20 text-red-200 border-red-500/30"
@@ -250,7 +250,7 @@ const RegisterPage = () => {
                                 type="submit"
                                 disabled={isSubmitting}
                                 className={cn(
-                                    "bg-[#2a5a54] hover:bg-[#1f4540] text-white font-semibold text-lg py-2 px-4 rounded-full shadow-lg transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed",
+                                    "bg-[#2a5a54] hover:bg-[#1f4540] text-white font-semibold text-lg py-1 px-2 rounded-full shadow-lg transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed",
                                     !isSubmitting && "hover:scale-105"
                                 )}
                             >

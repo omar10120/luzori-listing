@@ -25,6 +25,7 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -32,4 +33,10 @@ body {
 /* ─── Smooth scroll ─── */
 html {
   scroll-behavior: smooth;
+}
+
+input::placeholder,
+textarea::placeholder {
+  font-size: 12px;
+  /* Desired font size */
 }

@@ -145,7 +145,7 @@ const RegisterPage = () => {
                                     <input
                                         type="tel"
                                         placeholder="503140232"
-                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-2 pl-32 pr-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none font-semibold"
+                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 pl-24 pr-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none font-semibold"
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                     />

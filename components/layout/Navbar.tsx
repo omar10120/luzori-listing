@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import {  Menu, X } from "lucide-react";
+import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import { SITE_NAME, NAV_CTA_TEXT } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+
 
 const Navbar: React.FC = () => {
     const [scrolled, setScrolled] = useState(false);
@@ -28,13 +30,13 @@ const Navbar: React.FC = () => {
         >
             <Container className="flex h-16 items-center justify-between">
                 {/* Logo */}
-                <a
+                <Link
                     href="/"
                     className="text-xl font-bold tracking-tight text-gray-900"
                     aria-label={`${SITE_NAME} home`}
                 >
                     {SITE_NAME}
-                </a>
+                </Link>
 
                 {/* Desktop right side */}
                 <div className="hidden items-center gap-6 sm:flex">
@@ -68,11 +70,20 @@ const Navbar: React.FC = () => {
 
             {/* Mobile dropdown */}
             {mobileOpen && (
-                <div className="border-t border-gray-100 bg-white px-4 pb-4 pt-2 sm:hidden">
+                <>
+                    <div className="border-t border-gray-100 bg-white px-4 pb-4 pt-2 sm:hidden">
                     <Button variant="outline" size="sm" className="w-full">
-                        {NAV_CTA_TEXT}
+                    <Link
+                        href="/register"
+                        className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                    >
+                        Login / Register
+                    </Link>
                     </Button>
                 </div>
+
+                </>
+                
             )}
         </header>
     );

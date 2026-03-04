@@ -1,5 +1,5 @@
 'use server'
-import { API_ENDPOINTS, API_BASE_URL, CenterResponse } from "./apiEndpoints";
+import { API_ENDPOINTS, CenterResponse } from "./apiEndpoints";
 import { Business, CenterRate } from "./types";
 
 /**
@@ -23,7 +23,7 @@ const mapCenterToBusiness = (item: CenterResponse["data"][number]): Business => 
 
 export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
     try {
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.CENTERS}?rate=${rate}`, {
+        const response = await fetch(`${API_ENDPOINTS.CENTERS}?rate=${rate}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -53,7 +53,7 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
 
 export const registerCenter = async (formData: FormData): Promise<{ success: boolean; message: string }> => {
     try {
-        const response = await fetch(API_ENDPOINTS.REGISTER, {
+        const response = await fetch(`${API_ENDPOINTS.REGISTER}`, {
             method: "POST",
             body: formData,
             // When sending FormData, the browser automatically sets the Content-Type

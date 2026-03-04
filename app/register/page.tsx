@@ -273,7 +273,7 @@ const RegisterPage = () => {
                                 <span className="text-xs font-medium text-gray-300">Logo Center</span>
                                 <label className="group relative flex flex-col items-center justify-center w-full h-32 bg-white/5 border-2 border-dashed border-white/20 rounded cursor-pointer hover:bg-white/10 hover:border-[#d4af37]/50 transition-all overflow-hidden">
                                     {logo ? (
-                                        <img src={URL.createObjectURL(logo)} className="absolute inset-0 w-full h-full object-contain p-2" alt="Logo preview" />
+                                        <Image src={URL.createObjectURL(logo)} className="absolute inset-0 w-full h-full object-fit" alt="Logo preview" width={150} height={200} />
                                     ) : (
                                         <div className="flex flex-col items-center">
                                             <Camera className="text-gray-400 group-hover:text-[#d4af37] mb-2 transition-colors " />
@@ -289,7 +289,7 @@ const RegisterPage = () => {
                                 <span className="text-xs font-medium text-gray-300">Primary Image</span>
                                 <label className="group relative flex flex-col items-center justify-center w-full h-32 bg-white/5 border-2 border-dashed border-white/20 rounded cursor-pointer hover:bg-white/10 hover:border-[#d4af37]/50 transition-all overflow-hidden  ">
                                     {primaryImage ? (
-                                        <img src={URL.createObjectURL(primaryImage)} className="absolute inset-0 w-full h-full object-cover" alt="Primary preview" />
+                                        <Image src={URL.createObjectURL(primaryImage)} className="absolute inset-0 w-full h-full object-fit" width={200} height={200} alt="Primary preview" />
                                     ) : (
                                         <div className="flex flex-col items-center">
                                             <Upload className="text-gray-400 group-hover:text-[#d4af37] mb-2 transition-colors" />

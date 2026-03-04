@@ -1,5 +1,5 @@
 'use server'
-import { API_ENDPOINTS, API_BASE_URL, CenterResponse } from "./apiEndpoints";
+import { API_ENDPOINTS, CenterResponse } from "./apiEndpoints";
 import { Business, CenterRate } from "./types";
 
 /**
@@ -53,23 +53,21 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
 
 export const registerCenter = async (formData: FormData): Promise<{ success: boolean; message: string }> => {
     try {
-        const response = await fetch("https://luzori.com/center_api/auth/register", {
+        const response = await fetch(`${API_ENDPOINTS.REGISTER}`, {
             method: "POST",
             body: formData,
             // When sending FormData, the browser automatically sets the Content-Type
             // including the boundary, so we should NOT set it manually.
         });
 
+        const json = await response.json();
+
         if (!response.ok) {
-            const text = await response.text();
-            console.error("API Error Response:", response.status, text);
             return {
                 success: false,
-                message: `Server Error (${response.status}): ${response.statusText}`,
+                message: json.message || "Registration failed",
             };
         }
-
-        const json = await response.json();
 
         return {
             success: true,

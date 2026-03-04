@@ -62,7 +62,7 @@ export const registerCenter = async (formData: FormData): Promise<{ success: boo
         });
 
         const json = await response.json();
-
+        console.log("this is response : " + response);
         if (!response.ok) {
             return {
                 success: false,

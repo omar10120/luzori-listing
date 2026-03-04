@@ -30,6 +30,7 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
             },
 
         });
+        console.log(response);
         if (!response.ok) {
             throw new Error(`Failed to fetch centers: ${response.statusText}`);
         }
@@ -52,21 +53,23 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
 
 export const registerCenter = async (formData: FormData): Promise<{ success: boolean; message: string }> => {
     try {
-        const response = await fetch(`${API_ENDPOINTS.REGISTER}`, {
+        const response = await fetch(API_ENDPOINTS.REGISTER, {
             method: "POST",
             body: formData,
             // When sending FormData, the browser automatically sets the Content-Type
             // including the boundary, so we should NOT set it manually.
         });
 
-        const json = await response.json();
-
         if (!response.ok) {
+            const text = await response.text();
+            console.error("API Error Response:", response.status, text);
             return {
                 success: false,
-                message: json.message || "Registration failed",
+                message: `Server Error (${response.status}): ${response.statusText}`,
             };
         }
+
+        const json = await response.json();
 
         return {
             success: true,

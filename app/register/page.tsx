@@ -8,6 +8,17 @@ import Container from "@/components/ui/Container";
 import { registerCenter } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { AnimatePresence } from "framer-motion";
+
+const COUNTRIES = [
+    { name: "UAE", code: "971", flag: "https://flagcdn.com/ae.svg" },
+    { name: "Saudi Arabia", code: "966", flag: "https://flagcdn.com/sa.svg" },
+    { name: "Qatar", code: "974", flag: "https://flagcdn.com/qa.svg" },
+    { name: "Kuwait", code: "965", flag: "https://flagcdn.com/kw.svg" },
+    { name: "Oman", code: "968", flag: "https://flagcdn.com/om.svg" },
+    { name: "Bahrain", code: "973", flag: "https://flagcdn.com/bh.svg" },
+];
+
 const RegisterPage = () => {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
@@ -15,6 +26,7 @@ const RegisterPage = () => {
     const [primaryImage, setPrimaryImage] = useState<File | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+    const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -26,6 +38,8 @@ const RegisterPage = () => {
         password_confirmation: "",
         currency: "AED",
     });
+
+    const selectedCountry = COUNTRIES.find(c => c.code === formData.country_code) || COUNTRIES[0];
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'logo' | 'primary') => {
         if (e.target.files && e.target.files[0]) {
@@ -137,15 +151,74 @@ const RegisterPage = () => {
                             <div className="space-y-2">
                                 <label className="text-xs font-medium text-gray-300 ml-1">Phone Center</label>
                                 <div className="relative">
-                                    <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 pr-3 border-r border-gray-400">
-                                        <Image src="https://flagcdn.com/ae.svg" width={200} height={200} alt="UAE" className="w-5 h-3 object-cover rounded-sm object-cover" />
-                                        <span className="text-xs  text-gray-700">+971</span>
-                                        <ChevronDown size={14} className="text-gray-500" />
+                                    <div className="absolute left-0 top-0 bottom-0 z-20">
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+                                            className="flex h-full items-center gap-2 px-3 border-r border-gray-400 bg-transparent hover:bg-white/5 transition-colors rounded-l transition-all"
+                                        >
+                                            <div className="relative w-5 h-3">
+                                                <Image
+                                                    src={selectedCountry.flag}
+                                                    alt={selectedCountry.name}
+                                                    width={100}
+                                                    height={100}
+                                                    className="object-cover rounded-sm"
+                                                />
+                                            </div>
+                                            <span className="text-xs font-semibold text-gray-700">+{selectedCountry.code}</span>
+                                            <ChevronDown className={cn("text-gray-500 transition-transform duration-200", isCountryDropdownOpen && "rotate-180")} size={12} />
+                                        </button>
+
+                                        <AnimatePresence>
+                                            {isCountryDropdownOpen && (
+                                                <>
+                                                    {/* Backdrop to close */}
+                                                    <div
+                                                        className="fixed inset-0 z-10"
+                                                        onClick={() => setIsCountryDropdownOpen(false)}
+                                                    />
+                                                    <motion.div
+                                                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                        className="absolute left-0 top-full mt-2 w-56 bg-[#1a2c4e] border border-white/20 backdrop-blur-xl rounded-xl shadow-2xl py-2 z-20"
+                                                    >
+                                                        {COUNTRIES.map((c) => (
+                                                            <button
+                                                                key={c.code}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    setFormData({ ...formData, country_code: c.code });
+                                                                    setIsCountryDropdownOpen(false);
+                                                                }}
+                                                                className={cn(
+                                                                    "flex w-full items-center gap-3 px-4 py-3 text-[13px] transition-colors hover:bg-white/10 text-white/90",
+                                                                    formData.country_code === c.code && "bg-white/10 text-[#d4af37]"
+                                                                )}
+                                                            >
+                                                                <div className="relative w-5 h-3 flex-shrink-0">
+                                                                    <Image
+                                                                        src={c.flag}
+                                                                        alt={c.name}
+                                                                        width={100}
+                                                                        height={100}
+                                                                        className="object-cover rounded-sm"
+                                                                    />
+                                                                </div>
+                                                                <span className="flex-1 text-left font-medium">{c.name}</span>
+                                                                <span className="text-xs opacity-60">+{c.code}</span>
+                                                            </button>
+                                                        ))}
+                                                    </motion.div>
+                                                </>
+                                            )}
+                                        </AnimatePresence>
                                     </div>
                                     <input
                                         type="tel"
                                         placeholder="503140232"
-                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 pl-24 pr-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none  text-sm"
+                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 pl-28 pr-4 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none  text-sm font-semibold"
                                         value={formData.phone}
                                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                     />

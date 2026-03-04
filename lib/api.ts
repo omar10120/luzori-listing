@@ -1,5 +1,5 @@
 'use server'
-import { API_ENDPOINTS, CenterResponse } from "./apiEndpoints";
+import { API_ENDPOINTS, API_BASE_URL, CenterResponse } from "./apiEndpoints";
 import { Business, CenterRate } from "./types";
 
 /**
@@ -30,7 +30,6 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
             },
 
         });
-        console.log(response);
         if (!response.ok) {
             throw new Error(`Failed to fetch centers: ${response.statusText}`);
         }

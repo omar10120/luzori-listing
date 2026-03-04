@@ -53,7 +53,7 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
 
 export const registerCenter = async (formData: FormData): Promise<{ success: boolean; message: string }> => {
     try {
-        const response = await fetch(API_ENDPOINTS.REGISTER, {
+        const response = await fetch("https://luzori.com/center_api/auth/register", {
             method: "POST",
             body: formData,
             // When sending FormData, the browser automatically sets the Content-Type

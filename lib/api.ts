@@ -53,6 +53,7 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
 
 export const registerCenter = async (formData: FormData): Promise<{ success: boolean; message: string }> => {
     try {
+        console.log(API_ENDPOINTS.REGISTER)
         const response = await fetch(`${API_ENDPOINTS.REGISTER}`, {
             method: "POST",
             body: formData,

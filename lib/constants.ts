@@ -6,7 +6,7 @@ export const SITE_DESCRIPTION =
     "Book local selfcare services — beauty, massage, wellness, and more, wherever you are.";
 
 /* ─── Navbar ─── */
-export const NAV_CTA_TEXT = "List your business";
+export const NAV_CTA_TEXT = "List your business2";
 
 /* ─── Hero ─── */
 export const HERO_HEADING = "Book local selfcare services";

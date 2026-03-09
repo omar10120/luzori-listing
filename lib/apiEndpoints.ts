@@ -1,6 +1,6 @@
 import { CenterRate } from "./types";
 
-export const API_BASE_URL = "https://www.dashboard.luzori.com";
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://www.dashboard.luzori.com";
 
 export const API_ENDPOINTS = {
     CENTERS: `${API_BASE_URL}/center_api/centers`,

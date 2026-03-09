@@ -82,3 +82,38 @@ export const registerCenter = async (formData: FormData): Promise<{ success: boo
         };
     }
 };
+
+export const loginCenter = async (credentials: any): Promise<{ success: boolean; message: string; data?: any }> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.LOGIN, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(credentials),
+        });
+
+        if (!response.ok) {
+            const text = await response.text();
+            console.error("Login Error Response:", response.status, text);
+            return {
+                success: false,
+                message: `Server Error (${response.status}): ${response.statusText}`,
+            };
+        }
+
+        const json = await response.json();
+
+        return {
+            success: true,
+            message: json.message || "Logged in successfully",
+            data: json.data,
+        };
+    } catch (error) {
+        console.error("Login Error:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred during login",
+        };
+    }
+};

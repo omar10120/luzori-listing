@@ -39,7 +39,7 @@ const Navbar: React.FC = () => {
                 </Link>
 
                 {/* Desktop right side */}
-                <div className="hidden items-center gap-6 sm:flex">
+                <div className="hidden items-center gap-6 sm:flex ">
                     <Link
                         href="/register"
                         className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
@@ -71,17 +71,7 @@ const Navbar: React.FC = () => {
             {/* Mobile dropdown */}
             {mobileOpen && (
                 <>
-                    <div className="border-t border-gray-100 bg-white px-4 pb-4 pt-2 sm:hidden">
-                        <Button variant="outline" size="sm" className="w-full">
-                            <Link
-                                href="/register"
-                                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                            >
-                                Login / Register
-                            </Link>
-                        </Button>
 
-                    </div>
                     <div className="border-t border-gray-100 bg-white px-4 pb-4 pt-2 sm:hidden">
 
 

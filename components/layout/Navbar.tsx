@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {  Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
@@ -47,7 +47,7 @@ const Navbar: React.FC = () => {
                         Login / Register
                     </a>
                     <Button variant="outline" size="sm">
-                        {NAV_CTA_TEXT}
+                        <a href="https://www.dashboard.luzori.com/center_user/login">{NAV_CTA_TEXT}</a>
                     </Button>
                     <div
                         className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white"
@@ -72,18 +72,18 @@ const Navbar: React.FC = () => {
             {mobileOpen && (
                 <>
                     <div className="border-t border-gray-100 bg-white px-4 pb-4 pt-2 sm:hidden">
-                    <Button variant="outline" size="sm" className="w-full">
-                    <Link
-                        href="/register"
-                        className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
-                    >
-                        Login / Register
-                    </Link>
-                    </Button>
-                </div>
+                        <Button variant="outline" size="sm" className="w-full">
+                            <Link
+                                href="/register"
+                                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                            >
+                                Login / Register
+                            </Link>
+                        </Button>
+                    </div>
 
                 </>
-                
+
             )}
         </header>
     );

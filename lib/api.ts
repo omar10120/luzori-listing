@@ -22,7 +22,7 @@ const mapCenterToBusiness = (item: CenterResponse["data"][number]): Business => 
 };
 
 export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
-    console.log("ENV:", process.env.NEXT_PUBLIC_API_BASE_URL);
+
     try {
         const response = await fetch(`${API_ENDPOINTS.CENTERS}?rate=${rate}`, {
             method: "GET",

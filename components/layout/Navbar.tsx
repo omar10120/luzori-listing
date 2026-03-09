@@ -47,7 +47,7 @@ const Navbar: React.FC = () => {
                         Login / Register
                     </a>
                     <Button variant="outline" size="sm">
-                        <a href="https://www.dashboard.luzori.com/center_user/login">{NAV_CTA_TEXT}</a>
+                        <a href="https://www.dashboard.luzori.com/center_user/login" target="_blank">{NAV_CTA_TEXT}</a>
                     </Button>
                     <div
                         className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white"

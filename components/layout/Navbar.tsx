@@ -40,14 +40,14 @@ const Navbar: React.FC = () => {
 
                 {/* Desktop right side */}
                 <div className="hidden items-center gap-6 sm:flex">
-                    <a
+                    <Link
                         href="/register"
                         className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
                     >
                         Login / Register
-                    </a>
+                    </Link>
                     <Button variant="outline" size="sm">
-                        <a href="https://www.dashboard.luzori.com/center_user/login" target="_blank">{NAV_CTA_TEXT}</a>
+                        <Link href="https://www.dashboard.luzori.com/center_user/login" target="_blank">{NAV_CTA_TEXT}</Link>
                     </Button>
                     <div
                         className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white"
@@ -78,6 +78,21 @@ const Navbar: React.FC = () => {
                                 className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
                             >
                                 Login / Register
+                            </Link>
+                        </Button>
+
+                    </div>
+                    <div className="border-t border-gray-100 bg-white px-4 pb-4 pt-2 sm:hidden">
+
+
+
+                        <Button variant="outline" size="sm" className="w-full">
+                            <Link
+                                href="https://www.dashboard.luzori.com/center_user/login"
+                                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                                target="_blank"
+                            >
+                                {NAV_CTA_TEXT}
                             </Link>
                         </Button>
                     </div>

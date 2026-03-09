@@ -31,7 +31,6 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
             },
 
         });
-        console.log(response);
         if (!response.ok) {
             throw new Error(`Failed to fetch centers: ${response.statusText}`);
         }

@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
                         <Link href="/register" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Register</Link>
                     </div>
                     <Button variant="outline" size="sm">
-                        <Link href="https://www.dashboard.luzori.com/center_user/login" target="_blank">{NAV_CTA_TEXT}</Link>
+                        <Link href="https://www.dashboard.luzori.com" target="_blank">{NAV_CTA_TEXT}</Link>
                     </Button>
                     <div
                         className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white"
@@ -87,7 +87,7 @@ const Navbar: React.FC = () => {
 
                         <Button variant="outline" size="sm" className="w-full">
                             <Link
-                                href="https://www.dashboard.luzori.com/center_user/login"
+                                href="https://www.dashboard.luzori.com"
                                 className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
                                 target="_blank"
                             >

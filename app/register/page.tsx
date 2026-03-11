@@ -9,6 +9,7 @@ import { registerCenter } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { AnimatePresence } from "framer-motion";
+import Button from "@/components/ui/Button";
 
 const COUNTRIES = [
     { name: "UAE", code: "971", flag: "https://flagcdn.com/ae.svg" },

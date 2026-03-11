@@ -7,6 +7,7 @@ import RatingStars from "./RatingStars";
 import Badge from "./Badge";
 import { cn } from "@/lib/utils";
 import type { Business } from "@/lib/types";
+import Link from "next/link";
 
 interface CardProps {
     business: Business;
@@ -14,54 +15,56 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ business, className }) => {
-    const { name, location, category, rating, reviewCount, image, isNew, isTrending } =
+    const { id, name, location, category, rating, reviewCount, image, isNew, isTrending } =
         business;
 
     return (
-        <motion.article
-            whileHover={{ y: -4 }}
-            transition={{ duration: 0.2 }}
-            className={cn(
-                "group flex w-64 shrink-0 cursor-pointer flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-100 transition-shadow hover:shadow-md sm:w-72",
-                className
-            )}
-        >
-            {/* Image */}
-            <div className="relative aspect-[4/3] w-full overflow-hidden">
-                <img
-                    src={image}
-                    alt={name}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
-                />
-                {/* Badges */}
-                <div className="absolute left-3 top-3 flex gap-1.5">
-                    {isNew && <Badge variant="new">New</Badge>}
-                    {isTrending && <Badge variant="trending">Trending</Badge>}
+        <Link href={`/center/${id}`} className="contents">
+            <motion.article
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.2 }}
+                className={cn(
+                    "group flex w-64 shrink-0 cursor-pointer flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-100 transition-shadow hover:shadow-md sm:w-72",
+                    className
+                )}
+            >
+                {/* Image */}
+                <div className="relative aspect-[4/3] w-full overflow-hidden">
+                    <img
+                        src={image}
+                        alt={name}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                    />
+                    {/* Badges */}
+                    <div className="absolute left-3 top-3 flex gap-1.5">
+                        {isNew && <Badge variant="new">New</Badge>}
+                        {isTrending && <Badge variant="trending">Trending</Badge>}
+                    </div>
                 </div>
-            </div>
 
-            {/* Content */}
-            <div className="flex flex-1 flex-col gap-1.5 p-4">
-                <h3 className="text-sm font-semibold text-gray-900 line-clamp-1">
-                    {name}
-                </h3>
-                <div className="flex items-center gap-1 text-xs text-gray-500">
-                    <MapPin size={12} className="shrink-0" />
-                    <span className="line-clamp-1">{location}</span>
+                {/* Content */}
+                <div className="flex flex-1 flex-col gap-1.5 p-4">
+                    <h3 className="text-sm font-semibold text-gray-900 line-clamp-1">
+                        {name}
+                    </h3>
+                    <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <MapPin size={12} className="shrink-0" />
+                        <span className="line-clamp-1">{location}</span>
+                    </div>
+                    <span className="text-xs text-gray-400">{category}</span>
+                    <div className="mt-auto flex items-center gap-2 pt-2">
+                        <RatingStars rating={rating} size={12} />
+                        <span className="text-xs font-medium text-gray-700">
+                            {rating}
+                        </span>
+                        <span className="text-xs text-gray-400">
+                            ({reviewCount.toLocaleString()})
+                        </span>
+                    </div>
                 </div>
-                <span className="text-xs text-gray-400">{category}</span>
-                <div className="mt-auto flex items-center gap-2 pt-2">
-                    <RatingStars rating={rating} size={12} />
-                    <span className="text-xs font-medium text-gray-700">
-                        {rating}
-                    </span>
-                    <span className="text-xs text-gray-400">
-                        ({reviewCount.toLocaleString()})
-                    </span>
-                </div>
-            </div>
-        </motion.article>
+            </motion.article>
+        </Link>
     );
 };
 

@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import BusinessCardScroll from "./BusinessCardScroll";
-import { TRENDING_HEADING } from "@/lib/constants";
 import { fetchCenters } from "@/lib/api";
 import { Business } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 const TrendingSection: React.FC = () => {
+    const t = useTranslations();
     const [businesses, setBusinesses] = useState<Business[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -35,7 +36,7 @@ const TrendingSection: React.FC = () => {
 
     return (
         <BusinessCardScroll
-            heading={TRENDING_HEADING}
+            heading={t('trending')}
             businesses={businesses}
         />
     );

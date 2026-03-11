@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
 import { cityGroups } from "@/data/mockData";
-import { BROWSE_CITY_HEADING } from "@/lib/constants";
+import { useTranslations } from "next-intl";
 import type { CityGroup } from "@/lib/types";
 
 interface LinkGroupProps {
@@ -35,10 +35,12 @@ const LinkGroup: React.FC<LinkGroupProps> = ({ group }) => {
 };
 
 const BrowseCitySection: React.FC = () => {
+    const t = useTranslations();
+
     return (
         <section className="border-t border-gray-100 py-16 sm:py-24">
             <Container>
-                <SectionHeader heading={BROWSE_CITY_HEADING} />
+                <SectionHeader heading={t('browse_by_city')} />
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}

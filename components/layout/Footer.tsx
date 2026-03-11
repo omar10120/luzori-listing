@@ -1,12 +1,52 @@
+"use client";
+
 import React from "react";
 import Container from "@/components/ui/Container";
-import {
-    SITE_NAME,
-    FOOTER_SECTIONS,
-    FOOTER_COPYRIGHT,
-} from "@/lib/constants";
+import { useTranslations } from "next-intl";
 
 const Footer: React.FC = () => {
+    const t = useTranslations();
+    const currentYear = new Date().getFullYear();
+
+    const FOOTER_SECTIONS = [
+        {
+            title: t('about_luzori'),
+            links: [
+                { label: t('about'), href: "#" },
+                { label: "Careers", href: "#" },
+                { label: "Partners", href: "#" },
+                { label: "Press", href: "#" },
+            ],
+        },
+        {
+            title: t('support'),
+            links: [
+                { label: "Help center", href: "#" },
+                { label: "Contact us", href: "#" },
+                { label: "Privacy policy", href: "#" },
+                { label: "Terms of use", href: "#" },
+            ],
+        },
+        {
+            title: t('solutions'),
+            links: [
+                { label: t('luzori_for_business'), href: "#" },
+                { label: "Pricing", href: "#" },
+                { label: "Features", href: "#" },
+                { label: "Integrations", href: "#" },
+            ],
+        },
+        {
+            title: t('legal'),
+            links: [
+                { label: "Privacy", href: "#" },
+                { label: "Terms", href: "#" },
+                { label: "Cookie policy", href: "#" },
+                { label: "Accessibility", href: "#" },
+            ],
+        },
+    ];
+
     return (
         <footer className="border-t border-gray-100 bg-white">
             <Container className="py-12 sm:py-16">
@@ -17,12 +57,12 @@ const Footer: React.FC = () => {
                         <a
                             href="/"
                             className="text-xl font-bold tracking-tight text-gray-900"
-                            aria-label={`${SITE_NAME} home`}
+                            aria-label="Luzori home"
                         >
-                            {SITE_NAME}
+                            Luzori
                         </a>
                         <p className="mt-3 max-w-xs text-sm text-gray-500">
-                            Book local selfcare services in seconds.
+                            {t('hero_subtitle')}
                         </p>
                     </div>
 
@@ -51,7 +91,7 @@ const Footer: React.FC = () => {
                 {/* Bottom bar */}
                 <div className="mt-12 border-t border-gray-100 pt-6">
                     <p className="text-center text-xs text-gray-400">
-                        {FOOTER_COPYRIGHT}
+                        {t('copyright', { year: currentYear })}
                     </p>
                 </div>
             </Container>

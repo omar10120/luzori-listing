@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import BusinessCardScroll from "./BusinessCardScroll";
-import { RECOMMENDED_HEADING } from "@/lib/constants";
 import { fetchCenters } from "@/lib/api";
 import { Business } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 const RecommendedSection: React.FC = () => {
+    const t = useTranslations();
     const [businesses, setBusinesses] = useState<Business[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -37,7 +38,7 @@ const RecommendedSection: React.FC = () => {
 
     return (
         <BusinessCardScroll
-            heading={RECOMMENDED_HEADING}
+            heading={t('recommended')}
             businesses={businesses}
         />
     );

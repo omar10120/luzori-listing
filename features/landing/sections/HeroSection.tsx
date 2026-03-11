@@ -15,8 +15,11 @@ import {
     SEARCH_PLACEHOLDER_TIME,
     SEARCH_BUTTON_TEXT,
 } from "@/lib/constants";
+import { useTranslations } from "next-intl";
 
 const HeroSection: React.FC = () => {
+    const t = useTranslations('HeroSection');
+
     return (
         <section className="relative overflow-hidden bg-gradient-to-br from-purple-50 via-pink-50 to-white pb-16 pt-28 sm:pb-24 sm:pt-36">
             {/* Soft gradient blobs */}
@@ -31,7 +34,7 @@ const HeroSection: React.FC = () => {
                     transition={{ duration: 0.6 }}
                     className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl"
                 >
-                    {HERO_HEADING}
+                    {t('hero_heading')}
                 </motion.h1>
 
                 {/* Subtitle */}
@@ -41,7 +44,7 @@ const HeroSection: React.FC = () => {
                     transition={{ duration: 0.6, delay: 0.15 }}
                     className="mx-auto mt-4 max-w-xl text-base text-gray-500 sm:text-lg"
                 >
-                    {HERO_SUBTITLE}
+                    {t('hero_subtitle')}
                 </motion.p>
 
                 {/* Search bar */}
@@ -56,7 +59,7 @@ const HeroSection: React.FC = () => {
                         <Search size={18} className="shrink-0 text-gray-400" />
                         <input
                             type="text"
-                            placeholder={SEARCH_PLACEHOLDER_TREATMENT}
+                            placeholder={t('treatment_placeholder')}
                             aria-label="Treatment or venue"
                             className="w-full bg-transparent text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none"
                         />
@@ -69,7 +72,7 @@ const HeroSection: React.FC = () => {
                         <MapPin size={18} className="shrink-0 text-gray-400" />
                         <input
                             type="text"
-                            placeholder={SEARCH_PLACEHOLDER_LOCATION}
+                            placeholder={t('current_location')}
                             aria-label="Location"
                             className="w-full bg-transparent text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none"
                         />
@@ -82,7 +85,7 @@ const HeroSection: React.FC = () => {
                         <Clock size={18} className="shrink-0 text-gray-400" />
                         <input
                             type="text"
-                            placeholder={SEARCH_PLACEHOLDER_TIME}
+                            placeholder={t('any_time')}
                             aria-label="Preferred time"
                             className="w-full bg-transparent text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none"
                         />
@@ -92,9 +95,9 @@ const HeroSection: React.FC = () => {
                     <Button
                         size="lg"
                         className="shrink-0 rounded-full sm:ml-1"
-                        aria-label={SEARCH_BUTTON_TEXT}
+                        aria-label={t('search')}
                     >
-                        {SEARCH_BUTTON_TEXT}
+                        {t('search')}
                     </Button>
                 </motion.div>
 
@@ -105,12 +108,12 @@ const HeroSection: React.FC = () => {
                     transition={{ duration: 0.6, delay: 0.5 }}
                     className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-6"
                 >
-                    <p className="text-sm text-gray-500">{HERO_STATS_TEXT}</p>
+                    <p className="text-sm text-gray-500">{t('hero_stats_text')}</p>
                     <button
                         type="button"
                         className="group inline-flex items-center gap-1.5 text-sm font-medium text-gray-900 transition-colors hover:text-purple-600"
                     >
-                        {HERO_APP_CTA}
+                        {t('hero_app_cta')}
                         <ChevronDown size={14} className="transition-transform group-hover:translate-y-0.5" />
                     </button>
                 </motion.div>

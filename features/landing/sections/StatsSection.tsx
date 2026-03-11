@@ -10,7 +10,7 @@ import {
 } from "framer-motion";
 import Container from "@/components/ui/Container";
 import { stats } from "@/data/mockData";
-import { STATS_HEADING, STATS_SUBTITLE } from "@/lib/constants";
+import { useTranslations } from "next-intl";
 import type { Stat } from "@/lib/types";
 
 /* ─── Animated counter ─── */
@@ -54,6 +54,8 @@ const Counter: React.FC<CounterProps> = ({ stat }) => {
 
 /* ─── Stats section ─── */
 const StatsSection: React.FC = () => {
+    const t = useTranslations();
+
     return (
         <section className="py-16 sm:py-24">
             <Container className="text-center">
@@ -64,10 +66,10 @@ const StatsSection: React.FC = () => {
                     transition={{ duration: 0.5 }}
                 >
                     <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
-                        {STATS_HEADING}
+                        {t('top_rated_destination')}
                     </h2>
                     <p className="mx-auto mt-3 max-w-xl text-base text-gray-500 sm:text-lg">
-                        {STATS_SUBTITLE}
+                        {t('platform_subtitle')}
                     </p>
                 </motion.div>
 

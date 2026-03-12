@@ -22,6 +22,7 @@ import Button from "@/components/ui/Button";
 import type { CenterDetailData } from "@/lib/apiEndpoints";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 /* ─── Mock Data for sections not in API ─────────────────────────── */
 
@@ -79,7 +80,8 @@ export default function CenterDetailClient({ center }: Props) {
                 <Container className="flex h-16 items-center justify-between py-2">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-1">
-                        <span className="text-2xl font-black tracking-tighter text-gray-900">luzori</span>
+
+                        <Image src="logo.svg" alt="Luzori" width={100} height={100} />
                     </Link>
 
                     {/* Compact Search Box */}
@@ -146,7 +148,7 @@ export default function CenterDetailClient({ center }: Props) {
                                 <div className="flex items-center gap-1">
                                     <MapPin size={14} className="text-gray-400" />
                                     <span>{center.domain}, {center.id % 2 === 0 ? t('limassol') : t('dubai')}</span>
-                                    {/* <button className="text-blue-600 hover:underline font-medium ml-1 rtl:mr-1 rtl:ml-0">{t('get_directions')}</button> */}
+                                    <button className="text-blue-600 hover:underline font-medium ml-1 rtl:mr-1 rtl:ml-0">{t('get_directions')}</button>
                                 </div>
                             </div>
                         </div>

@@ -8,7 +8,7 @@ import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { useTranslations } from "next-intl";
-
+import Image from "next/image";
 
 const Navbar: React.FC = () => {
     const t = useTranslations();
@@ -37,7 +37,7 @@ const Navbar: React.FC = () => {
                     className="text-xl font-bold tracking-tight text-gray-900"
                     aria-label="Luzori home"
                 >
-                    Luzori
+                    <Image src="logo.svg" alt="Luzori" width={100} height={100} />
                 </Link>
 
                 {/* Desktop right side */}

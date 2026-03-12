@@ -6,13 +6,17 @@ import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 import "../globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-
+import { Cairo } from "next/font/google";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
-
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  variable: "--font-cairo",
+  display: "swap",
+});
 
 
 export const metadata: Metadata = {
@@ -47,7 +51,7 @@ export default async function RootLayout({
 
 
   return (
-    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={inter.variable}>
+    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={inter.variable} >
       <body className="min-h-screen bg-white font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Navbar />
@@ -55,6 +59,6 @@ export default async function RootLayout({
           <Footer />
         </NextIntlClientProvider>
       </body>
-    </html>
+    </html >
   );
 }

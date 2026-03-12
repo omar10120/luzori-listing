@@ -4,9 +4,11 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Apple } from "lucide-react";
 import Container from "@/components/ui/Container";
+import { useTranslations } from "next-intl";
 import { SITE_NAME } from "@/lib/constants";
 
 const AppDownloadSection: React.FC = () => {
+    const t = useTranslations();
     // QR Code for https://play.google.com/
     const qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://play.google.com/&color=111827";
 
@@ -34,10 +36,10 @@ const AppDownloadSection: React.FC = () => {
                         </div>
 
                         <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-2xl lg:text-4xl max-w-lg leading-[1.1]">
-                            Download the {SITE_NAME} app
+                            {t('download_app_heading')}
                         </h2>
                         <p className="mt-6 max-w-md text-lg text-gray-600 font-medium">
-                            Book unforgettable beauty and wellness experiences with the {SITE_NAME} mobile app
+                            {t('download_app_subtitle')}
                         </p>
 
                         {/* QR Code Card */}
@@ -110,4 +112,3 @@ const AppDownloadSection: React.FC = () => {
 };
 
 export default AppDownloadSection;
-

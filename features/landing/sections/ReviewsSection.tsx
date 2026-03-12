@@ -8,13 +8,15 @@ import RatingStars from "@/components/ui/RatingStars";
 import { reviews } from "@/data/mockData";
 import { REVIEWS_HEADING } from "@/lib/constants";
 import type { Review } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 interface ReviewCardProps {
     review: Review;
     index: number;
 }
-
 const ReviewCard: React.FC<ReviewCardProps> = ({ review, index }) => {
+
+
     return (
         <motion.article
             initial={{ opacity: 0, y: 20 }}
@@ -46,10 +48,11 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ review, index }) => {
 };
 
 const ReviewsSection: React.FC = () => {
+    const t = useTranslations();
     return (
         <section className="py-16 sm:py-24">
             <Container>
-                <SectionHeader heading={REVIEWS_HEADING} />
+                <SectionHeader heading={t('reviews')} />
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     {reviews.map((review, i) => (
                         <ReviewCard key={review.id} review={review} index={i} />

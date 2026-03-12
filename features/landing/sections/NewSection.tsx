@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import BusinessCardScroll from "./BusinessCardScroll";
-import { NEW_HEADING } from "@/lib/constants";
 import { fetchCenters } from "@/lib/api";
 import { Business } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 const NewSection: React.FC = () => {
+    const t = useTranslations();
     const [businesses, setBusinesses] = useState<Business[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -36,7 +37,7 @@ const NewSection: React.FC = () => {
 
     return (
         <BusinessCardScroll
-            heading={NEW_HEADING}
+            heading={t('new_to_luzori')}
             businesses={businesses}
         />
     );

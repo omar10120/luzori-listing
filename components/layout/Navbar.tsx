@@ -5,11 +5,13 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
-import { SITE_NAME, NAV_CTA_TEXT } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import LocaleSwitcher from "./LocaleSwitcher";
+import { useTranslations } from "next-intl";
 
 
 const Navbar: React.FC = () => {
+    const t = useTranslations();
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -33,20 +35,21 @@ const Navbar: React.FC = () => {
                 <Link
                     href="/"
                     className="text-xl font-bold tracking-tight text-gray-900"
-                    aria-label={`${SITE_NAME} home`}
+                    aria-label="Luzori home"
                 >
-                    {SITE_NAME}
+                    Luzori
                 </Link>
 
                 {/* Desktop right side */}
                 <div className="hidden items-center gap-6 sm:flex ">
+                    <LocaleSwitcher />
                     <div className="flex items-center gap-2">
-                        <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Login</Link>
+                        <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">{t('login')}</Link>
                         <span className="text-gray-300">/</span>
-                        <Link href="/register" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">Register</Link>
+                        <Link href="/register" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">{t('register')}</Link>
                     </div>
                     <Button variant="outline" size="sm">
-                        <Link href="https://www.dashboard.luzori.com" target="_blank">{NAV_CTA_TEXT}</Link>
+                        <Link href="https://dashboard.luzori.com" target="_blank">{t('list_your_business')}</Link>
                     </Button>
                     <div
                         className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white"
@@ -57,41 +60,46 @@ const Navbar: React.FC = () => {
                 </div>
 
                 {/* Mobile menu toggle */}
-                <button
-                    type="button"
-                    className="inline-flex items-center justify-center rounded-lg p-2 text-gray-700 hover:bg-gray-100 sm:hidden"
-                    onClick={() => setMobileOpen(!mobileOpen)}
-                    aria-label="Toggle navigation menu"
-                >
-                    {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-                </button>
+                <div className="flex items-center gap-2 sm:hidden">
+                    <LocaleSwitcher />
+                    <button
+                        type="button"
+                        className="inline-flex items-center justify-center rounded-lg p-2 text-gray-700 hover:bg-gray-100"
+                        onClick={() => setMobileOpen(!mobileOpen)}
+                        aria-label="Toggle navigation menu"
+                    >
+                        {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+                    </button>
+                </div>
             </Container>
 
             {/* Mobile dropdown */}
             {mobileOpen && (
                 <>
                     <div className="border-t border-gray-100 bg-white px-4 pb-4 pt-2 sm:hidden">
-                        <Button variant="outline" size="sm" className="w-full">
+                        <div className="flex flex-col gap-2">
+                            <Link
+                                href="/login"
+                                className="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 bg-white"
+                            >
+                                {t('login')}
+                            </Link>
                             <Link
                                 href="/register"
-                                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                                className="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 bg-white"
                             >
-                                Login / Register
+                                {t('register')}
                             </Link>
-                        </Button>
-
+                        </div>
                     </div>
                     <div className="border-t border-gray-100 bg-white px-4 pb-4 pt-2 sm:hidden">
-
-
-
                         <Button variant="outline" size="sm" className="w-full">
                             <Link
-                                href="https://www.dashboard.luzori.com"
+                                href="https://dashboard.luzori.com"
                                 className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
                                 target="_blank"
                             >
-                                {NAV_CTA_TEXT}
+                                {t('list_your_business')}
                             </Link>
                         </Button>
                     </div>

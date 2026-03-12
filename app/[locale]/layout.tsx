@@ -3,13 +3,17 @@ import { Inter } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
-import "./globals.css";
+import "../globals.css";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
+
+
 
 export const metadata: Metadata = {
   title: `${SITE_NAME} — Book Local Selfcare Services`,
@@ -30,17 +34,26 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
+  const { locale } = await params;
+
+  const messages = await getMessages({ locale });
+
+
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={inter.variable}>
       <body className="min-h-screen bg-white font-sans antialiased">
-        <Navbar />
-        <main id="main-content">{children}</main>
-        <Footer />
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Navbar />
+          <main id="main-content">{children}</main>
+          <Footer />
+        </NextIntlClientProvider>
       </body>
     </html>
   );

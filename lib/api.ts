@@ -50,7 +50,7 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
 
         return json.data.map(mapCenterToBusiness);
     } catch (error) {
-        console.log(error);
+
         console.error("Fetch Centers Error:", error);
         return []; // Return empty array on failure to prevent UI crash
     }

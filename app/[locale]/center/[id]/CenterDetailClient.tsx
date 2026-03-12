@@ -21,21 +21,17 @@ import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import type { CenterDetailData } from "@/lib/apiEndpoints";
 import Link from "next/link";
-import {
-    SEARCH_PLACEHOLDER_TREATMENT,
-    SEARCH_PLACEHOLDER_LOCATION,
-    SEARCH_PLACEHOLDER_TIME,
-} from "@/lib/constants";
+import { useTranslations } from "next-intl";
 
 /* ─── Mock Data for sections not in API ─────────────────────────── */
 
 const MOCK_SERVICES = [
-    { id: 1, name: "Classic Haircut", price: "120 AED", duration: "45 min", category: "Hair" },
-    { id: 2, name: "Hair Color & Highlights", price: "350 AED", duration: "120 min", category: "Hair" },
-    { id: 3, name: "Deep Cleansing Facial", price: "200 AED", duration: "60 min", category: "Skin" },
-    { id: 4, name: "Full Body Massage", price: "280 AED", duration: "90 min", category: "Body" },
-    { id: 5, name: "Manicure & Pedicure", price: "150 AED", duration: "60 min", category: "Nails" },
-    { id: 6, name: "Bridal Package", price: "1500 AED", duration: "240 min", category: "Special" },
+    { id: 1, name: "Classic Haircut", price: "120 AED", duration: "45 min", category: "hair" },
+    { id: 2, name: "Hair Color & Highlights", price: "350 AED", duration: "120 min", category: "hair" },
+    { id: 3, name: "Deep Cleansing Facial", price: "200 AED", duration: "60 min", category: "skin" },
+    { id: 4, name: "Full Body Massage", price: "280 AED", duration: "90 min", category: "body" },
+    { id: 5, name: "Manicure & Pedicure", price: "150 AED", duration: "60 min", category: "nails" },
+    { id: 6, name: "Bridal Package", price: "1500 AED", duration: "240 min", category: "special" },
 ];
 
 const MOCK_TEAM = [
@@ -51,17 +47,7 @@ const MOCK_REVIEWS = [
     { id: 3, author: "Noura A.", rating: 5, text: "Best salon in town! The attention to detail is incredible. Highly recommend the bridal package.", date: "2 weeks ago" },
 ];
 
-const SERVICE_TABS = ["All", "Hair", "Skin", "Body", "Nails", "Special"];
-
-const OPENING_HOURS = [
-    { day: "Monday", hours: "9:00 AM – 9:00 PM" },
-    { day: "Tuesday", hours: "9:00 AM – 9:00 PM" },
-    { day: "Wednesday", hours: "9:00 AM – 9:00 PM" },
-    { day: "Thursday", hours: "9:00 AM – 9:00 PM" },
-    { day: "Friday", hours: "2:00 PM – 10:00 PM" },
-    { day: "Saturday", hours: "10:00 AM – 10:00 PM" },
-    { day: "Sunday", hours: "10:00 AM – 8:00 PM" },
-];
+const SERVICE_TABS = ["all", "hair", "skin", "body", "nails", "special"];
 
 /* ─── Main Component ─────────────────────────────────────────────── */
 
@@ -70,13 +56,14 @@ interface Props {
 }
 
 export default function CenterDetailClient({ center }: Props) {
-    const [activeServiceTab, setActiveServiceTab] = useState("All");
+    const t = useTranslations();
+    const [activeServiceTab, setActiveServiceTab] = useState("all");
     const [isFav, setIsFav] = useState(false);
 
     const filteredServices =
-        activeServiceTab === "All"
+        activeServiceTab === "all"
             ? MOCK_SERVICES
-            : MOCK_SERVICES.filter((s) => s.category === activeServiceTab);
+            : MOCK_SERVICES.filter((s) => s.category === activeServiceTab.toLowerCase());
 
     const fallbackImage =
         "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&h=600&fit=crop";
@@ -98,15 +85,15 @@ export default function CenterDetailClient({ center }: Props) {
                     {/* Compact Search Box */}
                     <div className="hidden max-w-xl flex-1 items-center gap-0 rounded-full border border-gray-200 bg-white p-1 md:flex mx-8 shadow-sm">
                         <div className="flex flex-1 items-center gap-2 px-3">
-                            <span className="text-xs font-medium text-gray-500 whitespace-nowrap">All Treatments</span>
+                            <span className="text-xs font-medium text-gray-500 whitespace-nowrap">{t('all_treatments')}</span>
                         </div>
                         <div className="h-4 w-px bg-gray-200" />
                         <div className="flex flex-1 items-center gap-2 px-3">
-                            <span className="text-xs font-medium text-gray-500 whitespace-nowrap">Current location</span>
+                            <span className="text-xs font-medium text-gray-500 whitespace-nowrap">{t('current_location')}</span>
                         </div>
                         <div className="h-4 w-px bg-gray-200" />
                         <div className="flex flex-1 items-center gap-2 px-3">
-                            <span className="text-xs font-medium text-gray-500 whitespace-nowrap">Any time</span>
+                            <span className="text-xs font-medium text-gray-500 whitespace-nowrap">{t('any_time')}</span>
                         </div>
                         <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-white transition-colors hover:bg-gray-800">
                             <Search size={14} />
@@ -114,9 +101,11 @@ export default function CenterDetailClient({ center }: Props) {
                     </div>
 
                     {/* Menu Button */}
-                    <Button variant="outline" size="sm" className="flex items-center gap-2 rounded-full border-gray-200 px-4 font-semibold text-gray-700">
-                        Menu <Menu size={16} />
-                    </Button>
+                    <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm" className="flex items-center gap-2 rounded-full border-gray-200 px-4 font-semibold text-gray-700">
+                            {t('menu')} <Menu size={16} />
+                        </Button>
+                    </div>
                 </Container>
             </header>
 
@@ -125,18 +114,18 @@ export default function CenterDetailClient({ center }: Props) {
                 <Container className="py-4">
                     {/* Breadcrumbs */}
                     <div className="flex items-center gap-2 text-xs text-gray-500 mb-6">
-                        <Link href="/" className="hover:text-gray-900">Home</Link>
-                        <ChevronRight size={12} />
-                        <Link href="#" className="hover:text-gray-900">test1</Link>
-                        <ChevronRight size={12} />
-                        <Link href="#" className="hover:text-gray-900">test2</Link>
-                        <ChevronRight size={12} />
+                        <Link href="/" className="hover:text-gray-900">{t('home')}</Link>
+                        <ChevronRight size={12} className="rtl:rotate-180" />
+                        <Link href="#" className="hover:text-gray-900">{t('beauty_salons')}</Link>
+                        <ChevronRight size={12} className="rtl:rotate-180" />
+                        <Link href="#" className="hover:text-gray-900">{t('limassol')}</Link>
+                        <ChevronRight size={12} className="rtl:rotate-180" />
                         <span className="text-gray-900 font-medium">{center.name}</span>
                     </div>
 
                     {/* Title Section */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
-                        <div>
+                        <div className="flex-1">
                             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">{center.name}</h1>
                             <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                                 <div className="flex items-center gap-1">
@@ -150,14 +139,14 @@ export default function CenterDetailClient({ center }: Props) {
                                 </div>
                                 <span className="text-gray-300">•</span>
                                 <div className="flex items-center gap-1">
-                                    <span className="font-semibold text-orange-600">Closed</span>
-                                    <span>– opens at 10:00 AM</span>
+                                    <span className="font-semibold text-orange-600">{t('closed')}</span>
+                                    <span>– {t('opens_at')} 10:00 AM</span>
                                 </div>
                                 <span className="text-gray-300">•</span>
                                 <div className="flex items-center gap-1">
                                     <MapPin size={14} className="text-gray-400" />
-                                    <span>{center.domain}, {center.id % 2 === 0 ? "Limassol" : "Dubai"}</span>
-                                    {/* <button className="text-blue-600 hover:underline font-medium ml-1">Get directions</button> */}
+                                    <span>{center.domain}, {center.id % 2 === 0 ? t('limassol') : t('dubai')}</span>
+                                    {/* <button className="text-blue-600 hover:underline font-medium ml-1 rtl:mr-1 rtl:ml-0">{t('get_directions')}</button> */}
                                 </div>
                             </div>
                         </div>
@@ -203,8 +192,8 @@ export default function CenterDetailClient({ center }: Props) {
                                     className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
                                 />
                                 {displayImages.length > 3 && (
-                                    <button className="absolute bottom-4 right-4 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-md transition-all hover:bg-gray-50">
-                                        See all images
+                                    <button className="absolute bottom-4 right-4 rtl:right-auto rtl:left-4 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-md transition-all hover:bg-gray-50">
+                                        {t('see_all_images')}
                                     </button>
                                 )}
                             </div>
@@ -217,7 +206,7 @@ export default function CenterDetailClient({ center }: Props) {
                         <div className="lg:col-span-2 space-y-10">
                             {/* ──── Services ──────────────────────────── */}
                             <section>
-                                <h2 className="text-2xl font-bold text-gray-900 mb-6">Services</h2>
+                                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('services')}</h2>
 
                                 {/* Tabs */}
                                 <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3 mb-6 border-b border-gray-100">
@@ -232,7 +221,7 @@ export default function CenterDetailClient({ center }: Props) {
                                                     : "text-gray-500 hover:text-gray-700"
                                             )}
                                         >
-                                            {tab}
+                                            {t(tab)}
                                         </button>
                                     ))}
                                 </div>
@@ -246,11 +235,11 @@ export default function CenterDetailClient({ center }: Props) {
                                         >
                                             <div className="flex items-start gap-4">
                                                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-50 text-gray-500 group-hover:bg-gray-100 transition-colors">
-                                                    {svc.category === "Hair" && <Scissors size={18} />}
-                                                    {svc.category === "Skin" && <Sparkles size={18} />}
-                                                    {svc.category === "Body" && <Users size={18} />}
-                                                    {svc.category === "Nails" && <Sparkles size={18} />}
-                                                    {svc.category === "Special" && <Star size={18} />}
+                                                    {svc.category === "hair" && <Scissors size={18} />}
+                                                    {svc.category === "skin" && <Sparkles size={18} />}
+                                                    {svc.category === "body" && <Users size={18} />}
+                                                    {svc.category === "nails" && <Sparkles size={18} />}
+                                                    {svc.category === "special" && <Star size={18} />}
                                                 </div>
                                                 <div>
                                                     <p className="text-base font-bold text-gray-900">{svc.name}</p>
@@ -259,7 +248,7 @@ export default function CenterDetailClient({ center }: Props) {
                                             </div>
                                             <div className="flex items-center gap-4">
                                                 <span className="text-base font-bold text-gray-900">{svc.price}</span>
-                                                <Button size="sm" className="rounded-lg px-6">Book</Button>
+                                                <Button size="sm" className="rounded-lg px-6">{t('book')}</Button>
                                             </div>
                                         </div>
                                     ))}
@@ -268,7 +257,7 @@ export default function CenterDetailClient({ center }: Props) {
 
                             {/* ──── About ──────────────────────────────── */}
                             <section>
-                                <h2 className="text-2xl font-bold text-gray-900 mb-6">About</h2>
+                                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('about')}</h2>
                                 <div className="prose prose-sm max-w-none text-gray-600">
                                     <p className="leading-relaxed">
                                         Welcome to <strong>{center.name}</strong> — your premier destination for self-care and beauty services.
@@ -278,14 +267,14 @@ export default function CenterDetailClient({ center }: Props) {
                                     </p>
                                     <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         {[
-                                            "Licensed & Certified",
-                                            "Premium Products",
-                                            "Hygienic Environment",
-                                            "Satisfaction Guaranteed",
+                                            "licensed_certified",
+                                            "premium_products",
+                                            "hygienic_environment",
+                                            "satisfaction_guaranteed",
                                         ].map((perk) => (
                                             <div key={perk} className="flex items-center gap-3 text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100">
                                                 <CheckCircle size={18} className="text-green-500 shrink-0" />
-                                                <span className="font-medium">{perk}</span>
+                                                <span className="font-medium">{t(perk)}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -294,7 +283,7 @@ export default function CenterDetailClient({ center }: Props) {
 
                             {/* ──── Team ───────────────────────────────── */}
                             <section>
-                                <h2 className="text-2xl font-bold text-gray-900 mb-6">Team</h2>
+                                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('team')}</h2>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                                     {MOCK_TEAM.map((member) => (
                                         <div key={member.id} className="flex flex-col items-center group cursor-pointer">
@@ -315,11 +304,11 @@ export default function CenterDetailClient({ center }: Props) {
                             {/* ──── Reviews ────────────────────────────── */}
                             <section>
                                 <div className="flex items-center justify-between mb-8">
-                                    <h2 className="text-2xl font-bold text-gray-900">Reviews</h2>
+                                    <h2 className="text-2xl font-bold text-gray-900">{t('reviews')}</h2>
                                     <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
                                         <Star size={18} className="fill-yellow-400 text-yellow-400" />
                                         <span className="text-xl font-black text-gray-900">4.8</span>
-                                        <span className="text-sm text-gray-500 font-medium">(128 reviews)</span>
+                                        <span className="text-sm text-gray-500 font-medium">(128 {t('reviews')})</span>
                                     </div>
                                 </div>
                                 <div className="space-y-6">
@@ -388,7 +377,7 @@ export default function CenterDetailClient({ center }: Props) {
 
                                     {/* CTA */}
                                     <Button className="w-full py-4 text-base font-black uppercase tracking-wider shadow-lg shadow-gray-900/10">
-                                        Book Now
+                                        {t('book_now')}
                                     </Button>
 
                                     {/* Info */}
@@ -396,7 +385,7 @@ export default function CenterDetailClient({ center }: Props) {
                                         <div className="flex items-start gap-3">
                                             <MapPin size={18} className="text-gray-400 mt-1 shrink-0" />
                                             <div>
-                                                <p className="text-sm font-bold text-gray-900">Address</p>
+                                                <p className="text-sm font-bold text-gray-900">{t('address')}</p>
                                                 <p className="text-sm text-gray-500 mt-0.5">{center.domain}</p>
                                             </div>
                                         </div>
@@ -405,10 +394,10 @@ export default function CenterDetailClient({ center }: Props) {
                                             <Clock size={18} className="text-gray-400 mt-1 shrink-0" />
                                             <div>
                                                 <div className="flex items-center gap-2">
-                                                    <p className="text-sm font-bold text-gray-900">Opening Hours</p>
-                                                    <span className="text-[10px] items-center uppercase font-black bg-green-50 text-green-600 px-2 py-0.5 rounded-full border border-green-100">Open Now</span>
+                                                    <p className="text-sm font-bold text-gray-900">{t('opening_hours')}</p>
+                                                    <span className="text-[10px] items-center uppercase font-black bg-green-50 text-green-600 px-2 py-0.5 rounded-full border border-green-100">{t('open_now')}</span>
                                                 </div>
-                                                <p className="text-sm text-gray-500 mt-0.5">Until 9:00 PM</p>
+                                                <p className="text-sm text-gray-500 mt-0.5">{t('until')} 9:00 PM</p>
                                             </div>
                                         </div>
                                     </div>
@@ -420,7 +409,7 @@ export default function CenterDetailClient({ center }: Props) {
                                         <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors" />
                                     </div>
                                     <button className="flex items-center justify-between w-full bg-white px-5 py-4 text-sm font-bold text-gray-900 hover:bg-gray-50 transition-colors">
-                                        Get directions <ChevronRight size={16} />
+                                        {t('get_directions')} <ChevronRight size={16} className="rtl:rotate-180" />
                                     </button>
                                 </div>
                             </div>

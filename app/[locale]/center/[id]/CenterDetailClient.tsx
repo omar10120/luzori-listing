@@ -1,28 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import { motion } from "framer-motion";
-import {
-    Star,
-    MapPin,
-    Share2,
-    Heart,
-    ChevronRight,
-    Scissors,
-    Sparkles,
-    CheckCircle,
-    Users,
-    Search,
-    Clock,
-    Menu,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
 import Container from "@/components/ui/Container";
-import Button from "@/components/ui/Button";
 import type { CenterDetailData } from "@/lib/apiEndpoints";
-import Link from "next/link";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
+
+import Header from '@/features/center-details/sections/Header';
+import HeroBase from '@/features/center-details/sections/HeroBase';
+import Gallery from '@/features/center-details/sections/Gallery';
+import Services from '@/features/center-details/sections/Services';
+import About from '@/features/center-details/sections/About';
+import Team from '@/features/center-details/sections/Team';
+import Reviews from '@/features/center-details/sections/Reviews';
+import Sidebar from '@/features/center-details/sections/Sidebar';
 
 /* ─── Mock Data for sections not in API ─────────────────────────── */
 
@@ -57,7 +46,6 @@ interface Props {
 }
 
 export default function CenterDetailClient({ center }: Props) {
-    const t = useTranslations();
     const [activeServiceTab, setActiveServiceTab] = useState("all");
     const [isFav, setIsFav] = useState(false);
 
@@ -75,347 +63,39 @@ export default function CenterDetailClient({ center }: Props) {
 
     return (
         <div className="min-h-screen bg-white">
-            {/* ─── Sticky Header ────────────────────────────────────── */}
-            <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white shadow-sm">
-                <Container className="flex h-16 items-center justify-between py-2">
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center gap-1">
+            <Header />
 
-                        <Image src="logo.svg" alt="Luzori" width={100} height={100} />
-                    </Link>
-
-                    {/* Compact Search Box */}
-                    <div className="hidden max-w-xl flex-1 items-center gap-0 rounded-full border border-gray-200 bg-white p-1 md:flex mx-8 shadow-sm">
-                        <div className="flex flex-1 items-center gap-2 px-3">
-                            <span className="text-xs font-medium text-gray-500 whitespace-nowrap">{t('all_treatments')}</span>
-                        </div>
-                        <div className="h-4 w-px bg-gray-200" />
-                        <div className="flex flex-1 items-center gap-2 px-3">
-                            <span className="text-xs font-medium text-gray-500 whitespace-nowrap">{t('current_location')}</span>
-                        </div>
-                        <div className="h-4 w-px bg-gray-200" />
-                        <div className="flex flex-1 items-center gap-2 px-3">
-                            <span className="text-xs font-medium text-gray-500 whitespace-nowrap">{t('any_time')}</span>
-                        </div>
-                        <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-white transition-colors hover:bg-gray-800">
-                            <Search size={14} />
-                        </button>
-                    </div>
-
-                    {/* Menu Button */}
-                    <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" className="flex items-center gap-2 rounded-full border-gray-200 px-4 font-semibold text-gray-700">
-                            {t('menu')} <Menu size={16} />
-                        </Button>
-                    </div>
-                </Container>
-            </header>
-
-            {/* ─── Page Content ────────────────────────────────────── */}
             <main>
                 <Container className="py-4">
-                    {/* Breadcrumbs */}
-                    <div className="flex items-center gap-2 text-xs text-gray-500 mb-6">
-                        <Link href="/" className="hover:text-gray-900">{t('home')}</Link>
-                        <ChevronRight size={12} className="rtl:rotate-180" />
-                        <Link href="#" className="hover:text-gray-900">{t('beauty_salons')}</Link>
-                        <ChevronRight size={12} className="rtl:rotate-180" />
-                        <Link href="#" className="hover:text-gray-900">{t('limassol')}</Link>
-                        <ChevronRight size={12} className="rtl:rotate-180" />
-                        <span className="text-gray-900 font-medium">{center.name}</span>
-                    </div>
+                    <HeroBase
+                        center={center}
+                        isFav={isFav}
+                        onToggleFav={() => setIsFav(!isFav)}
+                    />
 
-                    {/* Title Section */}
-                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
-                        <div className="flex-1">
-                            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">{center.name}</h1>
-                            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-                                <div className="flex items-center gap-1">
-                                    <span className="font-bold text-gray-900">5.0</span>
-                                    <div className="flex gap-0.5">
-                                        {[1, 2, 3, 4, 5].map((i) => (
-                                            <Star key={i} size={14} className="fill-yellow-400 text-yellow-400" />
-                                        ))}
-                                    </div>
-                                    <span className="text-blue-600 hover:underline cursor-pointer">(1,496)</span>
-                                </div>
-                                <span className="text-gray-300">•</span>
-                                <div className="flex items-center gap-1">
-                                    <span className="font-semibold text-orange-600">{t('closed')}</span>
-                                    <span>– {t('opens_at')} 10:00 AM</span>
-                                </div>
-                                <span className="text-gray-300">•</span>
-                                <div className="flex items-center gap-1">
-                                    <MapPin size={14} className="text-gray-400" />
-                                    <span>{center.domain}, {center.id % 2 === 0 ? t('limassol') : t('dubai')}</span>
-                                    <button className="text-blue-600 hover:underline font-medium ml-1 rtl:mr-1 rtl:ml-0">{t('get_directions')}</button>
-                                </div>
-                            </div>
-                        </div>
+                    <Gallery
+                        images={displayImages}
+                        centerName={center.name}
+                        fallbackImage={fallbackImage}
+                    />
 
-                        {/* Action Buttons */}
-                        <div className="flex items-center gap-2">
-                            <button className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors">
-                                <Share2 size={18} className="text-gray-700" />
-                            </button>
-                            <button
-                                onClick={() => setIsFav(!isFav)}
-                                className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
-                            >
-                                <Heart size={18} className={cn("text-gray-700", isFav && "fill-red-500 text-red-500 border-red-500")} />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Image Gallery Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 mb-8">
-                        {/* Primary Large Image */}
-                        <div className="md:col-span-2 aspect-[4/3] md:aspect-auto md:h-[500px] overflow-hidden rounded-xl bg-gray-100">
-                            <img
-                                src={displayImages[0]}
-                                alt={center.name}
-                                className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                            />
-                        </div>
-
-                        {/* Secondary Smaller Images */}
-                        <div className="flex flex-col gap-2 md:gap-4 md:h-[500px]">
-                            <div className="flex-1 overflow-hidden rounded-xl bg-gray-100">
-                                <img
-                                    src={displayImages[1] || fallbackImage}
-                                    alt={center.name}
-                                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                                />
-                            </div>
-                            <div className="relative flex-1 overflow-hidden rounded-xl bg-gray-100">
-                                <img
-                                    src={displayImages[2] || fallbackImage}
-                                    alt={center.name}
-                                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-105"
-                                />
-                                {displayImages.length > 3 && (
-                                    <button className="absolute bottom-4 right-4 rtl:right-auto rtl:left-4 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-gray-900 shadow-md transition-all hover:bg-gray-50">
-                                        {t('see_all_images')}
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Content Columns */}
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                        {/* Main content */}
                         <div className="lg:col-span-2 space-y-10">
-                            {/* ──── Services ──────────────────────────── */}
-                            <section>
-                                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('services')}</h2>
+                            <Services
+                                services={filteredServices}
+                                activeTab={activeServiceTab}
+                                onTabChange={setActiveServiceTab}
+                                tabs={SERVICE_TABS}
+                            />
 
-                                {/* Tabs */}
-                                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3 mb-6 border-b border-gray-100">
-                                    {SERVICE_TABS.map((tab) => (
-                                        <button
-                                            key={tab}
-                                            onClick={() => setActiveServiceTab(tab)}
-                                            className={cn(
-                                                "whitespace-nowrap px-4 py-2 text-sm font-semibold transition-all relative",
-                                                activeServiceTab === tab
-                                                    ? "text-gray-900 after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-gray-900"
-                                                    : "text-gray-500 hover:text-gray-700"
-                                            )}
-                                        >
-                                            {t(tab)}
-                                        </button>
-                                    ))}
-                                </div>
+                            <About centerName={center.name} />
 
-                                {/* Service list */}
-                                <div className="divide-y divide-gray-100 bg-white shadow-sm ring-1 ring-gray-100 rounded-2xl overflow-hidden">
-                                    {filteredServices.map((svc) => (
-                                        <div
-                                            key={svc.id}
-                                            className="flex items-center justify-between px-6 py-5 hover:bg-gray-50 transition-colors group"
-                                        >
-                                            <div className="flex items-start gap-4">
-                                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-50 text-gray-500 group-hover:bg-gray-100 transition-colors">
-                                                    {svc.category === "hair" && <Scissors size={18} />}
-                                                    {svc.category === "skin" && <Sparkles size={18} />}
-                                                    {svc.category === "body" && <Users size={18} />}
-                                                    {svc.category === "nails" && <Sparkles size={18} />}
-                                                    {svc.category === "special" && <Star size={18} />}
-                                                </div>
-                                                <div>
-                                                    <p className="text-base font-bold text-gray-900">{svc.name}</p>
-                                                    <p className="text-sm text-gray-500">{svc.duration}</p>
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center gap-4">
-                                                <span className="text-base font-bold text-gray-900">{svc.price}</span>
-                                                <Button size="sm" className="rounded-lg px-6">{t('book')}</Button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
+                            <Team team={MOCK_TEAM} />
 
-                            {/* ──── About ──────────────────────────────── */}
-                            <section>
-                                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('about')}</h2>
-                                <div className="prose prose-sm max-w-none text-gray-600">
-                                    <p className="leading-relaxed">
-                                        Welcome to <strong>{center.name}</strong> — your premier destination for self-care and beauty services.
-                                        We offer a wide range of professional treatments including hair styling, skincare, body treatments,
-                                        nail care, and exclusive bridal packages. Our team of certified professionals is dedicated to
-                                        providing you with an exceptional experience in a luxurious and relaxing environment.
-                                    </p>
-                                    <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                        {[
-                                            "licensed_certified",
-                                            "premium_products",
-                                            "hygienic_environment",
-                                            "satisfaction_guaranteed",
-                                        ].map((perk) => (
-                                            <div key={perk} className="flex items-center gap-3 text-gray-700 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                                                <CheckCircle size={18} className="text-green-500 shrink-0" />
-                                                <span className="font-medium">{t(perk)}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </section>
-
-                            {/* ──── Team ───────────────────────────────── */}
-                            <section>
-                                <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('team')}</h2>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
-                                    {MOCK_TEAM.map((member) => (
-                                        <div key={member.id} className="flex flex-col items-center group cursor-pointer">
-                                            <div className="relative mb-3">
-                                                <img
-                                                    src={member.avatar}
-                                                    alt={member.name}
-                                                    className="h-24 w-24 rounded-full object-cover ring-2 ring-white shadow-md group-hover:ring-gray-900 transition-all duration-300"
-                                                />
-                                            </div>
-                                            <span className="text-base font-bold text-gray-900">{member.name}</span>
-                                            <span className="text-sm text-gray-500">{member.role}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
-
-                            {/* ──── Reviews ────────────────────────────── */}
-                            <section>
-                                <div className="flex items-center justify-between mb-8">
-                                    <h2 className="text-2xl font-bold text-gray-900">{t('reviews')}</h2>
-                                    <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
-                                        <Star size={18} className="fill-yellow-400 text-yellow-400" />
-                                        <span className="text-xl font-black text-gray-900">4.8</span>
-                                        <span className="text-sm text-gray-500 font-medium">(128 {t('reviews')})</span>
-                                    </div>
-                                </div>
-                                <div className="space-y-6">
-                                    {MOCK_REVIEWS.map((rev) => (
-                                        <div
-                                            key={rev.id}
-                                            className="rounded-2xl bg-white p-6 border border-gray-100 shadow-sm"
-                                        >
-                                            <div className="flex items-center justify-between mb-4">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-900 text-sm font-bold text-white shadow-lg">
-                                                        {rev.author.charAt(0)}
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-base font-bold text-gray-900">{rev.author}</p>
-                                                        <p className="text-xs text-gray-400">{rev.date}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex gap-0.5">
-                                                    {Array.from({ length: 5 }).map((_, i) => (
-                                                        <Star
-                                                            key={i}
-                                                            size={14}
-                                                            className={cn(
-                                                                i < rev.rating
-                                                                    ? "fill-yellow-400 text-yellow-400"
-                                                                    : "text-gray-100"
-                                                            )}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            </div>
-                                            <p className="text-gray-600 leading-relaxed font-medium italic">"{rev.text}"</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
+                            <Reviews reviews={MOCK_REVIEWS} />
                         </div>
 
-                        {/* ─── Sidebar ────────────────────────────────── */}
-                        <aside className="space-y-6">
-                            <div className="sticky top-24">
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="rounded-2xl bg-white p-6 border border-gray-100 shadow-xl"
-                                >
-                                    {/* Logo + Name */}
-                                    <div className="flex items-center gap-4 mb-6">
-                                        <div className="h-16 w-16 overflow-hidden rounded-xl border border-gray-100 shadow-sm">
-                                            <img
-                                                src={center.logo || fallbackImage}
-                                                alt={`${center.name} logo`}
-                                                className="h-full w-full object-cover"
-                                            />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-bold text-gray-900 leading-tight">{center.name}</h3>
-                                            <div className="flex items-center gap-1 mt-1">
-                                                <Star size={14} className="fill-yellow-400 text-yellow-400" />
-                                                <span className="text-sm font-bold text-gray-900">4.8</span>
-                                                <span className="text-sm text-gray-500">(128)</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* CTA */}
-                                    <Button className="w-full py-4 text-base font-black uppercase tracking-wider shadow-lg shadow-gray-900/10">
-                                        {t('book_now')}
-                                    </Button>
-
-                                    {/* Info */}
-                                    <div className="mt-8 space-y-4 pt-6 border-t border-gray-50">
-                                        <div className="flex items-start gap-3">
-                                            <MapPin size={18} className="text-gray-400 mt-1 shrink-0" />
-                                            <div>
-                                                <p className="text-sm font-bold text-gray-900">{t('address')}</p>
-                                                <p className="text-sm text-gray-500 mt-0.5">{center.domain}</p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex items-start gap-3">
-                                            <Clock size={18} className="text-gray-400 mt-1 shrink-0" />
-                                            <div>
-                                                <div className="flex items-center gap-2">
-                                                    <p className="text-sm font-bold text-gray-900">{t('opening_hours')}</p>
-                                                    <span className="text-[10px] items-center uppercase font-black bg-green-50 text-green-600 px-2 py-0.5 rounded-full border border-green-100">{t('open_now')}</span>
-                                                </div>
-                                                <p className="text-sm text-gray-500 mt-0.5">{t('until')} 9:00 PM</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </motion.div>
-
-                                {/* Mini Map */}
-                                <div className="mt-6 rounded-2xl overflow-hidden border border-gray-100 shadow-sm relative group">
-                                    <div className="h-48 w-full bg-gray-100 bg-[url('https://maps.googleapis.com/maps/api/staticmap?center=25.0762,54.94755&zoom=14&size=600x300&key=AIzaSy...')] bg-cover">
-                                        <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors" />
-                                    </div>
-                                    <button className="flex items-center justify-between w-full bg-white px-5 py-4 text-sm font-bold text-gray-900 hover:bg-gray-50 transition-colors">
-                                        {t('get_directions')} <ChevronRight size={16} className="rtl:rotate-180" />
-                                    </button>
-                                </div>
-                            </div>
-                        </aside>
+                        <Sidebar center={center} fallbackImage={fallbackImage} />
                     </div>
                 </Container>
             </main>

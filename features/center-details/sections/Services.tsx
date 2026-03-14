@@ -2,6 +2,7 @@ import React from 'react';
 import { Scissors, Sparkles, Users, Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 import Button from '@/components/ui/Button';
 
 import { Service } from '@/lib/apiEndpoints';
@@ -45,25 +46,42 @@ export default function Services({ services, activeTab, onTabChange, tabs }: Ser
                         key={svc.id}
                         className="flex items-center justify-between px-6 py-5 hover:bg-gray-50 transition-colors group"
                     >
-                        <div className="flex items-start gap-4">
-                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-50 text-gray-500 group-hover:bg-gray-100 transition-colors">
-                                {svc.category?.toLowerCase() === "hair" && <Scissors size={18} />}
-                                {svc.category?.toLowerCase() === "skin" && <Sparkles size={18} />}
-                                {svc.category?.toLowerCase() === "body" && <Users size={18} />}
-                                {svc.category?.toLowerCase() === "nails" && <Sparkles size={18} />}
-                                {svc.category?.toLowerCase() === "special" && <Star size={18} />}
-                                {!svc.category && <Sparkles size={18} />}
+
+                        <div className="flex items-start gap-4 flex-1 min-w-0">
+                            {/* Service Image or Category Icon */}
+                            <div className="relative h-16 w-16 overflow-hidden rounded-xl bg-gray-50 border border-gray-100 shrink-0 shadow-sm transition-transform group-hover:scale-105  ">
+                                {svc.image && !svc.image.includes('avatars/1.png') ? (
+
+                                    <Image
+                                        src={svc.image}
+                                        alt={svc.name}
+                                        fill
+                                        className="object-contain"
+                                    />
+                                ) : (
+                                    <div className="flex h-full w-full items-center justify-center text-gray-400">
+                                        {svc.category?.toLowerCase() === "hair" && <Scissors size={24} />}
+                                        {svc.category?.toLowerCase() === "skin" && <Sparkles size={24} />}
+                                        {svc.category?.toLowerCase() === "body" && <Users size={24} />}
+                                        {svc.category?.toLowerCase() === "nails" && <Sparkles size={24} />}
+                                        {svc.category?.toLowerCase() === "special" && <Star size={24} />}
+                                        {!svc.category && <Sparkles size={24} />}
+                                    </div>
+                                )}
                             </div>
-                            <div>
-                                <p className="text-base font-bold text-gray-900">{svc.name}</p>
-                                <p className="text-sm text-gray-500">{svc.description || svc.duration}</p>
+
+                            <div className="flex-1 min-w-0">
+                                <p className="text-base font-bold text-gray-900 truncate">{svc.name}</p>
+                                <p className="text-sm text-gray-500 line-clamp-2 mt-0.5">
+                                    {svc.description || svc.duration || t('premium_service_desc')}
+                                </p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-4">
-                            <span className="text-base font-bold text-gray-900">
-                                {svc.price} {typeof svc.price === 'number' ? 'AED' : ''}
+                        <div className="flex items-center gap-6 ml-4">
+                            <span className="text-lg font-black text-gray-900 whitespace-nowrap">
+                                {svc.price} <span className="text-xs font-bold text-gray-400">AED</span>
                             </span>
-                            <Button size="sm" className="rounded-lg px-6">{t('book')}</Button>
+                            <Button size="sm" className="rounded-xl px-6 font-bold uppercase tracking-tight shadow-md hover:shadow-lg transition-all">{t('book')}</Button>
                         </div>
                     </div>
                 ))}

@@ -33,7 +33,9 @@ export default function HeroBase({ center, isFav, onToggleFav }: HeroBaseProps) 
                     <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">{center.name}</h1>
                     <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                         <div className="flex items-center gap-1">
-                            <span className="font-bold text-gray-900">5.0</span>
+                            <span className="font-bold text-gray-900">
+                                {center.rate === 'recommended' ? '5.0' : '4.8'}
+                            </span>
                             <div className="flex gap-0.5">
                                 {[1, 2, 3, 4, 5].map((i) => (
                                     <Star key={i} size={14} className="fill-yellow-400 text-yellow-400" />
@@ -49,7 +51,11 @@ export default function HeroBase({ center, isFav, onToggleFav }: HeroBaseProps) 
                         <span className="text-gray-300">•</span>
                         <div className="flex items-center gap-1">
                             <MapPin size={14} className="text-gray-400" />
-                            <span>{center.domain}, {center.id % 2 === 0 ? t('limassol') : t('dubai')}</span>
+                            <span>
+                                {center.branches?.[0] 
+                                    ? `${center.branches[0].address}, ${center.branches[0].city}` 
+                                    : center.domain}
+                            </span>
                             <button className="text-blue-600 hover:underline font-medium ml-1 rtl:mr-1 rtl:ml-0">{t('get_directions')}</button>
                         </div>
                     </div>

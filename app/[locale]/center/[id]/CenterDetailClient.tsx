@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Container from "@/components/ui/Container";
-import type { CenterDetailData } from "@/lib/apiEndpoints";
+import type { CenterDetailData, Service, Category } from "@/lib/apiEndpoints";
 
 import Header from '@/features/center-details/sections/Header';
 import HeroBase from '@/features/center-details/sections/HeroBase';
@@ -13,16 +13,7 @@ import Team from '@/features/center-details/sections/Team';
 import Reviews from '@/features/center-details/sections/Reviews';
 import Sidebar from '@/features/center-details/sections/Sidebar';
 
-/* ─── Mock Data for sections not in API ─────────────────────────── */
-
-const MOCK_SERVICES = [
-    { id: 1, name: "Classic Haircut", price: "120 AED", duration: "45 min", category: "hair" },
-    { id: 2, name: "Hair Color & Highlights", price: "350 AED", duration: "120 min", category: "hair" },
-    { id: 3, name: "Deep Cleansing Facial", price: "200 AED", duration: "60 min", category: "skin" },
-    { id: 4, name: "Full Body Massage", price: "280 AED", duration: "90 min", category: "body" },
-    { id: 5, name: "Manicure & Pedicure", price: "150 AED", duration: "60 min", category: "nails" },
-    { id: 6, name: "Bridal Package", price: "1500 AED", duration: "240 min", category: "special" },
-];
+/* ─── Mock Data for sections not in API (if still needed) ────────── */
 
 const MOCK_TEAM = [
     { id: 1, name: "Sarah", role: "Senior Stylist", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face" },
@@ -37,8 +28,6 @@ const MOCK_REVIEWS = [
     { id: 3, author: "Noura A.", rating: 5, text: "Best salon in town! The attention to detail is incredible. Highly recommend the bridal package.", date: "2 weeks ago" },
 ];
 
-const SERVICE_TABS = ["all", "hair", "skin", "body", "nails", "special"];
-
 /* ─── Main Component ─────────────────────────────────────────────── */
 
 interface Props {
@@ -49,10 +38,18 @@ export default function CenterDetailClient({ center }: Props) {
     const [activeServiceTab, setActiveServiceTab] = useState("all");
     const [isFav, setIsFav] = useState(false);
 
+    // Derived Tabs from API
+    const categoryTabs = ["all", ...(center.categories?.map(c => c.name) || [])];
+
+    // Filtered Services from API Categories
+    const allServices: (Service & { category?: string })[] = center.categories?.flatMap(c => 
+        c.services.map(s => ({ ...s, category: c.name }))
+    ) || [];
+
     const filteredServices =
         activeServiceTab === "all"
-            ? MOCK_SERVICES
-            : MOCK_SERVICES.filter((s) => s.category === activeServiceTab.toLowerCase());
+            ? allServices
+            : allServices.filter((s) => s.category === activeServiceTab);
 
     const fallbackImage =
         "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&h=600&fit=crop";
@@ -85,7 +82,7 @@ export default function CenterDetailClient({ center }: Props) {
                                 services={filteredServices}
                                 activeTab={activeServiceTab}
                                 onTabChange={setActiveServiceTab}
-                                tabs={SERVICE_TABS}
+                                tabs={categoryTabs}
                             />
 
                             <About centerName={center.name} />

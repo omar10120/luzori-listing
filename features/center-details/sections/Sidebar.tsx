@@ -34,7 +34,9 @@ export default function Sidebar({ center, fallbackImage }: SidebarProps) {
                             <h3 className="text-lg font-bold text-gray-900 leading-tight">{center.name}</h3>
                             <div className="flex items-center gap-1 mt-1">
                                 <Star size={14} className="fill-yellow-400 text-yellow-400" />
-                                <span className="text-sm font-bold text-gray-900">4.8</span>
+                                <span className="text-sm font-bold text-gray-900">
+                                    {center.rate === 'recommended' ? '5.0' : '4.8'}
+                                </span>
                                 <span className="text-sm text-gray-500">(128)</span>
                             </div>
                         </div>
@@ -51,7 +53,11 @@ export default function Sidebar({ center, fallbackImage }: SidebarProps) {
                             <MapPin size={18} className="text-gray-400 mt-1 shrink-0" />
                             <div>
                                 <p className="text-sm font-bold text-gray-900">{t('address')}</p>
-                                <p className="text-sm text-gray-500 mt-0.5">{center.domain}</p>
+                                <p className="text-sm text-gray-500 mt-0.5">
+                                    {center.branches?.[0] 
+                                        ? `${center.branches[0].address}, ${center.branches[0].city}` 
+                                        : center.domain}
+                                </p>
                             </div>
                         </div>
 

@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #111827;
+  --background: #F5DBBA;
+  --background-end: #D7A783;
+  --foreground: #271125;
 }
 
 @theme inline {
@@ -14,7 +15,7 @@
 
 /* ─── Base ─── */
 body {
-  background: var(--background);
+  background: linear-gradient(to bottom, var(--background), var(--background-end));
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;

@@ -48,7 +48,7 @@ const Footer: React.FC = () => {
     ];
 
     return (
-        <footer className="border-t border-gray-100 bg-white">
+        <footer className="border-t border-gray-100 bg-transparent">
             <Container className="py-12 sm:py-16">
                 {/* Top grid */}
                 <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:grid-cols-5">

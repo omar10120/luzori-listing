@@ -42,7 +42,7 @@ export default function CenterDetailClient({ center }: Props) {
     const categoryTabs = ["all", ...(center.categories?.map(c => c.name) || [])];
 
     // Filtered Services from API Categories
-    const allServices: (Service & { category?: string })[] = center.categories?.flatMap(c => 
+    const allServices: (Service & { category?: string })[] = center.categories?.flatMap(c =>
         c.services.map(s => ({ ...s, category: c.name }))
     ) || [];
 
@@ -76,7 +76,7 @@ export default function CenterDetailClient({ center }: Props) {
                         fallbackImage={fallbackImage}
                     />
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 ">
                         <div className="lg:col-span-2 space-y-10">
                             <Services
                                 services={filteredServices}

@@ -42,9 +42,9 @@ export default function Home() {
         <BusinessSection />
       </SectionWrapper>
 
-      <SectionWrapper>
+      {/* <SectionWrapper>
         <BrowseCitySection />
-      </SectionWrapper>
+      </SectionWrapper> */}
     </>
   );
 }

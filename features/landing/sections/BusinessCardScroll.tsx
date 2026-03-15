@@ -31,13 +31,13 @@ const BusinessCardScroll: React.FC<BusinessCardScrollProps> = ({
         <section className="py-10 sm:py-14">
             <Container>
                 <div className="flex items-end justify-between">
-                    <SectionHeader heading={heading} className="mb-0 sm:mb-0" />
+                    <SectionHeader heading={heading} className="mb-0 sm:mb-0 text-[#F5DBBA] " />
                     <div className="hidden gap-2 sm:flex">
                         <button
                             type="button"
                             onClick={() => scroll("left")}
                             aria-label="Scroll left"
-                            className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-colors hover:bg-gray-50"
+                            className="flex h-9 w-9 items-center justify-center rounded-full border  transition-colors hover:bg-gray-50 bg-[#225D5C] text-[#F5DBBA]"
                         >
                             <ChevronLeft size={18} />
                         </button>
@@ -45,7 +45,7 @@ const BusinessCardScroll: React.FC<BusinessCardScrollProps> = ({
                             type="button"
                             onClick={() => scroll("right")}
                             aria-label="Scroll right"
-                            className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-colors hover:bg-gray-50"
+                            className="flex h-9 w-9 items-center justify-center rounded-full border   transition-colors hover:bg-gray-50 bg-[#225D5C] text-[#F5DBBA]"
                         >
                             <ChevronRight size={18} />
                         </button>

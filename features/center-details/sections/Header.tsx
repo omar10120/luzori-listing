@@ -35,8 +35,8 @@ export default function Header() {
                 </div>
 
                 {/* Menu Button */}
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm" className="flex items-center gap-2 rounded-full border-gray-200 px-4 font-semibold text-gray-700">
+                <div className="flex items-center gap-2 ">
+                    <Button variant="outline" size="sm" className="flex items-center gap-2 rounded-full px-4 font-semibold ">
                         {t('menu')} <Menu size={16} />
                     </Button>
                 </div>

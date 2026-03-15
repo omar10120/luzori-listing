@@ -13,7 +13,7 @@ const AppDownloadSection: React.FC = () => {
     const qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://play.google.com/&color=111827";
 
     return (
-        <section className="bg-white py-16 sm:py-24 overflow-hidden">
+        <section className="bg-transparent py-16 sm:py-24 overflow-hidden">
             <Container>
                 <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
                     {/* Left content */}

@@ -13,7 +13,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
     primary:
-        "bg-gray-900 text-white hover:bg-gray-800 shadow-sm",
+        "bg-[#225D5C] text-[#FFD6A8] hover:bg-[#1a4a49] shadow-sm",
     secondary:
         "bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 shadow-sm",
     outline:
@@ -38,7 +38,7 @@ const Button: React.FC<ButtonProps> = ({
     return (
         <button
             className={cn(
-                "inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer",
+                "inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer hover:bg-[#1a4a49] ",
                 variantStyles[variant],
                 sizeStyles[size],
                 className

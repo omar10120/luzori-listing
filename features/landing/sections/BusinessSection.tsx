@@ -17,9 +17,9 @@ const BusinessSection: React.FC = () => {
     ];
 
     return (
-        <section className="bg-gray-50 py-16 sm:py-24">
+        <section className="bg-[#F5DBBA] py-16 sm:py-24">
             <Container>
-                <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+                <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16 ">
                     {/* Left content */}
                     <motion.div
                         initial={{ opacity: 0, x: -30 }}

@@ -29,9 +29,10 @@ export default function LocaleSwitcher() {
 
     return (
         <Button
-            variant="ghost"
+            variant="primary"
             size="sm"
             onClick={onLocaleChange}
+
             disabled={isPending}
             className="flex items-center gap-2 text-sm font-medium "
         >

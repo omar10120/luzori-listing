@@ -26,8 +26,8 @@ const Navbar: React.FC = () => {
             className={cn(
                 "fixed inset-x-0 top-0 z-50 transition-all duration-300",
                 scrolled
-                    ? "bg-white/80 shadow-sm backdrop-blur-lg"
-                    : "bg-transparent"
+                    ? "bg-gradient-to-r from-[#F5DBBA] to-[#D7A783] shadow-sm backdrop-blur-lg"
+                    : "bg-gradient-to-r from-[#F5DBBA] to-[#D7A783]"
             )}
         >
             <Container className="flex h-16 items-center justify-between">
@@ -48,8 +48,8 @@ const Navbar: React.FC = () => {
                         <span className="text-gray-300">/</span>
                         <Link href="/register" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">{t('register')}</Link>
                     </div>
-                    <Button variant="outline" size="sm">
-                        <Link href="https://dashboard.luzori.com" target="_blank">{t('list_your_business')}</Link>
+                    <Button variant="primary" size="sm" >
+                        <Link href="https://dashboard.luzori.com" target="_blank" >{t('list_your_business')}</Link>
                     </Button>
                     <div
                         className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white"

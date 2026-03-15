@@ -29,7 +29,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
                 className
             )}
         >
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight  sm:text-3xl  text-[#225D5C]">
                 {heading}
             </h2>
             {subtitle && (

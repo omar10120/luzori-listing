@@ -24,12 +24,12 @@ const Card: React.FC<CardProps> = ({ business, className }) => {
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.2 }}
                 className={cn(
-                    "group flex w-64 shrink-0 cursor-pointer flex-col overflow-hidden rounded-2xl ring-gray-100 transition-shadow hover:shadow-md sm:w-72 ",
+                    "group flex w-96 shrink-0 cursor-pointer flex-col overflow-hidden rounded-2xl ring-gray-100 transition-shadow hover:shadow-md sm:w-85 ",
                     className
                 )}
             >
                 {/* Image */}
-                <div className="relative aspect-[4/3] w-full overflow-hidden">
+                <div className="relative aspect-[6/4] w-full overflow-hidden">
                     <img
                         src={image}
                         alt={name}

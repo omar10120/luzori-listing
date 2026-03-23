@@ -3,6 +3,7 @@
 import React from "react";
 import Container from "@/components/ui/Container";
 import { useTranslations } from "next-intl";
+import SectionHeader from "../ui/SectionHeader";
 
 const Footer: React.FC = () => {
     const t = useTranslations();
@@ -48,7 +49,7 @@ const Footer: React.FC = () => {
     ];
 
     return (
-        <footer className="border-t border-gray-100 bg-transparent">
+        <footer className="border-t border-gray-100 bg-transparent ">
             <Container className="py-12 sm:py-16">
                 {/* Top grid */}
                 <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:grid-cols-5">
@@ -59,9 +60,11 @@ const Footer: React.FC = () => {
                             className="text-xl font-bold tracking-tight text-gray-900"
                             aria-label="Luzori home"
                         >
-                            Luzori
+                            <SectionHeader heading={t('Luzori')} />
+
+
                         </a>
-                        <p className="mt-3 max-w-xs text-sm text-gray-500">
+                        <p className="mt-3 max-w-xs text-sm text-gray-900">
                             {t('hero_subtitle')}
                         </p>
                     </div>
@@ -77,7 +80,7 @@ const Footer: React.FC = () => {
                                     <li key={link.label}>
                                         <a
                                             href={link.href}
-                                            className="text-sm text-gray-500 transition-colors hover:text-gray-900"
+                                            className="text-sm text-gray-900 transition-colors hover:text-gray-900"
                                         >
                                             {link.label}
                                         </a>
@@ -89,8 +92,8 @@ const Footer: React.FC = () => {
                 </div>
 
                 {/* Bottom bar */}
-                <div className="mt-12 border-t border-gray-100 pt-6">
-                    <p className="text-center text-xs text-gray-400">
+                <div className="mt-12 border-t border-gray-900 pt-6">
+                    <p className="text-center text-xs text-gray-900">
                         {t('copyright', { year: currentYear })}
                     </p>
                 </div>

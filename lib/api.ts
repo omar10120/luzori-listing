@@ -88,6 +88,123 @@ export const registerCenter = async (formData: FormData): Promise<{ success: boo
     }
 };
 
+export const registerUser = async (formData: FormData): Promise<{ success: boolean; message: string }> => {
+    try {
+        const response = await fetch(`${API_ENDPOINTS.USER_REGISTER}`, {
+            method: "POST",
+            body: formData,
+        });
+
+        const json = await response.json();
+        if (!response.ok) {
+            return {
+                success: false,
+                message: json.message || "Registration failed",
+            };
+        }
+
+        return {
+            success: true,
+            message: json.message || "Registered successfully",
+        };
+    } catch (error) {
+        console.error("User Registration Error:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred during registration",
+        };
+    }
+};
+
+export const loginUser = async (credentials: any): Promise<{ success: boolean; message: string; data?: any }> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.USER_LOGIN, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(credentials),
+        });
+
+        const json = await response.json();
+        if (!response.ok) {
+            return {
+                success: false,
+                message: json.message || "Login failed",
+            };
+        }
+
+        return {
+            success: true,
+            message: json.message || "Logged in successfully",
+            data: json.data,
+        };
+    } catch (error) {
+        console.error("User Login Error:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred during login",
+        };
+    }
+};
+
+export const fetchUserProfile = async (token: string): Promise<any> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.USER_PROFILE, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) return null;
+        const json = await response.json();
+        return json.data;
+    } catch (error) {
+        console.error("Fetch Profile Error:", error);
+        return null;
+    }
+};
+
+export const loginWithProvider = async (provider: string, token: string): Promise<{ success: boolean; message: string; data?: any }> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.USER_SOCIAL_LOGIN, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                provider,
+                token
+            }),
+        });
+
+        const json = await response.json();
+        if (!response.ok) {
+            return {
+                success: false,
+                message: json.message || "Social login failed",
+            };
+        }
+
+        return {
+            success: true,
+            // the user provided example shows token in json.authorisation.token or json.data.token
+            // we will return the whole json payload properly
+            message: json.message || "Logged in successfully",
+            data: json.data || json, // Try standard data wrapper, fallback to root json if Laravel does top-level
+        };
+    } catch (error) {
+        console.error("Social Login Error:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred during social login",
+        };
+    }
+};
+
 export const loginCenter = async (credentials: any): Promise<{ success: boolean; message: string; data?: any }> => {
     try {
         const response = await fetch(API_ENDPOINTS.LOGIN, {

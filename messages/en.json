@@ -57,5 +57,7 @@
     "support": "Support",
     "solutions": "Solutions",
     "legal": "Legal",
-    "copyright": "© {year} Luzori. All rights reserved."
+    "copyright": "© {year} Luzori. All rights reserved.",
+    "logout": "Logout",
+    "Luzori": "Luzori"
 }

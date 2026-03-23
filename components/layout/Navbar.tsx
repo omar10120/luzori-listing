@@ -9,17 +9,34 @@ import { cn } from "@/lib/utils";
 import LocaleSwitcher from "./LocaleSwitcher";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { fetchUserProfile } from "@/lib/api";
 
 const Navbar: React.FC = () => {
     const t = useTranslations();
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [user, setUser] = useState<any>(null);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 10);
         window.addEventListener("scroll", handleScroll, { passive: true });
+
+        const token = localStorage.getItem("authToken");
+        if (token) {
+            fetchUserProfile(token).then(data => {
+                if (data) setUser(data);
+            });
+        }
+
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("authToken");
+        setUser(null);
+        window.location.reload();
+    };
 
     return (
         <header
@@ -41,21 +58,52 @@ const Navbar: React.FC = () => {
                 </Link>
 
                 {/* Desktop right side */}
-                <div className="hidden items-center gap-6 sm:flex ">
+                <div className="hidden items-center gap-6 sm:flex">
                     <LocaleSwitcher />
-                    <div className="flex items-center gap-2">
-                        <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">{t('login')}</Link>
-                        <span className="text-gray-300">/</span>
-                        <Link href="/register" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">{t('register')}</Link>
-                    </div>
-                    <Button variant="primary" size="sm" >
-                        <Link href="https://dashboard.luzori.com" target="_blank" >{t('list_your_business')}</Link>
+                    {!user ? (
+                        <div className="flex items-center gap-2">
+                            <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">{t('login')}</Link>
+                            <span className="text-gray-300">/</span>
+                            <Link href="/register" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">{t('register')}</Link>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm font-semibold text-gray-900">{user.name}</span>
+                        </div>
+                    )}
+                    <Button variant="primary" size="sm">
+                        <Link href="https://dashboard.luzori.com" target="_blank">{t('list_your_business')}</Link>
                     </Button>
-                    <div
-                        className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white"
-                        aria-label="User profile"
-                    >
-                        U
+                    <div className="relative">
+                        {user && (
+                            <button
+                                onClick={() => setIsProfileOpen(!isProfileOpen)}
+                                className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-900 text-xs font-semibold text-white overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#d4af37]"
+                                aria-label="User profile"
+                            >
+                                {user?.image ? (
+                                    <Image src={user.image} alt={user.name} width={36} height={36} className="h-full w-full object-cover" />
+                                ) : (
+                                    (user?.name?.charAt(0) || "U")
+                                )}
+                            </button>
+                        )}
+                        {user && isProfileOpen && (
+                            <>
+                                <div 
+                                    className="fixed inset-0 z-40" 
+                                    onClick={() => setIsProfileOpen(false)} 
+                                />
+                                <div className="absolute right-0 top-full mt-2 w-32 rounded-lg bg-white p-2 shadow-xl ring-1 ring-black/5 transition-all z-50">
+                                    <button
+                                        onClick={handleLogout}
+                                        className="w-full rounded-md px-3 py-2 text-left text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
+                                    >
+                                        {t('logout')}
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
 
@@ -75,37 +123,58 @@ const Navbar: React.FC = () => {
 
             {/* Mobile dropdown */}
             {mobileOpen && (
-                <>
-                    <div className="border-t border-gray-100 bg-white px-4 pb-4 pt-2 sm:hidden">
+                <div className="border-t border-gray-100 bg-white px-4 pb-4 pt-2 sm:hidden transition-all duration-300">
+                    {!user ? (
                         <div className="flex flex-col gap-2">
                             <Link
                                 href="/login"
                                 className="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 bg-white"
+                                onClick={() => setMobileOpen(false)}
                             >
                                 {t('login')}
                             </Link>
                             <Link
                                 href="/register"
                                 className="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 bg-white"
+                                onClick={() => setMobileOpen(false)}
                             >
                                 {t('register')}
                             </Link>
                         </div>
-                    </div>
-                    <div className="border-t border-gray-100 bg-white px-4 pb-4 pt-2 sm:hidden">
+                    ) : (
+                        <div className="flex flex-col gap-4">
+                            <div className="flex items-center gap-3 px-2 py-2 border-b border-gray-50">
+                                <div className="h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center text-white overflow-hidden">
+                                    {user.image ? (
+                                        <Image src={user.image} alt={user.name} width={40} height={40} className="object-cover" />
+                                    ) : user.name?.charAt(0) || "U"}
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-sm font-semibold text-gray-900">{user.name}</span>
+                                    <span className="text-xs text-gray-500">{user.email}</span>
+                                </div>
+                            </div>
+                            <button
+                                onClick={handleLogout}
+                                className="flex h-10 items-center justify-center rounded-lg border border-red-100 bg-red-50 text-sm font-medium text-red-600 hover:bg-red-100"
+                            >
+                                {t('logout') || "Logout"}
+                            </button>
+                        </div>
+                    )}
+                    <div className="mt-4">
                         <Button variant="outline" size="sm" className="w-full">
                             <Link
                                 href="https://dashboard.luzori.com"
                                 className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
                                 target="_blank"
+                                onClick={() => setMobileOpen(false)}
                             >
                                 {t('list_your_business')}
                             </Link>
                         </Button>
                     </div>
-
-                </>
-
+                </div>
             )}
         </header>
     );

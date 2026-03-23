@@ -5,11 +5,12 @@ import { motion } from "framer-motion";
 import { Eye, EyeOff, Camera, Upload, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Container from "@/components/ui/Container";
-import { registerCenter } from "@/lib/api";
+import { registerUser } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { AnimatePresence } from "framer-motion";
 import Button from "@/components/ui/Button";
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 
 const COUNTRIES = [
     { name: "UAE", code: "971", flag: "https://flagcdn.com/ae.svg" },
@@ -30,14 +31,13 @@ const RegisterPage = () => {
     const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
 
     const [formData, setFormData] = useState({
-        name: "",
-        domain: "",
+        first_name: "",
+        last_name: "",
         email: "",
         country_code: "971",
         phone: "",
         password: "",
         password_confirmation: "",
-        currency: "AED",
     });
 
     const selectedCountry = COUNTRIES.find(c => c.code === formData.country_code) || COUNTRIES[0];
@@ -56,14 +56,17 @@ const RegisterPage = () => {
 
         const data = new FormData();
         Object.entries(formData).forEach(([key, value]) => {
-            data.append(key, value);
+            if (key === 'country_code') {
+                data.append(key, `+${value}`);
+            } else {
+                data.append(key, value);
+            }
         });
 
-        if (logo) data.append("logo", logo);
-        if (primaryImage) data.append("primary_image", primaryImage);
+        if (logo) data.append("image", logo);
 
         try {
-            const result = await registerCenter(data);
+            const result = await registerUser(data);
             if (result.success) {
                 setStatusMessage({ type: 'success', text: result.message });
                 // Redirect after success
@@ -85,7 +88,8 @@ const RegisterPage = () => {
                 <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/40 rounded-full blur-[120px] animate-pulse" />
                 <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-900/30 rounded-full blur-[120px]" />
                 {/* Particle effect simulation overlay */}
-                <div className="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]" />
+                {/* <div className="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]" /> */}
+                <div className="absolute inset-0 opacity-30 bg-[url('/background.jpg')] bg-cover bg-center bg-no-repeat" />
             </div>
 
             <Container className="relative z-10 max-w-4xl">
@@ -97,7 +101,8 @@ const RegisterPage = () => {
                 >
                     <div className="text-4xl font-light tracking-[0.2em] text-white flex flex-col items-center leading-none">
 
-                        <Image src="logo.svg" alt="Logo" width={150} height={150} />
+                        <Image src="/logo.svg" alt="Logo" width={150} height={150} />
+
 
                     </div>
                 </motion.div>
@@ -108,49 +113,49 @@ const RegisterPage = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     className="w-full bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[2rem] p-8 md:p-12 shadow-2xl overflow-hidden"
                 >
-                    <h1 className="text-xl font-medium text-white text-center mb-10">Become Business</h1>
+                    <h1 className="text-xl font-medium text-white text-center mb-10">Sign Up</h1>
 
                     <form onSubmit={handleSubmit} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-7">
-                            {/* Name Center */}
+                            {/* First Name */}
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-gray-300 ml-1">Name Center</label>
+                                <label className="text-xs font-medium text-gray-300 ml-1">First Name</label>
                                 <input
                                     type="text"
-                                    placeholder="name of center"
+                                    placeholder="first name"
                                     className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none  text-sm"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    value={formData.first_name}
+                                    onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                                 />
                             </div>
 
-                            {/* Domain Center */}
+                            {/* Last Name */}
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-gray-300 ml-1">Domain Center</label>
+                                <label className="text-xs font-medium text-gray-300 ml-1">Last Name</label>
                                 <input
                                     type="text"
-                                    placeholder="center-name"
+                                    placeholder="last name"
                                     className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none  text-sm"
-                                    value={formData.domain}
-                                    onChange={(e) => setFormData({ ...formData, domain: e.target.value })}
+                                    value={formData.last_name}
+                                    onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
                                 />
                             </div>
 
-                            {/* Email Center */}
+                            {/* Email */}
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-gray-300 ml-1">Email Center</label>
+                                <label className="text-xs font-medium text-gray-300 ml-1">Email</label>
                                 <input
                                     type="email"
-                                    placeholder="[EMAIL_ADDRESS]"
+                                    placeholder="email"
                                     className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none  text-sm"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 />
                             </div>
 
-                            {/* Phone Center */}
+                            {/* Phone Number */}
                             <div className="space-y-2">
-                                <label className="text-xs font-medium text-gray-300 ml-1">Phone Center</label>
+                                <label className="text-xs font-medium text-gray-300 ml-1">Phone Number</label>
                                 <div className="relative">
                                     <div className="absolute left-0 top-0 bottom-0 z-20">
                                         <button
@@ -227,7 +232,7 @@ const RegisterPage = () => {
                             </div>
 
                             {/* Password */}
-                            <div className="space-y-2">
+                            <div className="space-y-2 md:col-span-2">
                                 <label className="text-xs font-medium text-gray-300 ml-1">Password</label>
                                 <div className="relative">
                                     <input
@@ -248,56 +253,22 @@ const RegisterPage = () => {
                                     </button>
                                 </div>
                             </div>
-
-                            {/* Currency */}
-                            <div className="space-y-2">
-                                <label className="text-xs font-medium text-gray-300 ml-1">Currency</label>
-                                <div className="relative">
-                                    <select
-                                        className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 appearance-none focus:ring-2 focus:ring-[#d4af37] transition-all outline-none  text-sm font-medium"
-                                        value={formData.currency}
-                                        onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                                    >
-                                        <option value="AED">AED</option>
-                                        <option value="USD">USD</option>
-                                        <option value="EUR">EUR</option>
-                                    </select>
-                                    <ChevronDown size={18} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none" />
-                                </div>
-                            </div>
                         </div>
 
-                        {/* Image Uploads */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-                            {/* Logo Upload */}
+                        {/* Image Upload */}
+                        <div className="pt-4">
                             <div className="space-y-3">
-                                <span className="text-xs font-medium text-gray-300">Logo Center</span>
-                                <label className="group relative flex flex-col items-center justify-center w-full h-32 bg-white/5 border-2 border-dashed border-white/20 rounded cursor-pointer hover:bg-white/10 hover:border-[#d4af37]/50 transition-all overflow-hidden">
+                                <span className="text-xs font-medium text-gray-300">Profile Picture</span>
+                                <label className="group relative flex flex-col items-center justify-center w-full h-40 bg-white/5 border-2 border-dashed border-white/20 rounded cursor-pointer hover:bg-white/10 hover:border-[#d4af37]/50 transition-all overflow-hidden  ">
                                     {logo ? (
-                                        <Image src={URL.createObjectURL(logo)} className="absolute inset-0 w-full h-full object-contain " alt="Logo preview" width={150} height={200} />
+                                        <Image src={URL.createObjectURL(logo)} className="absolute inset-0 w-full h-full object-contain " width={200} height={200} alt="Profile preview" />
                                     ) : (
                                         <div className="flex flex-col items-center">
-                                            <Camera className="text-gray-400 group-hover:text-[#d4af37] mb-2 transition-colors " />
-                                            <span className="text-xs text-gray-400 uppercase tracking-wider">Select Logo</span>
+                                            <Camera className="text-gray-400 group-hover:text-[#d4af37] mb-2 transition-colors" />
+                                            <span className="text-xs text-gray-400 uppercase tracking-wider">Select Image</span>
                                         </div>
                                     )}
                                     <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e, 'logo')} />
-                                </label>
-                            </div>
-
-                            {/* Primary Image Upload */}
-                            <div className="space-y-3">
-                                <span className="text-xs font-medium text-gray-300">Primary Image</span>
-                                <label className="group relative flex flex-col items-center justify-center w-full h-32 bg-white/5 border-2 border-dashed border-white/20 rounded cursor-pointer hover:bg-white/10 hover:border-[#d4af37]/50 transition-all overflow-hidden  ">
-                                    {primaryImage ? (
-                                        <Image src={URL.createObjectURL(primaryImage)} className="absolute inset-0 w-full h-full object-contain " width={200} height={200} alt="Primary preview" />
-                                    ) : (
-                                        <div className="flex flex-col items-center">
-                                            <Upload className="text-gray-400 group-hover:text-[#d4af37] mb-2 transition-colors" />
-                                            <span className="text-xs text-gray-400 uppercase tracking-wider">Primary Image</span>
-                                        </div>
-                                    )}
-                                    <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e, 'primary')} />
                                 </label>
                             </div>
                         </div>
@@ -335,6 +306,16 @@ const RegisterPage = () => {
                                     </div>
                                 ) : "Register"}
                             </button>
+                        </div>
+
+                        <div className="flex w-full items-center gap-3 py-2 px-8">
+                            <div className="h-px flex-1 bg-white/10"></div>
+                            <span className="text-xs text-gray-400 uppercase tracking-widest">or</span>
+                            <div className="h-px flex-1 bg-white/10"></div>
+                        </div>
+
+                        <div className="flex justify-center px-8">
+                            <GoogleLoginButton text="Sign up with Google" className="bg-white/50 text-white border-white/20 hover:bg-white/20" />
                         </div>
                     </form>
                 </motion.div>

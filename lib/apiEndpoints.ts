@@ -7,6 +7,10 @@ export const API_ENDPOINTS = {
     CENTER_BY_ID: (id: string | number) => `${API_BASE_URL}/center_api/centers/${id}`,
     REGISTER: `${API_BASE_URL}/center_api/auth/register`,
     LOGIN: `${API_BASE_URL}/center_api/auth/login`,
+    USER_REGISTER: `${API_BASE_URL}/app_api/auth/register`,
+    USER_LOGIN: `${API_BASE_URL}/app_api/auth/login`,
+    USER_PROFILE: `${API_BASE_URL}/app_api/auth/profile`,
+    USER_SOCIAL_LOGIN: `${API_BASE_URL}/app_api/auth/social-login`,
 };
 
 export interface Branch {

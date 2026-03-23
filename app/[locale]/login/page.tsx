@@ -5,10 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Container from "@/components/ui/Container";
-import { loginCenter } from "@/lib/api";
+import { loginUser } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 
 const LoginPage = () => {
     const router = useRouter();
@@ -17,7 +18,7 @@ const LoginPage = () => {
     const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
     const [formData, setFormData] = useState({
-        username: "",
+        email: "",
         password: "",
     });
 
@@ -27,19 +28,21 @@ const LoginPage = () => {
         setStatusMessage(null);
 
         try {
-            console.log("Submitting login...");
-            const result = await loginCenter(formData);
+            const result = await loginUser(formData);
 
             if (result.success) {
+                // Store token and user data
+                if (result.data?.token) {
+                    localStorage.setItem("authToken", result.data.token);
+                }
+
                 setStatusMessage({ type: 'success', text: result.message });
-                // Redirect after success (e.g., to dashboard or home)
+                // Redirect after success
                 setTimeout(() => router.push("/"), 2000);
             } else {
-                console.error("Login failed:", result.message);
                 setStatusMessage({ type: 'error', text: result.message });
             }
         } catch (error) {
-            console.error("Submission error:", error);
             setStatusMessage({ type: 'error', text: "Connection error. Please try again." });
         } finally {
             setIsSubmitting(false);
@@ -79,15 +82,15 @@ const LoginPage = () => {
 
                     <form onSubmit={handleSubmit} className="space-y-6">
 
-                        {/* Username / Email */}
+                        {/* Email */}
                         <div className="space-y-2">
-                            <label className="text-xs font-medium text-gray-300 ml-1">Username / Email</label>
+                            <label className="text-xs font-medium text-gray-300 ml-1">Email</label>
                             <input
-                                type="text"
-                                placeholder="name@domain.com"
+                                type="email"
+                                placeholder="[EMAIL_ADDRESS]"
                                 className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none text-sm font-medium"
-                                value={formData.username}
-                                onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 required
                             />
                         </div>
@@ -151,7 +154,15 @@ const LoginPage = () => {
                                 ) : "Login"}
                             </button>
 
-                            <div className="text-sm text-gray-400">
+                            <div className="flex w-full items-center gap-3 py-2">
+                                <div className="h-px flex-1 bg-white/10"></div>
+                                <span className="text-xs text-gray-400 uppercase tracking-widest">or</span>
+                                <div className="h-px flex-1 bg-white/10"></div>
+                            </div>
+
+                            <GoogleLoginButton text="Sign in with Google" className="bg-white/50 border-white/20 hover:bg-white/20" />
+
+                            <div className="text-sm text-gray-400 mt-2">
                                 Don't have an account?{' '}
                                 <Link href="/register" className="text-[#d4af37] hover:underline font-medium transition-colors">
                                     Register here

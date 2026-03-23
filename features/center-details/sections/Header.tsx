@@ -5,9 +5,32 @@ import Container from '@/components/ui/Container';
 import Button from "@/components/ui/Button";
 import { Search, Menu } from "lucide-react";
 import { useTranslations } from 'next-intl';
+import { fetchUserProfile } from '@/lib/api';
 
 export default function Header() {
     const t = useTranslations();
+    const [user, setUser] = React.useState<any>(null);
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+
+    React.useEffect(() => {
+        const token = localStorage.getItem("authToken");
+        if (token) {
+            fetchUserProfile(token).then(data => {
+                if (data) setUser(data);
+                setIsLoading(false);
+            });
+        } else {
+            setIsLoading(false);
+        }
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("authToken");
+        setUser(null);
+        window.location.reload();
+    };
+
     return (
         <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white shadow-sm">
             <Container className="flex h-16 items-center justify-between py-2">
@@ -34,11 +57,51 @@ export default function Header() {
                     </button>
                 </div>
 
-                {/* Menu Button */}
-                <div className="flex items-center gap-2 ">
-                    <Button variant="outline" size="sm" className="flex items-center gap-2 rounded-full px-4 font-semibold ">
-                        {t('menu')} <Menu size={16} />
-                    </Button>
+                {/* User Profile / Menu */}
+                <div className="flex items-center gap-2">
+                    {user ? (
+                        <div className="flex items-center gap-3">
+                            <div className="hidden flex-col items-end sm:flex text-right">
+                                <span className="text-sm font-semibold text-gray-900">{user.name}</span>
+                                <span className="text-xs text-gray-500">{user.email}</span>
+                            </div>
+                            <div className="relative">
+                                <button 
+                                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                                    className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#d4af37] overflow-hidden transition-transform hover:scale-105 active:scale-95 focus:outline-none"
+                                >
+                                    <Image 
+                                        src={user.image || "/assets/img/avatars/1.png"} 
+                                        alt={user.name} 
+                                        width={40} 
+                                        height={40} 
+                                        className="h-full w-full object-cover"
+                                    />
+                                </button>
+                                {/* Dropdown placeholder or Logout bit */}
+                                {isProfileOpen && (
+                                    <>
+                                        <div 
+                                            className="fixed inset-0 z-40" 
+                                            onClick={() => setIsProfileOpen(false)} 
+                                        />
+                                        <div className="absolute right-0 top-full mt-2 w-32 rounded-lg bg-white p-2 shadow-xl ring-1 ring-black/5 transition-all z-50">
+                                            <button 
+                                                onClick={handleLogout}
+                                                className="w-full rounded-md px-3 py-2 text-left text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
+                                            >
+                                                {t('logout') || "Logout"}
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <Button variant="outline" size="sm" className="flex items-center gap-2 rounded-full px-4 font-semibold">
+                            {t('menu')} <Menu size={16} />
+                        </Button>
+                    )}
                 </div>
             </Container>
         </header>

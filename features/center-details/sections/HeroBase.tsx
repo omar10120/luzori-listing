@@ -52,11 +52,11 @@ export default function HeroBase({ center, isFav, onToggleFav }: HeroBaseProps) 
                         <div className="flex items-center gap-1">
                             <MapPin size={14} className="text-gray-400" />
                             <span>
-                                {center.branches?.[0] 
-                                    ? `${center.branches[0].address}, ${center.branches[0].city}` 
+                                {center.branches?.[0]
+                                    ? `${center.branches[0].address}, ${center.branches[0].city}`
                                     : center.domain}
                             </span>
-                            <button className="text-blue-600 hover:underline font-medium ml-1 rtl:mr-1 rtl:ml-0">{t('get_directions')}</button>
+                            {/* <button className="text-blue-600 hover:underline font-medium ml-1 rtl:mr-1 rtl:ml-0">{t('get_directions')}</button> */}
                         </div>
                     </div>
                 </div>

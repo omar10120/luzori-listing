@@ -30,7 +30,7 @@ export default function AccountSidebar({ userName }: AccountSidebarProps) {
     const cleanPath = pathname.replace(/^\/[a-z]{2}/, "") || "/";
 
     return (
-        <aside className="w-full lg:w-56 shrink-0 md:block ">
+        <aside className="w-full lg:w-56 shrink-0 block max-md:hidden">
             {userName && (
                 <p className="mb-4 text-sm font-bold text-gray-900 px-2">{userName}</p>
             )}

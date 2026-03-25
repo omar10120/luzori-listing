@@ -41,7 +41,6 @@ const Navbar: React.FC = () => {
         setUser(null);
         window.location.reload();
     };
-
     return (
         <header
             className={cn(
@@ -67,8 +66,8 @@ const Navbar: React.FC = () => {
                     {!user ? (
                         <div className="flex items-center gap-2">
                             <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">{t('login')}</Link>
-                            <span className="text-gray-300">/</span>
-                            <Link href="/register" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">{t('register')}</Link>
+                            {/* <span className="text-gray-300">/</span>
+                            <Link href="/register" className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">{t('register')}</Link> */}
                         </div>
                     ) : (
                         <div className="flex items-center gap-2">
@@ -202,13 +201,13 @@ const Navbar: React.FC = () => {
                             >
                                 {t('login')}
                             </Link>
-                            <Link
+                            {/* <Link
                                 href="/register"
                                 className="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 bg-white"
                                 onClick={() => setMobileOpen(false)}
                             >
                                 {t('register')}
-                            </Link>
+                            </Link> */}
                         </div>
                     ) : (
                         <div className="flex flex-col gap-4">

@@ -43,6 +43,7 @@ export default function Header() {
                 <Link href="/" className="flex items-center gap-1">
                     <Image src="/logo.svg" alt="Luzori" width={100} height={100} />
                 </Link>
+                sdds
 
                 {/* Compact Search Box */}
                 <div className="hidden max-w-xl flex-1 items-center gap-0 rounded-full border border-gray-200 bg-white p-1 md:flex mx-8 shadow-sm">
@@ -173,6 +174,7 @@ export default function Header() {
                         </Button>
                     )}
                 </div>
+
             </Container>
         </header>
     );

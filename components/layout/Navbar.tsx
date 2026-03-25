@@ -58,7 +58,7 @@ const Navbar: React.FC = () => {
                     className="text-xl font-bold tracking-tight text-gray-900"
                     aria-label="Luzori home"
                 >
-                    <Image src="logo.svg" alt="Luzori" width={100} height={100} />
+                    <Image src="/logo.svg" alt="Luzori" width={70} height={70} />
                 </Link>
 
                 {/* Desktop right side */}

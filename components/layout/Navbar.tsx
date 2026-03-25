@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import {
+    Menu, X, User, Calendar, Wallet, Heart, ClipboardList,
+    ShoppingBag, Settings, LogOut, Download, HelpCircle,
+    Globe, Building2, ChevronRight
+} from "lucide-react";
 import Link from "next/link";
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
@@ -90,17 +94,82 @@ const Navbar: React.FC = () => {
                         )}
                         {user && isProfileOpen && (
                             <>
-                                <div 
-                                    className="fixed inset-0 z-40" 
-                                    onClick={() => setIsProfileOpen(false)} 
+                                <div
+                                    className="fixed inset-0 z-40"
+                                    onClick={() => setIsProfileOpen(false)}
                                 />
-                                <div className="absolute right-0 top-full mt-2 w-32 rounded-lg bg-white p-2 shadow-xl ring-1 ring-black/5 transition-all z-50">
-                                    <button
-                                        onClick={handleLogout}
-                                        className="w-full rounded-md px-3 py-2 text-left text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
-                                    >
-                                        {t('logout')}
-                                    </button>
+                                <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl bg-white p-2 shadow-2xl ring-1 ring-black/5 transition-all z-50 overflow-hidden">
+                                    <div className="px-4 py-3 border-b border-gray-50 mb-1">
+                                        <p className="text-sm font-semibold text-gray-900">{user.name}</p>
+                                    </div>
+
+                                    <div className="space-y-0.5">
+                                        <Link href="/profile" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
+                                            <User size={18} className="text-gray-500" />
+                                            <span>{t('profile') || "Profile"}</span>
+                                        </Link>
+                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <Calendar size={18} className="text-gray-500" />
+                                            <span>{t('activity') || "Activity"}</span>
+                                        </button>
+                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <Wallet size={18} className="text-gray-500" />
+                                            <span>{t('wallet') || "Wallet"}</span>
+                                        </button>
+                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <Heart size={18} className="text-gray-500" />
+                                            <span>{t('favorites') || "Favorites"}</span>
+                                        </button>
+                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <ClipboardList size={18} className="text-gray-500" />
+                                            <span>{t('forms') || "Forms"}</span>
+                                        </button>
+                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <ShoppingBag size={18} className="text-gray-500" />
+                                            <span>{t('product_orders') || "Product orders"}</span>
+                                        </button>
+                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <Settings size={18} className="text-gray-500" />
+                                            <span>{t('settings') || "Settings"}</span>
+                                        </button>
+
+                                        <div className="py-1">
+                                            <button
+                                                onClick={handleLogout}
+                                                className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                                            >
+                                                <LogOut size={18} className="text-gray-500" />
+                                                <span>{t('logout') || "Log out"}</span>
+                                            </button>
+                                        </div>
+
+                                        <div className="h-px bg-gray-100 my-1 mx-2" />
+
+                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <Download size={18} className="text-gray-500" />
+                                            <span>{t('download_app') || "Download the app"}</span>
+                                        </button>
+                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <HelpCircle size={18} className="text-gray-500" />
+                                            <span>{t('help_support') || "Help and support"}</span>
+                                        </button>
+                                        <div className="px-3 py-2">
+                                            <div className="flex items-center gap-3 text-sm text-gray-700">
+                                                <Globe size={18} className="text-gray-500" />
+                                                <LocaleSwitcher />
+                                            </div>
+                                        </div>
+
+                                        {/* <div className="h-px bg-gray-100 my-1 mx-2" /> */}
+
+                                        {/* <Link href="https://dashboard.luzori.com" target="_blank" className="flex items-center justify-between gap-3 px-3 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <div className="flex items-center gap-3">
+                                                <Building2 size={18} className="text-gray-500" />
+                                                <span>{t('for_businesses') || "For businesses"}</span>
+                                            </div>
+                                            <ChevronRight size={16} className="text-gray-400" />
+                                        </Link> */}
+                                    </div>
                                 </div>
                             </>
                         )}

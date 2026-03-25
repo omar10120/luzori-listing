@@ -59,5 +59,15 @@
     "legal": "قانوني",
     "copyright": "© {year} لوزوري. جميع الحقوق محفوظة.",
     "logout": "تسجيل الخروج",
-    "Luzori": "Luzori"
+    "Luzori": "Luzori",
+    "profile": "الملف الشخصي",
+    "activity": "النشاط",
+    "wallet": "المحفظة",
+    "favorites": "المفضلة",
+    "forms": "النماذج",
+    "product_orders": "طلبات المنتجات",
+    "settings": "الإعدادات",
+    "download_app": "تنزيل التطبيق",
+    "help_support": "المساعدة والدعم",
+    "for_businesses": "للأعمال"
 }

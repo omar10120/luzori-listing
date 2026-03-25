@@ -3,9 +3,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Container from '@/components/ui/Container';
 import Button from "@/components/ui/Button";
-import { Search, Menu } from "lucide-react";
+import {
+    Search, Menu, User, Calendar, Wallet, Heart, ClipboardList,
+    ShoppingBag, Settings, LogOut, Download, HelpCircle,
+    Globe, Building2, ChevronRight
+} from "lucide-react";
 import { useTranslations } from 'next-intl';
 import { fetchUserProfile } from '@/lib/api';
+import LocaleSwitcher from '@/components/layout/LocaleSwitcher';
 
 export default function Header() {
     const t = useTranslations();
@@ -66,32 +71,97 @@ export default function Header() {
                                 <span className="text-xs text-gray-500">{user.email}</span>
                             </div>
                             <div className="relative">
-                                <button 
+                                <button
                                     onClick={() => setIsProfileOpen(!isProfileOpen)}
                                     className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#d4af37] overflow-hidden transition-transform hover:scale-105 active:scale-95 focus:outline-none"
                                 >
-                                    <Image 
-                                        src={user.image || "/assets/img/avatars/1.png"} 
-                                        alt={user.name} 
-                                        width={40} 
-                                        height={40} 
+                                    <Image
+                                        src={user.image || "/assets/img/avatars/1.png"}
+                                        alt={user.name}
+                                        width={40}
+                                        height={40}
                                         className="h-full w-full object-cover"
                                     />
                                 </button>
                                 {/* Dropdown placeholder or Logout bit */}
                                 {isProfileOpen && (
                                     <>
-                                        <div 
-                                            className="fixed inset-0 z-40" 
-                                            onClick={() => setIsProfileOpen(false)} 
+                                        <div
+                                            className="fixed inset-0 z-40"
+                                            onClick={() => setIsProfileOpen(false)}
                                         />
-                                        <div className="absolute right-0 top-full mt-2 w-32 rounded-lg bg-white p-2 shadow-xl ring-1 ring-black/5 transition-all z-50">
-                                            <button 
-                                                onClick={handleLogout}
-                                                className="w-full rounded-md px-3 py-2 text-left text-xs font-medium text-red-600 hover:bg-red-50 transition-colors"
-                                            >
-                                                {t('logout') || "Logout"}
-                                            </button>
+                                        <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl bg-white p-2 shadow-2xl ring-1 ring-black/5 transition-all z-50 overflow-hidden">
+                                            <div className="px-4 py-3 border-b border-gray-50 mb-1 text-left">
+                                                <p className="text-sm font-semibold text-gray-900">{user.name}</p>
+                                            </div>
+
+                                            <div className="space-y-0.5">
+                                                <Link href="/profile" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
+                                                    <User size={18} className="text-gray-500" />
+                                                    <span>{t('profile') || "Profile"}</span>
+                                                </Link>
+                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                    <Calendar size={18} className="text-gray-500" />
+                                                    <span>{t('activity') || "Activity"}</span>
+                                                </button>
+                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                    <Wallet size={18} className="text-gray-500" />
+                                                    <span>{t('wallet') || "Wallet"}</span>
+                                                </button>
+                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                    <Heart size={18} className="text-gray-500" />
+                                                    <span>{t('favorites') || "Favorites"}</span>
+                                                </button>
+                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                    <ClipboardList size={18} className="text-gray-500" />
+                                                    <span>{t('forms') || "Forms"}</span>
+                                                </button>
+                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                    <ShoppingBag size={18} className="text-gray-500" />
+                                                    <span>{t('product_orders') || "Product orders"}</span>
+                                                </button>
+                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                    <Settings size={18} className="text-gray-500" />
+                                                    <span>{t('settings') || "Settings"}</span>
+                                                </button>
+
+                                                <div className="py-1">
+                                                    <button
+                                                        onClick={handleLogout}
+                                                        className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left"
+                                                    >
+                                                        <LogOut size={18} className="text-gray-500" />
+                                                        <span>{t('logout') || "Log out"}</span>
+                                                    </button>
+                                                </div>
+
+                                                <div className="h-px bg-gray-100 my-1 mx-2" />
+
+                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                    <Download size={18} className="text-gray-500" />
+                                                    <span>{t('download_app') || "Download the app"}</span>
+                                                </button>
+                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                    <HelpCircle size={18} className="text-gray-500" />
+                                                    <span>{t('help_support') || "Help and support"}</span>
+                                                </button>
+                                                <div className="px-3 py-2 text-left">
+                                                    <div className="flex items-center gap-3 text-sm text-gray-700">
+                                                        <Globe size={18} className="text-gray-500" />
+                                                        <LocaleSwitcher />
+                                                    </div>
+                                                </div>
+
+                                                <div className="h-px bg-gray-100 my-1 mx-2" />
+
+                                                {/* <Link href="https://dashboard.luzori.com" target="_blank" className="flex items-center justify-between gap-3 px-3 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
+                                                    <div className="flex items-center gap-3">
+                                                        <Building2 size={18} className="text-gray-500" />
+                                                        <span>{t('for_businesses') || "For businesses"}</span>
+                                                    </div>
+                                                    <ChevronRight size={16} className="text-gray-400" />
+                                                </Link> */}
+                                            </div>
                                         </div>
                                     </>
                                 )}

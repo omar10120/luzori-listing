@@ -59,5 +59,15 @@
     "legal": "Legal",
     "copyright": "© {year} Luzori. All rights reserved.",
     "logout": "Logout",
-    "Luzori": "Luzori"
+    "Luzori": "Luzori",
+    "profile": "Profile",
+    "activity": "Activity",
+    "wallet": "Wallet",
+    "favorites": "Favorites",
+    "forms": "Forms",
+    "product_orders": "Product orders",
+    "settings": "Settings",
+    "download_app": "Download the app",
+    "help_support": "Help and support",
+    "for_businesses": "For businesses"
 }

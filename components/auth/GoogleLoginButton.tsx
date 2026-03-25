@@ -24,22 +24,24 @@ export default function GoogleLoginButton({ className, text }: GoogleLoginButton
         try {
             setLoading(true);
             setErrorMsg(null);
-            
+
             // 1. Show the Google Sign-In popup using Firebase
             const result = await signInWithPopup(auth, googleProvider);
-            
+
             // 2. Extract the ID Token from the signed-in user
             const idToken = await result.user.getIdToken(true);
-            
+            console.log(idToken);
+
             // 3. Send the token to the Laravel API
             const apiResult = await loginWithProvider('google', idToken);
 
             if (apiResult.success) {
                 // Determine token location from potential response formats
                 const sanctumToken = apiResult.data?.token || apiResult.data?.authorisation?.token;
-                
+
                 if (sanctumToken) {
                     localStorage.setItem('authToken', sanctumToken);
+                    console.log(sanctumToken);
                     // Redirect after success
                     setTimeout(() => router.push("/"), 500);
                 } else {
@@ -48,11 +50,13 @@ export default function GoogleLoginButton({ className, text }: GoogleLoginButton
                 }
             } else {
                 console.error("Laravel API Error:", apiResult.message);
+                console.log(apiResult);
                 setErrorMsg(apiResult.message || "Failed to authenticate with server");
             }
-            
+
         } catch (error: any) {
             console.error("Firebase Login Error:", error);
+            console.log(error);
             setErrorMsg(error.message || "Failed to sign in with Google");
         } finally {
             setLoading(false);
@@ -61,10 +65,10 @@ export default function GoogleLoginButton({ className, text }: GoogleLoginButton
 
     return (
         <div className="w-full flex-col">
-            <button 
+            <button
                 type="button"
-                onClick={handleGoogleLogin} 
-                disabled={loading} 
+                onClick={handleGoogleLogin}
+                disabled={loading}
                 className={cn(
                     "flex w-full items-center justify-center gap-3 rounded-full border border-gray-300 bg-white py-2 px-4 shadow-sm transition-all hover:bg-gray-50 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed",
                     className

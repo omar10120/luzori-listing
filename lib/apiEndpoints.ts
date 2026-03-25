@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
     USER_LOGIN: `${API_BASE_URL}/app_api/auth/login`,
     USER_PROFILE: `${API_BASE_URL}/app_api/auth/profile`,
     USER_SOCIAL_LOGIN: `${API_BASE_URL}/app_api/auth/social-login`,
+    USER_UPDATE_PROFILE: `${API_BASE_URL}/app_api/auth/update-profile`,
 };
 
 export interface Branch {

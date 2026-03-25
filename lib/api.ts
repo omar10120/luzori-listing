@@ -167,6 +167,40 @@ export const fetchUserProfile = async (token: string): Promise<any> => {
     }
 };
 
+export const updateUserProfile = async (token: string, formData: FormData): Promise<{ success: boolean; message: string; data?: any }> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.USER_UPDATE_PROFILE, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json",
+            },
+            body: formData,
+        });
+
+        const json = await response.json();
+        if (!response.ok) {
+            return {
+                success: false,
+                message: json.message || "Update failed",
+                data: json.errors || json,
+            };
+        }
+
+        return {
+            success: true,
+            message: json.message || "Profile updated successfully",
+            data: json.data,
+        };
+    } catch (error) {
+        console.error("Update Profile Error:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred during profile update",
+        };
+    }
+};
+
 export const loginWithProvider = async (provider: string, token: string): Promise<{ success: boolean; message: string; data?: any }> => {
     try {
         const response = await fetch(API_ENDPOINTS.USER_SOCIAL_LOGIN, {

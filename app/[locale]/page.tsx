@@ -26,9 +26,7 @@ export default function Home() {
         <TrendingSection />
       </SectionWrapper>
 
-      <SectionWrapper>
-        <AppDownloadSection />
-      </SectionWrapper>
+      <AppDownloadSection />
 
       <SectionWrapper>
         <ReviewsSection />
@@ -38,9 +36,8 @@ export default function Home() {
         <StatsSection />
       </SectionWrapper>
 
-      <SectionWrapper>
-        <BusinessSection />
-      </SectionWrapper>
+
+      <BusinessSection />
 
       <SectionWrapper>
         <BrowseCitySection />

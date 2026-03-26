@@ -13,17 +13,20 @@ const AppDownloadSection: React.FC = () => {
     const qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://play.google.com/&color=111827";
 
     return (
-        <section className="bg-transparent py-16 sm:py-24 overflow-hidden">
+        <motion.section 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{
+                duration: 0.7,
+                ease: [0.21, 0.47, 0.32, 0.98]
+            }}
+            className="w-full bg-white/60 py-16 sm:py-24 overflow-hidden"
+        >
             <Container>
                 <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
                     {/* Left content */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -30 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, margin: "-80px" }}
-                        transition={{ duration: 0.6 }}
-                        className="flex flex-col items-start"
-                    >
+                    <div className="flex flex-col items-start px-4 lg:px-0">
                         {/* Store Logos / Available on */}
                         <div className="mb-6 flex items-center gap-2">
                             <span className="text-sm font-semibold text-gray-900">Available on</span>
@@ -50,10 +53,10 @@ const AppDownloadSection: React.FC = () => {
                                 className="w-20 h-20 object-contain rounded-lg transition-transform duration-300 group-hover:scale-105"
                             />
                         </div>
-                    </motion.div>
+                    </div>
 
                     {/* Right — Dual Phone Mockups */}
-                    <div className="relative flex justify-center lg:justify-end h-[500px] sm:h-[600px]">
+                    <div className="relative flex justify-center lg:justify-end h-[500px] sm:h-[600px] overflow-visible">
                         {/* Main Phone (Left) */}
                         <motion.div
                             initial={{ opacity: 0, y: 50 }}
@@ -107,7 +110,7 @@ const AppDownloadSection: React.FC = () => {
                     </div>
                 </div>
             </Container>
-        </section>
+        </motion.section>
     );
 };
 

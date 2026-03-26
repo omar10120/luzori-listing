@@ -15,8 +15,8 @@ const HeroSection: React.FC = () => {
     return (
         <section className="bg-transparent py-16 sm:py-24 overflow-hidden">
             {/* Soft gradient blobs */}
-            <div className="pointer-events-none absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-purple-200/30 blur-3xl" />
-            <div className="pointer-events-none absolute -right-40 top-20 h-[400px] w-[400px] rounded-full bg-pink-200/30 blur-3xl" />
+            <div className="pointer-events-none absolute -left-40 -top-40 h-[500px] rounded-full bg-purple-200/30 blur-3xl" />
+            <div className="pointer-events-none absolute -right-40 top-20 h-[400px] rounded-full bg-pink-200/30 blur-3xl" />
 
             <Container className="relative z-10 text-center">
                 {/* Heading */}

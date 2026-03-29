@@ -8,6 +8,7 @@ import Badge from "./Badge";
 import { cn } from "@/lib/utils";
 import type { Business } from "@/lib/types";
 import Link from "next/link";
+import { generateCenterSlug } from "@/lib/slugify";
 
 interface CardProps {
     business: Business;
@@ -18,8 +19,10 @@ const Card: React.FC<CardProps> = ({ business, className }) => {
     const { id, name, location, category, rating, reviewCount, image, isNew, isTrending } =
         business;
 
+    const slug = generateCenterSlug(name, id);
+
     return (
-        <Link href={`/center/${id}`} className="contents">
+        <Link href={`/center/${slug}`} className="contents">
             <motion.article
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.2 }}

@@ -295,3 +295,38 @@ export const fetchCenterById = async (id: string | number): Promise<CenterDetail
         return null;
     }
 };
+
+export const storeBooking = async (token: string, bookingData: any): Promise<{ success: boolean; message: string; data?: any }> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.STORE_BOOKING, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json",
+            },
+            body: JSON.stringify(bookingData),
+        });
+
+        const json = await response.json();
+        if (!response.ok) {
+            return {
+                success: false,
+                message: json.message || "Booking failed",
+                data: json.errors || json,
+            };
+        }
+
+        return {
+            success: true,
+            message: json.message || "Booking created successfully",
+            data: json.data,
+        };
+    } catch (error) {
+        console.error("Store Booking Error:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred during booking",
+        };
+    }
+};

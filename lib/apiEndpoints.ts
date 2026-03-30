@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
     USER_PROFILE: `${API_BASE_URL}/app_api/auth/profile`,
     USER_SOCIAL_LOGIN: `${API_BASE_URL}/app_api/auth/social-login`,
     USER_UPDATE_PROFILE: `${API_BASE_URL}/app_api/auth/update-profile`,
+    STORE_BOOKING: `${API_BASE_URL}/app_api/booking/store`,
 };
 
 export interface Branch {
@@ -21,6 +22,13 @@ export interface Branch {
     address: string;
     longitude: string;
     latitude: string;
+}
+
+export interface Worker {
+    id: number;
+    name: string;
+    image: string;
+    has_commission: number;
 }
 
 export interface Service {
@@ -34,6 +42,7 @@ export interface Service {
     is_top: boolean;
     image: string;
     duration?: string; // For UI compatibility if needed
+    workers?: Worker[];
 }
 
 export interface Category {

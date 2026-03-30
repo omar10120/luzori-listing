@@ -8,9 +8,10 @@ import type { CenterDetailData } from '@/lib/apiEndpoints';
 interface SidebarProps {
     center: CenterDetailData;
     fallbackImage: string;
+    onBookNow: () => void;
 }
 
-export default function Sidebar({ center, fallbackImage }: SidebarProps) {
+export default function Sidebar({ center, fallbackImage, onBookNow }: SidebarProps) {
     const t = useTranslations();
 
     return (
@@ -43,7 +44,7 @@ export default function Sidebar({ center, fallbackImage }: SidebarProps) {
                     </div>
 
                     {/* CTA */}
-                    <Button className="w-full py-4 text-base font-black uppercase tracking-wider shadow-lg shadow-gray-900/10">
+                    <Button onClick={onBookNow} className="w-full py-4 text-base font-black uppercase tracking-wider shadow-lg shadow-gray-900/10">
                         {t('book_now')}
                     </Button>
 

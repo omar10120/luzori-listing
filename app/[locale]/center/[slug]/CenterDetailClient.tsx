@@ -12,6 +12,7 @@ import About from '@/features/center-details/sections/About';
 import Team from '@/features/center-details/sections/Team';
 import Reviews from '@/features/center-details/sections/Reviews';
 import Sidebar from '@/features/center-details/sections/Sidebar';
+import BookingWizard from '@/features/center-details/booking/BookingWizard';
 
 /* ─── Mock Data for sections not in API (if still needed) ────────── */
 
@@ -37,6 +38,7 @@ interface Props {
 export default function CenterDetailClient({ center }: Props) {
     const [activeServiceTab, setActiveServiceTab] = useState("all");
     const [isFav, setIsFav] = useState(false);
+    const [isBookingMode, setIsBookingMode] = useState(false);
 
     // Derived Tabs from API
     const categoryTabs = ["all", ...(center.categories?.map(c => c.name) || [])];
@@ -59,42 +61,47 @@ export default function CenterDetailClient({ center }: Props) {
         : [fallbackImage];
 
     return (
-        <div className="min-h-screen bg-white">
+        <div className="min-h-screen bg-white flex flex-col">
             <Header />
 
-            <main>
-                <Container className="py-4">
-                    <HeroBase
-                        center={center}
-                        isFav={isFav}
-                        onToggleFav={() => setIsFav(!isFav)}
-                    />
+            <main className="flex-1 flex flex-col">
+                {isBookingMode ? (
+                    <BookingWizard center={center} onCancel={() => setIsBookingMode(false)} />
+                ) : (
+                    <Container className="py-4">
+                        <HeroBase
+                            center={center}
+                            isFav={isFav}
+                            onToggleFav={() => setIsFav(!isFav)}
+                        />
 
-                    <Gallery
-                        images={displayImages}
-                        centerName={center.name}
-                        fallbackImage={fallbackImage}
-                    />
+                        <Gallery
+                            images={displayImages}
+                            centerName={center.name}
+                            fallbackImage={fallbackImage}
+                        />
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 ">
-                        <div className="lg:col-span-2 space-y-10">
-                            <Services
-                                services={filteredServices}
-                                activeTab={activeServiceTab}
-                                onTabChange={setActiveServiceTab}
-                                tabs={categoryTabs}
-                            />
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 ">
+                            <div className="lg:col-span-2 space-y-10">
+                                <Services
+                                    services={filteredServices}
+                                    activeTab={activeServiceTab}
+                                    onTabChange={setActiveServiceTab}
+                                    tabs={categoryTabs}
+                                    onBookNow={() => setIsBookingMode(true)}
+                                />
 
-                            <About centerName={center.name} />
+                                <About centerName={center.name} />
 
-                            <Team team={MOCK_TEAM} />
+                                <Team team={MOCK_TEAM} />
 
-                            <Reviews reviews={MOCK_REVIEWS} />
+                                <Reviews reviews={MOCK_REVIEWS} />
+                            </div>
+
+                            <Sidebar center={center} fallbackImage={fallbackImage} onBookNow={() => setIsBookingMode(true)} />
                         </div>
-
-                        <Sidebar center={center} fallbackImage={fallbackImage} />
-                    </div>
-                </Container>
+                    </Container>
+                )}
             </main>
         </div>
     );

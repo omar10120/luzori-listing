@@ -40,10 +40,10 @@ const Footer: React.FC = () => {
         {
             title: t('legal'),
             links: [
-                { label: "Privacy", href: "#" },
-                { label: "Terms", href: "#" },
-                { label: "Cookie policy", href: "#" },
-                { label: "Accessibility", href: "#" },
+                { label: "Privacy", href: "/privacy" },
+                { label: "Terms", href: "/terms" },
+                { label: "Cookie policy", href: "/cookie" },
+                { label: "Accessibility", href: "/accessibility" },
             ],
         },
     ];

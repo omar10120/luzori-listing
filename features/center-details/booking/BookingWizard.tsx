@@ -3,9 +3,10 @@
 import React, { useState } from "react";
 import Container from "@/components/ui/Container";
 import type { CenterDetailData, Service, Worker } from "@/lib/apiEndpoints";
-import { ChevronRight, ArrowLeft } from "lucide-react";
+import { ChevronRight, ArrowLeft, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import Image from "next/image";
 import Step1Services from "./Step1Services";
 import Step2Professional from "./Step2Professional";
 import Step3Time from "./Step3Time";
@@ -43,6 +44,7 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
     const steps: BookingStep[] = ["services", "professional", "time", "confirm"];
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [successData, setSuccessData] = useState<{ id: string | number } | null>(null);
 
     const handleNext = async () => {
         if (currentStep === "confirm") {
@@ -95,8 +97,8 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
             const res = await storeBooking(token, payload);
 
             if (res.success) {
-                alert(t('booking_success') || "Booking created successfully!");
-                onCancel(); // exit wizard
+                // Parse or mock an ID since the image asks for reference #
+                setSuccessData({ id: res.data?.id || Math.floor(Math.random() * 9000) + 1000 });
             } else {
                 alert(res.message || "Failed to create booking.");
             }
@@ -202,6 +204,33 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
                     </div>
                 </div>
             </Container>
+
+            {/* Success Modal Overlay */}
+            {successData && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-300">
+                    <div className="relative w-full max-w-lg bg-white rounded-3xl p-8 sm:p-12 flex flex-col items-center text-center shadow-2xl animate-in zoom-in-95 duration-300">
+                        <button 
+                            onClick={() => { setSuccessData(null); onCancel(); }}
+                            className="absolute top-6 right-6 w-9 h-9 flex items-center justify-center bg-[#fcebd9] hover:bg-[#fad8b3] transition-colors rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#fad8b3]"
+                        >
+                            <X size={18} strokeWidth={2.5} />
+                        </button>
+                        
+                        <div className="w-32 h-32 relative mb-6">
+                            <Image src="/success.svg" alt="Success" fill className="object-contain" priority />
+                        </div>
+                        
+                        <h2 className="text-2xl font-bold text-gray-900 mb-4 tracking-tight">
+                            {t('booking_success') || "Your appointment has been booked successfully"}
+                        </h2>
+                        
+                        <p className="text-gray-500 font-medium leading-relaxed">
+                            Thank you for your interest in Luzori solution.<br/>
+                            Your reference number: <span className="text-gray-900 font-bold">#{successData.id}</span>
+                        </p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

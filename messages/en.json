@@ -71,5 +71,8 @@
     "help_support": "Help and support",
     "for_businesses": "For businesses",
     "booking_success": "Booking Success",
-    "login_required": "login is required"
+    "login_required": "login is required",
+    "booking_success_title": "Your appointment has been booked successfully",
+    "booking_success_msg": "Thank you for your interest in Luzori solution.",
+    "reference_number": "Your reference number:"
 }

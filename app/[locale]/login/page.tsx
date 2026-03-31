@@ -38,7 +38,7 @@ const LoginPage = () => {
 
                 setStatusMessage({ type: 'success', text: result.message });
                 // Redirect after success
-                setTimeout(() => router.push("/"), 2000);
+                setTimeout(() => { window.location.href = "/" }, 2000);
             } else {
                 setStatusMessage({ type: 'error', text: result.message });
             }

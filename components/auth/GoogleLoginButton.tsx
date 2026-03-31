@@ -43,7 +43,7 @@ export default function GoogleLoginButton({ className, text }: GoogleLoginButton
                     localStorage.setItem('authToken', sanctumToken);
                     console.log(sanctumToken);
                     // Redirect after success
-                    setTimeout(() => router.push("/"), 500);
+                    setTimeout(() => { window.location.href = "/" }, 500);
                 } else {
                     console.error("Token missing in response:", apiResult.data);
                     setErrorMsg("Received invalid response from server");

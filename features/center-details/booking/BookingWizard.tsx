@@ -29,10 +29,10 @@ export interface SelectedService extends Service {
 
 export default function BookingWizard({ center, onCancel }: BookingWizardProps) {
     const t = useTranslations();
-    
+
     // -- Wizard State --
     const [currentStep, setCurrentStep] = useState<BookingStep>("services");
-    
+
     // -- Booking Data State --
     const [selectedServices, setSelectedServices] = useState<SelectedService[]>([]);
     const [professionalType, setProfessionalType] = useState<"any" | "per_service">("any");
@@ -91,9 +91,9 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
         try {
             // we need to dynamically import storeBooking so we don't cause client module errors if not already imported
             const { storeBooking } = await import("@/lib/api");
-            
+
             const res = await storeBooking(token, payload);
-            
+
             if (res.success) {
                 alert(t('booking_success') || "Booking created successfully!");
                 onCancel(); // exit wizard
@@ -111,7 +111,7 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
     // Helper to render breadcrumbs
     const renderBreadcrumbs = () => {
         const getLabel = (step: BookingStep) => {
-            switch(step) {
+            switch (step) {
                 case "services": return t('services') || "Services";
                 case "professional": return t('professional') || "Professional";
                 case "time": return t('time') || "Time";
@@ -151,21 +151,21 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
         <div className="min-h-screen bg-[#fafafa] pt-24 pb-32">
             <Container>
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 relative items-start">
-                    
+
                     {/* Main Content Area (Left) */}
                     <div className="flex-1 w-full min-w-0">
                         {renderBreadcrumbs()}
 
                         {currentStep === "services" && (
-                            <Step1Services 
-                                center={center} 
+                            <Step1Services
+                                center={center}
                                 selectedServices={selectedServices}
                                 setSelectedServices={setSelectedServices}
                             />
                         )}
 
                         {currentStep === "professional" && (
-                            <Step2Professional 
+                            <Step2Professional
                                 selectedServices={selectedServices}
                                 setSelectedServices={setSelectedServices}
                                 type={professionalType}
@@ -174,14 +174,14 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
                         )}
 
                         {currentStep === "time" && (
-                            <Step3Time 
+                            <Step3Time
                                 selectedServices={selectedServices}
                                 setSelectedServices={setSelectedServices}
                             />
                         )}
 
                         {currentStep === "confirm" && (
-                            <Step4Confirm 
+                            <Step4Confirm
                                 center={center}
                                 selectedServices={selectedServices}
                                 professionalType={professionalType}
@@ -191,7 +191,7 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
 
                     {/* Cart / Summary Area (Right Sticky) */}
                     <div className="w-full lg:w-[400px] shrink-0 lg:sticky lg:top-28">
-                        <BookingCart 
+                        <BookingCart
                             center={center}
                             currentStep={currentStep}
                             selectedServices={selectedServices}

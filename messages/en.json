@@ -69,5 +69,7 @@
     "settings": "Settings",
     "download_app": "Download the app",
     "help_support": "Help and support",
-    "for_businesses": "For businesses"
+    "for_businesses": "For businesses",
+    "booking_success": "Booking Success",
+    "login_required": "login is required"
 }

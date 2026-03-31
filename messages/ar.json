@@ -69,5 +69,7 @@
     "settings": "الإعدادات",
     "download_app": "تنزيل التطبيق",
     "help_support": "المساعدة والدعم",
-    "for_businesses": "للأعمال"
+    "for_businesses": "للأعمال",
+    "booking_success": "تم الحجز بنجاح ",
+    "login_required": "مطلوب تسجيل الدخول"
 }

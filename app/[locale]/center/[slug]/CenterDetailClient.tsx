@@ -13,6 +13,7 @@ import Team from '@/features/center-details/sections/Team';
 import Reviews from '@/features/center-details/sections/Reviews';
 import Sidebar from '@/features/center-details/sections/Sidebar';
 import BookingWizard from '@/features/center-details/booking/BookingWizard';
+import { useAuth } from '@/hooks/useAuth';
 
 /* ─── Mock Data for sections not in API (if still needed) ────────── */
 
@@ -39,6 +40,15 @@ export default function CenterDetailClient({ center }: Props) {
     const [activeServiceTab, setActiveServiceTab] = useState("all");
     const [isFav, setIsFav] = useState(false);
     const [isBookingMode, setIsBookingMode] = useState(false);
+    const { isAuthenticated } = useAuth();
+
+    const handleBookNow = () => {
+        if (!isAuthenticated) {
+            window.location.href = "/login"; // or router.push('/login') but window.location.href ensures a fresh login page
+            return;
+        }
+        setIsBookingMode(true);
+    };
 
     // Derived Tabs from API
     const categoryTabs = ["all", ...(center.categories?.map(c => c.name) || [])];
@@ -88,7 +98,7 @@ export default function CenterDetailClient({ center }: Props) {
                                     activeTab={activeServiceTab}
                                     onTabChange={setActiveServiceTab}
                                     tabs={categoryTabs}
-                                    onBookNow={() => setIsBookingMode(true)}
+                                    onBookNow={handleBookNow}
                                 />
 
                                 <About centerName={center.name} />
@@ -98,7 +108,7 @@ export default function CenterDetailClient({ center }: Props) {
                                 <Reviews reviews={MOCK_REVIEWS} />
                             </div>
 
-                            <Sidebar center={center} fallbackImage={fallbackImage} onBookNow={() => setIsBookingMode(true)} />
+                            <Sidebar center={center} fallbackImage={fallbackImage} onBookNow={handleBookNow} />
                         </div>
                     </Container>
                 )}

@@ -12,6 +12,7 @@ import Step2Professional from "./Step2Professional";
 import Step3Time from "./Step3Time";
 import Step4Confirm from "./Step4Confirm";
 import BookingCart from "./BookingCart";
+import SuccessModal from "@/components/ui/SuccessModal";
 
 interface BookingWizardProps {
     center: CenterDetailData;
@@ -37,6 +38,9 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
     // -- Booking Data State --
     const [selectedServices, setSelectedServices] = useState<SelectedService[]>([]);
     const [professionalType, setProfessionalType] = useState<"any" | "per_service">("any");
+    const [selectedBranchId, setSelectedBranchId] = useState<number | null>(
+        center.branches && center.branches.length > 0 ? center.branches[0].id : null
+    );
 
     // We can also have global date/time if we change to "per booking" time, 
     // but the API dictates time per service. We'll track it in the selectedServices objects.
@@ -79,7 +83,7 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
         // Build Payload
         const payload = {
             center_id: center.id,
-            branch_id: center.branches?.[0]?.id || 1, // Fallback if no branches
+            branch_id: selectedBranchId || (center.branches?.[0]?.id) || 1, // Use selectedBranchId
             services: selectedServices.map(svc => ({
                 id: svc.id,
                 worker_id: svc.selectedWorkerId || (svc.workers?.[0]?.id) || 1, // Send first worker ID or fallback
@@ -172,6 +176,9 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
                                 setSelectedServices={setSelectedServices}
                                 type={professionalType}
                                 setType={setProfessionalType}
+                                branches={center.branches || []}
+                                selectedBranchId={selectedBranchId}
+                                setSelectedBranchId={setSelectedBranchId}
                             />
                         )}
 
@@ -209,23 +216,23 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
             {successData && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-in fade-in duration-300">
                     <div className="relative w-full max-w-lg bg-white rounded-3xl p-8 sm:p-12 flex flex-col items-center text-center shadow-2xl animate-in zoom-in-95 duration-300">
-                        <button 
+                        <button
                             onClick={() => { setSuccessData(null); onCancel(); }}
                             className="absolute top-6 right-6 w-9 h-9 flex items-center justify-center bg-[#fcebd9] hover:bg-[#fad8b3] transition-colors rounded-full text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#fad8b3]"
                         >
                             <X size={18} strokeWidth={2.5} />
                         </button>
-                        
+
                         <div className="w-32 h-32 relative mb-6">
                             <Image src="/success.svg" alt="Success" fill className="object-contain" priority />
                         </div>
-                        
+
                         <h2 className="text-2xl font-bold text-gray-900 mb-4 tracking-tight">
                             {t('booking_success') || "Your appointment has been booked successfully"}
                         </h2>
-                        
+
                         <p className="text-gray-500 font-medium leading-relaxed">
-                            Thank you for your interest in Luzori solution.<br/>
+                            Thank you for your interest in Luzori solution.<br />
                             Your reference number: <span className="text-gray-900 font-bold">#{successData.id}</span>
                         </p>
                     </div>

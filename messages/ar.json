@@ -71,5 +71,10 @@
     "help_support": "المساعدة والدعم",
     "for_businesses": "للأعمال",
     "booking_success": "تم الحجز بنجاح ",
-    "login_required": "مطلوب تسجيل الدخول"
+    "login_required": "مطلوب تسجيل الدخول",
+    "professional": "المختص",
+    "time": "الوقت",
+    "booking_success_title": "تم حجز موعدك بنجاح",
+    "booking_success_msg": "شكرًا لاهتمامك بـ لوزوري.",
+    "reference_number": "رقم المرجع الخاص بك:"
 }

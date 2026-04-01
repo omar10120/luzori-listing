@@ -70,9 +70,11 @@
     "download_app": "Download the app",
     "help_support": "Help and support",
     "for_businesses": "For businesses",
-    "booking_success": "Booking Success",
+    "booking_success": "Booking Successfully",
     "login_required": "login is required",
     "booking_success_title": "Your appointment has been booked successfully",
     "booking_success_msg": "Thank you for your interest in Luzori solution.",
-    "reference_number": "Your reference number:"
+    "reference_number": "Your reference number:",
+    "professional": "professional",
+    "time": "Time"
 }

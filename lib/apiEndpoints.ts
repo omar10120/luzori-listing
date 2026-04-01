@@ -29,6 +29,7 @@ export interface Worker {
     name: string;
     image: string;
     has_commission: number;
+    branch_id: number;
 }
 
 export interface Service {

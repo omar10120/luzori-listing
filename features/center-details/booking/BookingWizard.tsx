@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Container from "@/components/ui/Container";
 import type { CenterDetailData, Service, Worker } from "@/lib/apiEndpoints";
 import { ChevronRight, ArrowLeft, X } from "lucide-react";
@@ -41,6 +41,27 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
     const [selectedBranchId, setSelectedBranchId] = useState<number | null>(
         center.branches && center.branches.length > 0 ? center.branches[0].id : null
     );
+    const [paymentType, setPaymentType] = useState<string>("service_cash");
+    const [userWallet, setUserWallet] = useState<number>(0);
+
+    const fetchWalletBalance = async () => {
+        const token = localStorage.getItem("authToken");
+        if (token) {
+            try {
+                const { fetchUserProfile } = await import("@/lib/api");
+                const profile = await fetchUserProfile(token);
+                if (profile && profile.wallet !== undefined) {
+                    setUserWallet(profile.wallet);
+                }
+            } catch (err) {
+                console.error("Failed to fetch wallet:", err);
+            }
+        }
+    };
+
+    useEffect(() => {
+        fetchWalletBalance();
+    }, []);
 
     // We can also have global date/time if we change to "per booking" time, 
     // but the API dictates time per service. We'll track it in the selectedServices objects.
@@ -91,12 +112,26 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
                 from_time: svc.fromTime,
                 to_time: svc.toTime
             })),
-            payment_type: "service_cash"
+            payment_type: paymentType
         };
 
         try {
             // we need to dynamically import storeBooking so we don't cause client module errors if not already imported
-            const { storeBooking } = await import("@/lib/api");
+            const { storeBooking, fetchUserProfile } = await import("@/lib/api");
+
+            // Re-fetch wallet balance to be sure
+            if (paymentType === "wallet") {
+                const profile = await fetchUserProfile(token);
+                const currentWallet = profile?.wallet || 0;
+                setUserWallet(currentWallet);
+
+                const totalPrice = selectedServices.reduce((sum, s) => sum + Number(s.price), 0);
+                if (currentWallet < totalPrice) {
+                    alert(t('insufficient_balance') || "Insufficient wallet balance");
+                    setIsSubmitting(false);
+                    return;
+                }
+            }
 
             const res = await storeBooking(token, payload);
 
@@ -194,6 +229,9 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
                                 center={center}
                                 selectedServices={selectedServices}
                                 professionalType={professionalType}
+                                paymentType={paymentType}
+                                setPaymentType={setPaymentType}
+                                userWallet={userWallet}
                             />
                         )}
                     </div>

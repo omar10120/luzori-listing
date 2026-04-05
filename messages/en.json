@@ -76,5 +76,10 @@
     "booking_success_msg": "Thank you for your interest in Luzori solution.",
     "reference_number": "Your reference number:",
     "professional": "professional",
-    "time": "Time"
+    "time": "Time",
+    "payment_method": "Payment Method",
+    "cash": "Service Cash",
+    "credit_card": "Credit Card",
+    "current_balance": "Current balance",
+    "insufficient_balance": "Insufficient balance"
 }

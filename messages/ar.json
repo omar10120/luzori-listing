@@ -76,5 +76,10 @@
     "time": "الوقت",
     "booking_success_title": "تم حجز موعدك بنجاح",
     "booking_success_msg": "شكرًا لاهتمامك بـ لوزوري.",
-    "reference_number": "رقم المرجع الخاص بك:"
+    "reference_number": "رقم المرجع الخاص بك:",
+    "payment_method": "طريقة الدفع",
+    "cash": "خدمة نقدية",
+    "credit_card": "بطاقة ائتمان",
+    "current_balance": "الرصيد الحالي",
+    "insufficient_balance": "الرصيد غير كافٍ"
 }

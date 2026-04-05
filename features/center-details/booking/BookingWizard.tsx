@@ -12,7 +12,7 @@ import Step2Professional from "./Step2Professional";
 import Step3Time from "./Step3Time";
 import Step4Confirm from "./Step4Confirm";
 import BookingCart from "./BookingCart";
-import SuccessModal from "@/components/ui/SuccessModal";
+
 
 interface BookingWizardProps {
     center: CenterDetailData;

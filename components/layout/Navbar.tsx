@@ -107,30 +107,30 @@ const Navbar: React.FC = () => {
                                             <User size={18} className="text-gray-500" />
                                             <span>{t('profile') || "Profile"}</span>
                                         </Link>
-                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                        <Link href="/activity" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
                                             <Calendar size={18} className="text-gray-500" />
                                             <span>{t('activity') || "Activity"}</span>
-                                        </button>
-                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                        </Link>
+                                        <Link href="/wallet" className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                                             <Wallet size={18} className="text-gray-500" />
                                             <span>{t('wallet') || "Wallet"}</span>
-                                        </button>
-                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                        </Link>
+                                        <Link href="/favorites" className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                                             <Heart size={18} className="text-gray-500" />
                                             <span>{t('favorites') || "Favorites"}</span>
-                                        </button>
-                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                        </Link>
+                                        <Link href="/forms" className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                                             <ClipboardList size={18} className="text-gray-500" />
                                             <span>{t('forms') || "Forms"}</span>
-                                        </button>
-                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                        </Link>
+                                        <Link href="/product_orders" className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                                             <ShoppingBag size={18} className="text-gray-500" />
                                             <span>{t('product_orders') || "Product orders"}</span>
-                                        </button>
-                                        <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                        </Link>
+                                        <Link href="/product_orders" className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                                             <Settings size={18} className="text-gray-500" />
                                             <span>{t('settings') || "Settings"}</span>
-                                        </button>
+                                        </Link>
 
                                         <div className="py-1">
                                             <button

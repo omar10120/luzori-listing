@@ -101,30 +101,30 @@ export default function Header() {
                                                     <User size={18} className="text-gray-500" />
                                                     <span>{t('profile') || "Profile"}</span>
                                                 </Link>
-                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                <Link href="/activity" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
                                                     <Calendar size={18} className="text-gray-500" />
                                                     <span>{t('activity') || "Activity"}</span>
-                                                </button>
-                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                </Link>
+                                                <Link href="/wallet" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
                                                     <Wallet size={18} className="text-gray-500" />
                                                     <span>{t('wallet') || "Wallet"}</span>
-                                                </button>
-                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                </Link>
+                                                <Link href="/favorites" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
                                                     <Heart size={18} className="text-gray-500" />
                                                     <span>{t('favorites') || "Favorites"}</span>
-                                                </button>
-                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                </Link>
+                                                <Link href="/forms" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
                                                     <ClipboardList size={18} className="text-gray-500" />
                                                     <span>{t('forms') || "Forms"}</span>
-                                                </button>
-                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                </Link>
+                                                <Link href="/product-orders" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
                                                     <ShoppingBag size={18} className="text-gray-500" />
                                                     <span>{t('product_orders') || "Product orders"}</span>
-                                                </button>
-                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
+                                                </Link>
+                                                <Link href="/settings" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
                                                     <Settings size={18} className="text-gray-500" />
                                                     <span>{t('settings') || "Settings"}</span>
-                                                </button>
+                                                </Link>
 
                                                 <div className="py-1">
                                                     <button

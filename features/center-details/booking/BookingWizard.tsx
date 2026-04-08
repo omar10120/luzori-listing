@@ -137,7 +137,8 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
 
             if (res.success) {
                 // Parse or mock an ID since the image asks for reference #
-                setSuccessData({ id: res.data?.id || Math.floor(Math.random() * 9000) + 1000 });
+                console.log(res.data);
+                setSuccessData({ id: res.data.sale?.id || Math.floor(Math.random() * 9000) + 1000 });
             } else {
                 alert(res.message || "Failed to create booking.");
             }

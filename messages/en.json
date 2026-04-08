@@ -34,7 +34,7 @@
     "book": "Book",
     "list_your_business": "List your business",
     "hero_heading": "Book local selfcare services",
-    "hero_subtitle": "Discover top-rated beauty, salon, massage, wellness, and barber services near you — book in seconds.",
+    "hero_subtitle": "Luzori is an all-in-one salon and spa management system that streamlines bookings, client organization, staff scheduling, and enhances your business growth efficiently and securely. Note: Luzori is one of the projects of Techno Code IT LLC.",
     "hero_stats_text": "141,863 appointments booked today",
     "hero_app_cta": "Get the app",
     "treatment_placeholder": "Treatment or venue",
@@ -81,5 +81,8 @@
     "cash": "Service Cash",
     "credit_card": "Credit Card",
     "current_balance": "Current balance",
-    "insufficient_balance": "Insufficient balance"
+    "insufficient_balance": "Insufficient balance",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_use": "Terms of Use",
+    "terms_of_service": "Terms of Service"
 }

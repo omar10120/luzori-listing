@@ -8,12 +8,20 @@ import SectionHeader from "../ui/SectionHeader";
 const Footer: React.FC = () => {
     const t = useTranslations();
     const currentYear = new Date().getFullYear();
+    const [info, setInfo] = React.useState<import("@/lib/apiEndpoints").InfoData | null>(null);
+
+    React.useEffect(() => {
+        const { fetchInfo } = require("@/lib/api");
+        fetchInfo().then((data: any) => {
+            if (data) setInfo(data);
+        });
+    }, []);
 
     const FOOTER_SECTIONS = [
         {
             title: t('about_luzori'),
             links: [
-                { label: t('about'), href: "#" },
+                { label: t('about'), href: "/legal?tab=about_us" },
                 { label: "Careers", href: "#" },
                 { label: "Partners", href: "#" },
                 { label: "Press", href: "#" },
@@ -24,8 +32,8 @@ const Footer: React.FC = () => {
             links: [
                 { label: "Help center", href: "#" },
                 { label: "Contact us", href: "#" },
-                { label: "Privacy policy", href: "#" },
-                { label: "Terms of use", href: "#" },
+                { label: t('privacy_policy'), href: "/legal?tab=privacy_policy" },
+                { label: t('terms_of_use'), href: "/legal?tab=terms_of_use" },
             ],
         },
         {
@@ -40,13 +48,15 @@ const Footer: React.FC = () => {
         {
             title: t('legal'),
             links: [
-                { label: "Privacy", href: "/privacy" },
-                { label: "Terms", href: "/terms" },
-                { label: "Cookie policy", href: "/cookie" },
-                { label: "Accessibility", href: "/accessibility" },
+                { label: t('privacy_policy'), href: "/legal?tab=privacy_policy" },
+                { label: t('terms_of_use'), href: "/legal?tab=terms_of_use" },
+                { label: t('terms_of_service'), href: "/legal?tab=terms_of_service" },
+                { label: "Cookie policy", href: "#" },
             ],
         },
     ];
+
+    const locale = (typeof window !== 'undefined' && document.documentElement.lang === 'ar') ? 'ar' : 'en';
 
     return (
         <footer className="border-t border-gray-100  ">
@@ -65,7 +75,7 @@ const Footer: React.FC = () => {
 
                         </a>
                         <p className="mt-3 max-w-xs text-sm text-gray-900">
-                            {t('hero_subtitle')}
+                            {info ? info.about_us[locale as 'ar' | 'en'] : t('hero_subtitle')}
                         </p>
                     </div>
 

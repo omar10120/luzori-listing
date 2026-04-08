@@ -13,6 +13,7 @@ export const API_ENDPOINTS = {
     USER_SOCIAL_LOGIN: `${API_BASE_URL}/app_api/auth/social-login`,
     USER_UPDATE_PROFILE: `${API_BASE_URL}/app_api/auth/update-profile`,
     STORE_BOOKING: `${API_BASE_URL}/app_api/booking/store`,
+    INFO: `${API_BASE_URL}/app_api/info`,
 };
 
 export interface Branch {
@@ -76,4 +77,21 @@ export interface CenterDetailResponse {
 export interface CenterResponse {
     message: string;
     data: CenterDetailData[];
+}
+
+export interface InfoContent {
+    ar: string;
+    en: string;
+}
+
+export interface InfoData {
+    privacy_policy: InfoContent;
+    terms_of_use: InfoContent;
+    terms_of_service: InfoContent;
+    about_us: InfoContent;
+}
+
+export interface InfoResponse {
+    status: boolean;
+    data: InfoData;
 }

@@ -330,3 +330,23 @@ export const storeBooking = async (token: string, bookingData: any): Promise<{ s
         };
     }
 };
+
+export const fetchInfo = async (): Promise<import("./apiEndpoints").InfoData | null> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.INFO, {
+            method: "GET",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+            },
+            next: { revalidate: 3600 } // Cache for 1 hour
+        });
+
+        if (!response.ok) return null;
+        const json: import("./apiEndpoints").InfoResponse = await response.json();
+        return json.data;
+    } catch (error) {
+        console.error("Fetch Info Error:", error);
+        return null;
+    }
+};

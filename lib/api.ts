@@ -339,7 +339,7 @@ export const fetchInfo = async (): Promise<import("./apiEndpoints").InfoData | n
                 "Accept": "application/json",
                 "Content-Type": "application/json",
             },
-            next: { revalidate: 3600 } // Cache for 1 hour
+            cache: 'no-store'
         });
 
         if (!response.ok) return null;

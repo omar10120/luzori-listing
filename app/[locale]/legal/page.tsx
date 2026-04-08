@@ -104,7 +104,7 @@ export default function LegalPage() {
                             className="prose prose-gray max-w-none"
                         >
                             <div 
-                                className="text-lg leading-relaxed text-gray-700 whitespace-pre-wrap"
+                                className="text-lg leading-relaxed text-gray-700"
                                 dangerouslySetInnerHTML={{ __html: content }}
                             />
                         </motion.div>

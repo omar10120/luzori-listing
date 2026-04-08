@@ -74,9 +74,12 @@ const Footer: React.FC = () => {
 
 
                         </a>
-                        <p className="mt-3 max-w-xs text-sm text-gray-900">
-                            {info ? info.about_us[locale as 'ar' | 'en'] : t('hero_subtitle')}
-                        </p>
+                        <div 
+                            className="mt-3 max-w-xs text-sm text-gray-900"
+                            dangerouslySetInnerHTML={{ 
+                                __html: info ? info.about_us[locale as 'ar' | 'en'] : t('hero_subtitle') 
+                            }}
+                        />
                     </div>
 
                     {/* Link columns */}

@@ -17,6 +17,7 @@ import BookingCart from "./BookingCart";
 interface BookingWizardProps {
     center: CenterDetailData;
     onCancel: () => void;
+    initialSelectedServices?: SelectedService[];
 }
 
 export type BookingStep = "services" | "professional" | "time" | "confirm";
@@ -29,14 +30,15 @@ export interface SelectedService extends Service {
     toTime?: string;
 }
 
-export default function BookingWizard({ center, onCancel }: BookingWizardProps) {
+export default function BookingWizard({ center, onCancel, initialSelectedServices = [] }: BookingWizardProps) {
     const t = useTranslations();
 
     // -- Wizard State --
+    // Always start on step 1 — pre-selected service will appear checked
     const [currentStep, setCurrentStep] = useState<BookingStep>("services");
 
     // -- Booking Data State --
-    const [selectedServices, setSelectedServices] = useState<SelectedService[]>([]);
+    const [selectedServices, setSelectedServices] = useState<SelectedService[]>(initialSelectedServices);
     const [professionalType, setProfessionalType] = useState<"any" | "per_service">("any");
     const [selectedBranchId, setSelectedBranchId] = useState<number | null>(
         center.branches && center.branches.length > 0 ? center.branches[0].id : null
@@ -136,9 +138,8 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
             const res = await storeBooking(token, payload);
 
             if (res.success) {
-                // Parse or mock an ID since the image asks for reference #
-                console.log(res.data);
-                setSuccessData({ id: res.data.sale?.id || Math.floor(Math.random() * 9000) + 1000 });
+                // Extract the sale ID as the booking reference number
+                setSuccessData({ id: res.data?.sale?.id ?? res.data?.id ?? "—" });
             } else {
                 alert(res.message || "Failed to create booking.");
             }
@@ -271,8 +272,8 @@ export default function BookingWizard({ center, onCancel }: BookingWizardProps) 
                         </h2>
 
                         <p className="text-gray-500 font-medium leading-relaxed">
-                            Thank you for your interest in Luzori solution.<br />
-                            Your reference number: <span className="text-gray-900 font-bold">#{successData.id}</span>
+                            {t('booking_success_msg')}<br />
+                            {t('reference_number')} <span className="text-gray-900 font-bold">{successData.id}</span>
                         </p>
                     </div>
                 </div>

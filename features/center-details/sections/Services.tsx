@@ -12,7 +12,7 @@ interface ServicesProps {
     activeTab: string;
     onTabChange: (tab: string) => void;
     tabs: string[];
-    onBookNow: () => void;
+    onBookNow: (service?: Service & { category?: string }) => void;
 }
 
 export default function Services({ services, activeTab, onTabChange, tabs, onBookNow }: ServicesProps) {
@@ -82,7 +82,7 @@ export default function Services({ services, activeTab, onTabChange, tabs, onBoo
                             <span className="text-lg font-black text-gray-900 whitespace-nowrap">
                                 {svc.price} <span className="text-xs font-bold text-gray-400">AED</span>
                             </span>
-                            <Button size="sm" onClick={onBookNow} className="rounded-xl px-6 font-bold uppercase tracking-tight shadow-md hover:shadow-lg transition-all">{t('book')}</Button>
+                            <Button size="sm" onClick={() => onBookNow(svc)} className="rounded-xl px-6 font-bold uppercase tracking-tight shadow-md hover:shadow-lg transition-all">{t('book')}</Button>
                         </div>
                     </div>
                 ))}

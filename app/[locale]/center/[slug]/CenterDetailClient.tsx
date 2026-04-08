@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Container from "@/components/ui/Container";
 import type { CenterDetailData, Service, Category } from "@/lib/apiEndpoints";
+import type { SelectedService } from '@/features/center-details/booking/BookingWizard';
 
 import Header from '@/features/center-details/sections/Header';
 import HeroBase from '@/features/center-details/sections/HeroBase';
@@ -40,12 +41,18 @@ export default function CenterDetailClient({ center }: Props) {
     const [activeServiceTab, setActiveServiceTab] = useState("all");
     const [isFav, setIsFav] = useState(false);
     const [isBookingMode, setIsBookingMode] = useState(false);
+    const [preSelectedServices, setPreSelectedServices] = useState<SelectedService[]>([]);
     const { isAuthenticated } = useAuth();
 
-    const handleBookNow = () => {
+    const handleBookNow = (service?: Service & { category?: string }) => {
         if (!isAuthenticated) {
-            window.location.href = "/login"; // or router.push('/login') but window.location.href ensures a fresh login page
+            window.location.href = "/login";
             return;
+        }
+        if (service) {
+            setPreSelectedServices([{ ...service, categoryName: service.category }]);
+        } else {
+            setPreSelectedServices([]);
         }
         setIsBookingMode(true);
     };
@@ -76,7 +83,11 @@ export default function CenterDetailClient({ center }: Props) {
 
             <main className="flex-1 flex flex-col">
                 {isBookingMode ? (
-                    <BookingWizard center={center} onCancel={() => setIsBookingMode(false)} />
+                    <BookingWizard
+                        center={center}
+                        onCancel={() => { setIsBookingMode(false); setPreSelectedServices([]); }}
+                        initialSelectedServices={preSelectedServices}
+                    />
                 ) : (
                     <Container className="py-4">
                         <HeroBase

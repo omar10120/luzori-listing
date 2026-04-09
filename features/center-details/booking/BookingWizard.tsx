@@ -273,7 +273,7 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
 
                         <p className="text-gray-500 font-medium leading-relaxed">
                             {t('booking_success_msg')}<br />
-                            {t('reference_number')} <span className="text-gray-900 font-bold">{successData.id}</span>
+                            {t('reference_number')} <span className="text-gray-900 font-bold">#{successData.id}</span>
                         </p>
                     </div>
                 </div>

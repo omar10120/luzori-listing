@@ -13,3 +13,22 @@ export function hasValidUserPhone(user: Record<string, unknown> | null | undefin
     const digits = String(raw).replace(/\D/g, "");
     return digits.length >= 8;
 }
+
+/** Laravel-style token on `data.token` or `data.authorisation.token`. */
+export function extractSanctumTokenFromApiPayload(
+    data: Record<string, unknown> | undefined
+): string | undefined {
+    if (!data) return undefined;
+    const token = data.token;
+    if (typeof token === "string" && token) return token;
+    const authBlock = data.authorisation as Record<string, unknown> | undefined;
+    const nested = authBlock?.token;
+    if (typeof nested === "string" && nested) return nested;
+    return undefined;
+}
+
+export function persistAuthTokenIfPresent(data: unknown): void {
+    if (typeof window === "undefined") return;
+    const tok = extractSanctumTokenFromApiPayload(data as Record<string, unknown>);
+    if (tok) localStorage.setItem("authToken", tok);
+}

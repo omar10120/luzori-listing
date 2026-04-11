@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useCallback, useContext, useMemo } from "react";
+import { useLocale } from "next-intl";
 import { useRequirePhone } from "@/hooks/useRequirePhone";
 import PhoneRequiredDialog from "@/components/auth/PhoneRequiredDialog";
 
@@ -18,6 +19,7 @@ export function usePhoneRequirementRefetch(): RecheckFn | undefined {
  * Persists across navigation and tab visibility (see `useRequirePhone`).
  */
 export function PhoneRequirementProvider({ children }: { children: React.ReactNode }) {
+    const locale = useLocale();
     const { loading, needsPhone, profile, refetch } = useRequirePhone(true);
 
     const recheck = useCallback(async () => {
@@ -25,6 +27,11 @@ export function PhoneRequirementProvider({ children }: { children: React.ReactNo
     }, [refetch]);
 
     const ctx = useMemo(() => recheck, [recheck]);
+
+    const onPhoneConfirmed = useCallback(async () => {
+        await refetch();
+        window.location.assign(`/${locale}`);
+    }, [refetch, locale]);
 
     return (
         <PhoneRecheckContext.Provider value={ctx}>
@@ -34,7 +41,7 @@ export function PhoneRequirementProvider({ children }: { children: React.ReactNo
                     open
                     profile={profile}
                     copyVariant="session"
-                    onAfterSaveSuccess={() => void refetch()}
+                    onAfterSaveSuccess={onPhoneConfirmed}
                     onSignOutComplete={() => void refetch()}
                 />
             )}

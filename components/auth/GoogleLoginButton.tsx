@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 import { loginWithProvider, fetchUserProfile } from "@/lib/api";
-import { hasValidUserPhone } from "@/lib/utils";
+import { extractSanctumTokenFromApiPayload, hasValidUserPhone } from "@/lib/utils";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
@@ -13,16 +13,6 @@ import { usePhoneRequirementRefetch } from "@/components/auth/PhoneRequirementPr
 interface GoogleLoginButtonProps {
     className?: string;
     text?: string;
-}
-
-function extractSanctumToken(data: Record<string, unknown> | undefined): string | undefined {
-    if (!data) return undefined;
-    const token = data.token;
-    if (typeof token === "string" && token) return token;
-    const authBlock = data.authorisation as Record<string, unknown> | undefined;
-    const nested = authBlock?.token;
-    if (typeof nested === "string" && nested) return nested;
-    return undefined;
 }
 
 function mergeUserFromLoginAndProfile(
@@ -65,7 +55,7 @@ export default function GoogleLoginButton({ className, text }: GoogleLoginButton
             }
 
             const data = apiResult.data as Record<string, unknown> | undefined;
-            const sanctumToken = extractSanctumToken(data);
+            const sanctumToken = extractSanctumTokenFromApiPayload(data);
 
             if (!sanctumToken) {
                 setErrorMsg("Received invalid response from server");

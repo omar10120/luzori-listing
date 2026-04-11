@@ -5,9 +5,10 @@ import { signOut } from "firebase/auth";
 import type { User as FirebaseUser } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { fetchUserProfile, updateUserProfile } from "@/lib/api";
-import { hasValidUserPhone } from "@/lib/utils";
+import { hasValidUserPhone, persistAuthTokenIfPresent } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { ChevronDown, X } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export type PhoneRequiredCopyVariant = "google" | "session";
 
@@ -99,7 +100,13 @@ export default function PhoneRequiredDialog({
         setSubmitting(false);
 
         if (result.success) {
-            const refreshed = await fetchUserProfile(token);
+            persistAuthTokenIfPresent(result.data);
+            const activeToken = localStorage.getItem("authToken");
+            if (!activeToken) {
+                setError(t("session_expired"));
+                return;
+            }
+            const refreshed = await fetchUserProfile(activeToken);
             if (hasValidUserPhone(refreshed)) {
                 setPhone("");
                 onAfterSaveSuccess?.();

@@ -63,7 +63,10 @@ const ProfilePage = () => {
     };
 
     useEffect(() => {
-        fetchUser();
+        const fetchData = async () => {
+            await fetchUser();
+        };
+        fetchData();
     }, [router]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -181,6 +184,7 @@ const ProfilePage = () => {
                             <input
                                 type="email"
                                 value={formData.email}
+                                disabled
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 className="w-full h-12 px-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#225D5C] transition-all"
                                 placeholder="amrooody7@gmail.com"

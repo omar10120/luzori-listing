@@ -82,14 +82,14 @@ export default function Step2Professional({
                                 className={cn(
                                     "flex-shrink-0 w-64 p-5 rounded-2xl border-2 transition-all cursor-pointer shadow-sm",
                                     selectedBranchId === branch.id
-                                        ? "border-[#623ce1] bg-[#623ce1]/5 ring-2 ring-[#623ce1]/10"
+                                        ? "border-[#225D5C] bg-[#225D5C]/5 ring-2 ring-[#225D5C]/10"
                                         : "border-gray-100 bg-white hover:border-gray-200"
                                 )}
                             >
                                 <div className="flex items-center gap-3">
                                     <div className={cn(
                                         "w-10 h-10 rounded-full flex items-center justify-center shrink-0",
-                                        selectedBranchId === branch.id ? "bg-[#623ce1] text-white" : "bg-gray-100 text-gray-500"
+                                        selectedBranchId === branch.id ? "bg-[#225D5C] text-white" : "bg-gray-100 text-gray-500"
                                     )}>
                                         <Building2 size={20} />
                                     </div>
@@ -112,11 +112,11 @@ export default function Step2Professional({
                     onClick={() => handleTypeSelect("any")}
                     className={cn(
                         "flex items-center justify-between p-6 rounded-2xl border-2 transition-all cursor-pointer shadow-sm hover:shadow-md",
-                        type === "any" ? "border-[#623ce1] bg-[#623ce1]/5 ring-4 ring-[#623ce1]/10" : "border-gray-100 bg-white hover:border-gray-200"
+                        type === "any" ? "border-[#225D5C] bg-[#225D5C]/5 ring-4 ring-[#225D5C]/10" : "border-gray-100 bg-white hover:border-gray-200"
                     )}
                 >
                     <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-full bg-[#623ce1]/10 text-[#623ce1] flex items-center justify-center shrink-0">
+                        <div className="w-14 h-14 rounded-full bg-[#225D5C]/10 text-[#225D5C] flex items-center justify-center shrink-0">
                             <Users size={28} />
                         </div>
                         <div>
@@ -126,7 +126,7 @@ export default function Step2Professional({
                     </div>
                     <div className={cn(
                         "px-6 py-2 rounded-full text-sm font-bold transition-all border",
-                        type === "any" ? "bg-[#623ce1] text-white border-[#623ce1]" : "bg-white text-gray-900 border-gray-200"
+                        type === "any" ? "bg-[#225D5C] text-white border-[#225D5C]" : "bg-white text-gray-900 border-gray-200"
                     )}>
                         {type === "any" ? "Selected" : "Select"}
                     </div>
@@ -136,11 +136,11 @@ export default function Step2Professional({
                     onClick={() => handleTypeSelect("per_service")}
                     className={cn(
                         "flex items-center justify-between p-6 rounded-2xl border-2 transition-all cursor-pointer shadow-sm hover:shadow-md",
-                        type === "per_service" ? "border-[#623ce1] bg-[#623ce1]/5 ring-4 ring-[#623ce1]/10" : "border-gray-100 bg-white hover:border-gray-200"
+                        type === "per_service" ? "border-[#225D5C] bg-[#225D5C]/5 ring-4 ring-[#225D5C]/10" : "border-gray-100 bg-white hover:border-gray-200"
                     )}
                 >
                     <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 rounded-full bg-[#623ce1]/10 text-[#623ce1] flex items-center justify-center shrink-0">
+                        <div className="w-14 h-14 rounded-full bg-[#225D5C]/10 text-[#225D5C] flex items-center justify-center shrink-0">
                             <UserPlus size={28} />
                         </div>
                         <div>
@@ -150,7 +150,7 @@ export default function Step2Professional({
                     </div>
                     <div className={cn(
                         "px-6 py-2 rounded-full text-sm font-bold transition-all border",
-                        type === "per_service" ? "bg-[#623ce1] text-white border-[#623ce1]" : "bg-white text-gray-900 border-gray-200"
+                        type === "per_service" ? "bg-[#225D5C] text-white border-[#225D5C]" : "bg-white text-gray-900 border-gray-200"
                     )}>
                         {type === "per_service" ? "Selected" : "Select"}
                     </div>
@@ -184,7 +184,7 @@ export default function Step2Professional({
                                                     className={cn(
                                                         "flex items-center gap-4 p-5 rounded-2xl border-2 cursor-pointer transition-all shadow-sm hover:shadow-md",
                                                         isSelected
-                                                            ? "border-[#623ce1] bg-[#623ce1]/5 ring-4 ring-[#623ce1]/10"
+                                                            ? "border-[#225D5C] bg-[#225D5C]/5 ring-4 ring-[#225D5C]/10"
                                                             : "border-gray-100 bg-white hover:border-gray-200"
                                                     )}
                                                 >
@@ -199,7 +199,7 @@ export default function Step2Professional({
                                                                 unoptimized
                                                             />
                                                         ) : (
-                                                            <div className="w-full h-full bg-[#623ce1]/10 flex items-center justify-center text-[#623ce1] text-xl font-bold">
+                                                            <div className="w-full h-full bg-[#225D5C]/10 flex items-center justify-center text-[#225D5C] text-xl font-bold">
                                                                 {worker.name.charAt(0).toUpperCase()}
                                                             </div>
                                                         )}
@@ -215,7 +215,7 @@ export default function Step2Professional({
                                                     <div className={cn(
                                                         "w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors",
                                                         isSelected
-                                                            ? "bg-[#623ce1] text-white shadow-md"
+                                                            ? "bg-[#225D5C] text-white shadow-md"
                                                             : "bg-gray-100 text-gray-500 border border-gray-200 hover:bg-gray-200"
                                                     )}>
                                                         <Check size={18} strokeWidth={3} />

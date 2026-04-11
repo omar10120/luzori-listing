@@ -31,6 +31,27 @@ function isBeforeLocalToday(dateKey: string, todayKey: string): boolean {
     return dateKey < todayKey;
 }
 
+function time24hToMinutes(t: string): number {
+    const [h, m] = t.split(":").map(Number);
+    return (h || 0) * 60 + (m || 0);
+}
+
+function getNowMinutesLocal(): number {
+    const n = new Date();
+    return n.getHours() * 60 + n.getMinutes();
+}
+
+/** Slot start is not usable when booking for today and the time has already passed. */
+function isTimeSlotUnavailable(
+    slot24h: string,
+    selectedDateKey: string,
+    todayKey: string
+): boolean {
+    if (!selectedDateKey) return true;
+    if (selectedDateKey !== todayKey) return false;
+    return time24hToMinutes(slot24h) <= getNowMinutesLocal();
+}
+
 /** Same worker resolution as booking submit / step 2 (branch pool, then explicit id). */
 function resolveWorkerForService(
     svc: SelectedService,
@@ -184,6 +205,17 @@ export default function Step3Time({
         );
     }, [selectedDateKey, vacationDateKeys, todayKey, setSelectedServices]);
 
+    const selectedFromTime = selectedServices[0]?.fromTime ?? "";
+
+    // Clear time if it's today and the chosen slot is now in the past.
+    useEffect(() => {
+        if (!selectedDateKey || !selectedFromTime) return;
+        if (!isTimeSlotUnavailable(selectedFromTime, selectedDateKey, todayKey)) return;
+        setSelectedServices((prev) =>
+            prev.map((svc) => ({ ...svc, fromTime: "", toTime: "" }))
+        );
+    }, [selectedDateKey, selectedFromTime, todayKey, setSelectedServices]);
+
     // Navigation: previous month
     const goPrevMonth = () => {
         if (currentMonth === 0) {
@@ -222,6 +254,8 @@ export default function Step3Time({
     };
 
     const handleTimeSelect = (time24h: string) => {
+        const dateKey = selectedServices[0]?.date ?? "";
+        if (isTimeSlotUnavailable(time24h, dateKey, todayKey)) return;
         setSelectedServices(prev =>
             prev.map(svc => {
                 const durationMinutes = parseDurationToMinutes(svc.duration || "1 hr");
@@ -260,7 +294,7 @@ export default function Step3Time({
             <div className="flex justify-between items-center">
                 <button
                     onClick={handleNoPreference}
-                    className="text-sm font-medium text-gray-600 hover:text-[#623ce1] transition-colors"
+                    className="text-sm font-medium text-gray-600 hover:text-[#225D5C] transition-colors"
                 >
                     No preference
                 </button>
@@ -279,7 +313,7 @@ export default function Step3Time({
                         }}
                     />
                     <div className="bg-white border border-gray-200 rounded-full p-2 shadow-sm cursor-pointer hover:bg-gray-50">
-                        <Calendar size={20} className="text-[#623ce1]" />
+                        <Calendar size={20} className="text-[#225D5C]" />
                     </div>
                 </div>
             </div>
@@ -291,7 +325,7 @@ export default function Step3Time({
                         <ChevronLeft size={20} className="text-gray-600" />
                     </button>
                     <div className="flex items-center gap-2">
-                        <Calendar size={18} className="text-[#623ce1]" />
+                        <Calendar size={18} className="text-[#225D5C]" />
                         <span className="font-semibold text-gray-800">{monthYearString}</span>
                     </div>
                     <button onClick={goNextMonth} className="p-1 hover:bg-gray-100 rounded-full">
@@ -321,7 +355,7 @@ export default function Step3Time({
                                     ${isOff
                                         ? "opacity-40 cursor-not-allowed bg-gray-100 text-gray-400 border border-gray-100"
                                         : isSelected
-                                            ? "bg-[#623ce1] text-white shadow-md"
+                                            ? "bg-[#225D5C] text-white shadow-md"
                                             : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200"
                                     }`}
                             >
@@ -338,21 +372,34 @@ export default function Step3Time({
             {/* Time slots list */}
             <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                 <div className="flex items-center gap-2 mb-4">
-                    <Clock size={18} className="text-[#623ce1]" />
+                    <Clock size={18} className="text-[#225D5C]" />
                     <span className="font-semibold text-gray-800">Available time slots</span>
                 </div>
                 <div className="flex flex-wrap gap-3">
                     {TIME_SLOTS_24H.map((slot24h, idx) => {
                         const slot12h = TIME_SLOTS_12H[idx];
                         const isSelected = mainService?.fromTime === slot24h;
+                        const slotOff = isTimeSlotUnavailable(slot24h, selectedFullDate, todayKey);
+                        const slotTitle =
+                            !selectedFullDate
+                                ? "Select a date first"
+                                : selectedFullDate === todayKey &&
+                                    time24hToMinutes(slot24h) <= getNowMinutesLocal()
+                                    ? "This time has already passed"
+                                    : undefined;
                         return (
                             <button
                                 key={slot24h}
-                                onClick={() => handleTimeSelect(slot24h)}
+                                type="button"
+                                disabled={slotOff}
+                                title={slotTitle}
+                                onClick={() => !slotOff && handleTimeSelect(slot24h)}
                                 className={`px-5 py-2.5 rounded-full font-medium transition-all
-                                    ${isSelected
-                                        ? 'bg-[#623ce1] text-white shadow-md'
-                                        : 'bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100'
+                                    ${slotOff
+                                        ? "opacity-40 cursor-not-allowed bg-gray-100 text-gray-400 border border-gray-100"
+                                        : isSelected
+                                            ? "bg-[#225D5C] text-white shadow-md"
+                                            : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
                                     }`}
                             >
                                 {slot12h}
@@ -361,7 +408,9 @@ export default function Step3Time({
                     })}
                 </div>
                 <p className="text-xs text-gray-400 mt-4">
-                    Duration: {duration} • End time calculated automatically
+                    {!selectedFullDate
+                        ? "Choose a date to see available times."
+                        : `Duration: ${duration} • End time calculated automatically`}
                 </p>
             </div>
 
@@ -406,12 +455,12 @@ export default function Step3Time({
                         </div>
                         {/* <div className="flex justify-between items-center pt-2 border-t border-gray-200">
                             <span className="font-bold text-gray-900">Total</span>
-                            <span className="font-bold text-xl text-[#623ce1]">€{totalPrice}</span>
+                            <span className="font-bold text-xl text-[#225D5C]">€{totalPrice}</span>
                         </div> */}
                     </div>
                 </div>
                 {/* <div className="p-5">
-                    <button className="w-full bg-[#623ce1] hover:bg-[#4f2dc9] text-white font-semibold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md">
+                    <button className="w-full bg-[#225D5C] hover:bg-[#4f2dc9] text-white font-semibold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 shadow-md">
                         Continue <ChevronRight size={18} />
                     </button>
                 </div> */}

@@ -39,8 +39,8 @@ export default function Step4Confirm({
             <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm flex flex-col gap-8">
 
                 {/* Header Note */}
-                <div className="flex items-center gap-4 p-4 bg-[#623ce1]/5 rounded-2xl border border-[#623ce1]/10 text-[#623ce1]">
-                    <CheckCircle2 size={24} className="text-[#623ce1] shrink-0" />
+                <div className="flex items-center gap-4 p-4 bg-[#225D5C]/5 rounded-2xl border border-[#225D5C]/10 text-[#225D5C]">
+                    <CheckCircle2 size={24} className="text-[#225D5C] shrink-0" />
                     <p className="font-medium text-sm">Please review your booking details below. Click "Book Now" on the right to finalize your appointment.</p>
                 </div>
 
@@ -116,19 +116,19 @@ export default function Step4Confirm({
                                     className={cn(
                                         "flex flex-col items-center text-center p-5 rounded-2xl border-2 transition-all gap-2 relative",
                                         isSelected
-                                            ? "border-[#623ce1] bg-[#623ce1]/5 ring-4 ring-[#623ce1]/10"
+                                            ? "border-[#225D5C] bg-[#225D5C]/5 ring-4 ring-[#225D5C]/10"
                                             : "border-gray-100 bg-white hover:border-gray-200",
                                         opt.disabled && "opacity-50 cursor-not-allowed grayscale"
                                     )}
                                 >
-                                    <Icon className={cn("w-6 h-6", isSelected ? "text-[#623ce1]" : "text-gray-400")} />
+                                    <Icon className={cn("w-6 h-6", isSelected ? "text-[#225D5C]" : "text-gray-400")} />
                                     <div>
                                         <p className="font-bold text-gray-900 text-sm">{opt.label}</p>
                                         <p className="text-[10px] text-gray-500 mt-0.5 leading-tight">{opt.description}</p>
                                     </div>
 
                                     {isSelected && (
-                                        <div className="absolute top-2 right-2 w-5 h-5 bg-[#623ce1] rounded-full flex items-center justify-center text-white">
+                                        <div className="absolute top-2 right-2 w-5 h-5 bg-[#225D5C] rounded-full flex items-center justify-center text-white">
                                             <CheckCircle2 size={12} strokeWidth={3} />
                                         </div>
                                     )}

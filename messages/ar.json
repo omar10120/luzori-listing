@@ -85,5 +85,20 @@
     "privacy_policy": "سياسة الخصوصية",
     "terms_of_use": "شروط الاستخدام",
     "terms_of_service": "شروط الخدمة",
-    "confirm": "تأكيد"
+    "confirm": "تأكيد",
+    "signing_in": "جاري تسجيل الدخول...",
+    "continue_google": "المتابعة مع Google",
+    "phone_required_title": "رقم الجوال مطلوب",
+    "phone_required_google": "حساب Google لا يتضمن رقم هاتف يمكننا استخدامه. أضف رقم جوال للمتابعة — مطلوب للحجز وأمان الحساب.",
+    "phone_required_account": "حسابك لا يحتوي على رقم جوال. أضف رقمًا للمتابعة — مطلوب للحجز وأمان الحساب.",
+    "mobile_number": "رقم الجوال",
+    "phone_placeholder": "501234567",
+    "phone_invalid": "أدخل رقم هاتف صالح (8 أرقام على الأقل).",
+    "session_expired": "انتهت الجلسة. سجّل الدخول مرة أخرى.",
+    "phone_not_saved": "تعذر التحقق من الرقم. حاول مرة أخرى.",
+    "update_failed": "فشل التحديث",
+    "sign_out": "تسجيل الخروج",
+    "saving": "جاري الحفظ...",
+    "save_and_continue": "حفظ ومتابعة",
+    "close": "إغلاق"
 }

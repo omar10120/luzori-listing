@@ -71,7 +71,7 @@ export default function Step1Services({ center, selectedServices, setSelectedSer
                                             onClick={() => handleToggleService({ ...svc, categoryName: cat.name })}
                                             className={cn(
                                                 "flex items-center justify-between p-5 rounded-xl border-2 transition-all cursor-pointer shadow-sm hover:shadow-md",
-                                                isSelected ? "border-[#623ce1] bg-white ring-4 ring-[#623ce1]/10" : "border-gray-100 bg-white hover:border-gray-200"
+                                                isSelected ? "border-[#225D5C] bg-white ring-4 ring-[#225D5C]/10" : "border-gray-100 bg-white hover:border-gray-200"
                                             )}
                                         >
                                             <div className="flex-1 pr-4">
@@ -84,7 +84,7 @@ export default function Step1Services({ center, selectedServices, setSelectedSer
                                             
                                             <div className={cn(
                                                 "w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors shadow-sm",
-                                                isSelected ? "bg-[#623ce1] text-white" : "bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100"
+                                                isSelected ? "bg-[#225D5C] text-white" : "bg-gray-50 text-gray-600 border border-gray-200 hover:bg-gray-100"
                                             )}>
                                                 {isSelected ? <Check size={20} className="stroke-[3]" /> : <Plus size={20} />}
                                             </div>

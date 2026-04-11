@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { PhoneRequirementProvider } from "@/components/auth/PhoneRequirementProvider";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 import "../globals.css";
 import { NextIntlClientProvider } from 'next-intl';
@@ -58,9 +59,11 @@ export default async function RootLayout({
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={inter.variable} >
       <body className="min-h-screen bg-white font-sans antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Navbar />
-          <main id="main-content">{children}</main>
-          <Footer />
+          <PhoneRequirementProvider>
+            <Navbar />
+            <main id="main-content">{children}</main>
+            <Footer />
+          </PhoneRequirementProvider>
         </NextIntlClientProvider>
       </body>
     </html >

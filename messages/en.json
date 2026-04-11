@@ -85,5 +85,20 @@
     "privacy_policy": "Privacy Policy",
     "terms_of_use": "Terms of Use",
     "terms_of_service": "Terms of Service",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "signing_in": "Signing in...",
+    "continue_google": "Continue with Google",
+    "phone_required_title": "Phone number required",
+    "phone_required_google": "Your Google account does not include a phone number we can use. Add a mobile number to continue — it is required for bookings and account security.",
+    "phone_required_account": "Your account does not have a phone number on file. Add a mobile number to continue — it is required for bookings and account security.",
+    "mobile_number": "Mobile number",
+    "phone_placeholder": "501234567",
+    "phone_invalid": "Enter a valid phone number (at least 8 digits).",
+    "session_expired": "Session expired. Please sign in again.",
+    "phone_not_saved": "Phone could not be verified. Try again.",
+    "update_failed": "Update failed",
+    "sign_out": "Sign out",
+    "saving": "Saving...",
+    "save_and_continue": "Save & continue",
+    "close": "Close"
 }

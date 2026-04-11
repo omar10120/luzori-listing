@@ -38,6 +38,9 @@ const RegisterPage = () => {
         phone: "",
         password: "",
         password_confirmation: "",
+        address: "",
+        birth: "",
+        gender: "",
     });
 
     const selectedCountry = COUNTRIES.find(c => c.code === formData.country_code) || COUNTRIES[0];
@@ -56,10 +59,10 @@ const RegisterPage = () => {
 
         const data = new FormData();
         Object.entries(formData).forEach(([key, value]) => {
-            if (key === 'country_code') {
+            if (key === "country_code") {
                 data.append(key, `+${value}`);
             } else {
-                data.append(key, value);
+                data.append(key, value ?? "");
             }
         });
 
@@ -241,7 +244,8 @@ const RegisterPage = () => {
                                         className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none  text-sm"
                                         value={formData.password}
                                         onChange={(e) => {
-                                            setFormData({ ...formData, password: e.target.value, password_confirmation: e.target.value });
+                                            const v = e.target.value;
+                                            setFormData({ ...formData, password: v, password_confirmation: v });
                                         }}
                                     />
                                     <button
@@ -252,6 +256,40 @@ const RegisterPage = () => {
                                         {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                                     </button>
                                 </div>
+                            </div>
+
+                            <div className="space-y-2 md:col-span-2">
+                                <label className="text-xs font-medium text-gray-300 ml-1">Address</label>
+                                <textarea
+                                    placeholder="Street, city (optional)"
+                                    rows={2}
+                                    className="w-full bg-[#f3d3b0]/90 border-none rounded py-2 px-2 text-gray-900 placeholder:text-gray-500 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none text-sm resize-y min-h-[64px]"
+                                    value={formData.address}
+                                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-gray-300 ml-1">Date of birth</label>
+                                <input
+                                    type="date"
+                                    className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none text-sm"
+                                    value={formData.birth}
+                                    onChange={(e) => setFormData({ ...formData, birth: e.target.value })}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-xs font-medium text-gray-300 ml-1">Gender</label>
+                                <select
+                                    className="w-full bg-[#f3d3b0]/90 border-none rounded py-1 px-2 text-gray-900 focus:ring-2 focus:ring-[#d4af37] transition-all outline-none text-sm"
+                                    value={formData.gender}
+                                    onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                                >
+                                    <option value="">Prefer not to say</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
                             </div>
                         </div>
 

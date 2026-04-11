@@ -26,10 +26,9 @@ const ProfilePage = () => {
         email: "",
         phone: "",
         country_code: "+971",
-        day: "",
-        month: "",
-        year: "",
-        gender: ""
+        address: "",
+        birth: "",
+        gender: "",
     });
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -44,16 +43,16 @@ const ProfilePage = () => {
         const data = await fetchUserProfile(token);
         if (data) {
             setUser(data);
+            const birthRaw = data.birth != null ? String(data.birth) : "";
             setFormData({
                 first_name: data.first_name || "",
                 last_name: data.last_name || "",
                 email: data.email || "",
                 phone: data.phone || "",
                 country_code: data.country_code || "+971",
-                day: "",
-                month: "",
-                year: "",
-                gender: ""
+                address: data.address != null ? String(data.address) : "",
+                birth: birthRaw.length >= 10 ? birthRaw.slice(0, 10) : "",
+                gender: data.gender != null ? String(data.gender) : "",
             });
         } else {
             localStorage.removeItem("authToken");
@@ -91,6 +90,9 @@ const ProfilePage = () => {
         body.append("email", formData.email);
         body.append("phone", formData.phone);
         body.append("country_code", formData.country_code);
+        body.append("address", formData.address);
+        body.append("birth", formData.birth);
+        body.append("gender", formData.gender);
         if (selectedImage) {
             body.append("image", selectedImage);
         }
@@ -192,32 +194,35 @@ const ProfilePage = () => {
                         </div>
 
                         <div className="space-y-2">
+                            <label className="text-sm font-bold text-gray-900">Address</label>
+                            <textarea
+                                value={formData.address}
+                                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                rows={3}
+                                className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#225D5C] transition-all resize-y min-h-[88px]"
+                                placeholder="Street, city"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
                             <label className="text-sm font-bold text-gray-900">Date of birth</label>
-                            <div className="grid grid-cols-3 gap-4">
-                                <input
-                                    type="text"
-                                    placeholder="Day"
-                                    className="h-12 px-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#225D5C] transition-all"
-                                />
-                                <div className="relative">
-                                    <select className="w-full h-12 pl-4 pr-10 appearance-none rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#225D5C] bg-white transition-all text-sm text-gray-400">
-                                        <option>Month</option>
-                                    </select>
-                                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
-                                </div>
-                                <input
-                                    type="text"
-                                    placeholder="Year"
-                                    className="h-12 px-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#225D5C] transition-all"
-                                />
-                            </div>
+                            <input
+                                type="date"
+                                value={formData.birth}
+                                onChange={(e) => setFormData({ ...formData, birth: e.target.value })}
+                                className="w-full h-12 px-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#225D5C] transition-all"
+                            />
                         </div>
 
                         <div className="space-y-2">
                             <label className="text-sm font-bold text-gray-900">Gender</label>
                             <div className="relative">
-                                <select className="w-full h-12 pl-4 pr-10 appearance-none rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#225D5C] bg-white transition-all text-sm text-gray-400">
-                                    <option>Select Option</option>
+                                <select
+                                    value={formData.gender}
+                                    onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                                    className="w-full h-12 pl-4 pr-10 appearance-none rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#225D5C] bg-white transition-all text-sm text-gray-900"
+                                >
+                                    <option value="">Prefer not to say</option>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
                                 </select>
@@ -315,12 +320,30 @@ const ProfilePage = () => {
                                         <p className="text-sm font-medium text-gray-900">{user.email || "-"}</p>
                                     </div>
                                     <div>
+                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Address</p>
+                                        <p className="text-sm font-medium text-gray-900 whitespace-pre-wrap">{user.address || "-"}</p>
+                                    </div>
+                                    <div>
                                         <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Date of birth</p>
-                                        <p className="text-sm font-medium text-gray-900">-</p>
+                                        <p className="text-sm font-medium text-gray-900">
+                                            {user.birth
+                                                ? (() => {
+                                                    const d = new Date(String(user.birth).slice(0, 10));
+                                                    return Number.isNaN(d.getTime())
+                                                        ? String(user.birth)
+                                                        : d.toLocaleDateString();
+                                                })()
+                                                : "-"}
+                                        </p>
                                     </div>
                                     <div>
                                         <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Gender</p>
-                                        <p className="text-sm font-medium text-gray-900">-</p>
+                                        <p className="text-sm font-medium text-gray-900">
+                                            {user.gender
+                                                ? String(user.gender).charAt(0).toUpperCase() +
+                                                  String(user.gender).slice(1)
+                                                : "-"}
+                                        </p>
                                     </div>
                                 </div>
                             </div>

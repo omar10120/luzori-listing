@@ -25,12 +25,19 @@ export interface Branch {
     latitude: string;
 }
 
+export interface WorkerVacation {
+    id: number;
+    day: string;
+    describe?: string | null;
+}
+
 export interface Worker {
     id: number;
     name: string;
     image: string;
     has_commission: number;
     branch_id: number;
+    vacations?: WorkerVacation[];
 }
 
 export interface Service {

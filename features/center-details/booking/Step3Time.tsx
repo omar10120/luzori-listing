@@ -1,12 +1,52 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { SelectedService } from "./BookingWizard";
+import type { Worker } from "@/lib/apiEndpoints";
 import { Calendar, Clock, Star, MapPin, ChevronRight, ChevronLeft } from "lucide-react";
 
 interface Step3TimeProps {
     selectedServices: SelectedService[];
     setSelectedServices: React.Dispatch<React.SetStateAction<SelectedService[]>>;
+    selectedBranchId: number | null;
+}
+
+function toLocalDateKey(date: Date): string {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, "0");
+    const d = String(date.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+}
+
+/** Same worker resolution as booking submit / step 2 (branch pool, then explicit id). */
+function resolveWorkerForService(
+    svc: SelectedService,
+    branchId: number | null
+): Worker | undefined {
+    const branchPool =
+        branchId != null
+            ? svc.workers?.filter((w) => w.branch_id === branchId) ?? []
+            : [];
+    const pool = branchPool.length > 0 ? branchPool : svc.workers ?? [];
+    const explicitId = svc.selectedWorkerId;
+    if (explicitId != null) {
+        return pool.find((w) => w.id === explicitId) ?? svc.workers?.find((w) => w.id === explicitId);
+    }
+    return pool[0] ?? svc.workers?.[0];
+}
+
+function collectWorkerVacationDateKeys(
+    services: SelectedService[],
+    branchId: number | null
+): Set<string> {
+    const keys = new Set<string>();
+    for (const svc of services) {
+        const worker = resolveWorkerForService(svc, branchId);
+        for (const v of worker?.vacations ?? []) {
+            if (v?.day) keys.add(v.day.slice(0, 10));
+        }
+    }
+    return keys;
 }
 
 // Helper: parse duration string like "1 hr, 30 mins" or "1 hr" to minutes
@@ -22,7 +62,9 @@ function parseDurationToMinutes(duration: string): number {
 // Convert "2:30 pm" -> "14:30"
 function to24HourFormat(time12h: string): string {
     const [time, modifier] = time12h.split(' ');
-    let [hours, minutes] = time.split(':').map(Number);
+    const parts = time.split(':').map(Number);
+    let hours = parts[0];
+    const minutes = parts[1];
     if (modifier === 'pm' && hours !== 12) hours += 12;
     if (modifier === 'am' && hours === 12) hours = 0;
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
@@ -79,7 +121,6 @@ const TIME_SLOTS_24H = TIME_SLOTS_12H.map(to24HourFormat);
 
 // Generate days for a given month (year, month) - returns array of {date, dayNumber, dayName, fullDate}
 function getDaysInMonth(year: number, month: number) {
-    const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const days = [];
     for (let d = 1; d <= lastDay.getDate(); d++) {
@@ -88,19 +129,40 @@ function getDaysInMonth(year: number, month: number) {
             date,
             dayNumber: d,
             dayName: date.toLocaleDateString('en-US', { weekday: 'short' }),
-            fullDate: date.toISOString().split('T')[0],
+            fullDate: toLocalDateKey(date),
         });
     }
     return days;
 }
 
-export default function Step3Time({ selectedServices, setSelectedServices }: Step3TimeProps) {
+export default function Step3Time({
+    selectedServices,
+    setSelectedServices,
+    selectedBranchId,
+}: Step3TimeProps) {
     // State for the currently displayed month in the circular picker
     const today = new Date();
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
     const [currentMonth, setCurrentMonth] = useState(today.getMonth()); // 0-indexed
     const daysInMonth = getDaysInMonth(currentYear, currentMonth);
     const monthYearString = new Date(currentYear, currentMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+    const vacationDateKeys = useMemo(
+        () => collectWorkerVacationDateKeys(selectedServices, selectedBranchId),
+        [selectedServices, selectedBranchId]
+    );
+
+    const isVacationOrInvalidDay = (dateKey: string) => vacationDateKeys.has(dateKey);
+
+    const selectedDateKey = selectedServices[0]?.date ?? "";
+
+    // Drop date/time if the chosen worker(s) have that day off (e.g. data refreshed).
+    useEffect(() => {
+        if (!selectedDateKey || !vacationDateKeys.has(selectedDateKey)) return;
+        setSelectedServices((prev) =>
+            prev.map((svc) => ({ ...svc, date: "", fromTime: "", toTime: "" }))
+        );
+    }, [selectedDateKey, vacationDateKeys, setSelectedServices]);
 
     // Navigation: previous month
     const goPrevMonth = () => {
@@ -123,6 +185,7 @@ export default function Step3Time({ selectedServices, setSelectedServices }: Ste
 
     // Handle date selection (both from circular picker and calendar)
     const handleDateSelect = (dateStr: string) => {
+        if (isVacationOrInvalidDay(dateStr)) return;
         setSelectedServices(prev =>
             prev.map(svc => ({ ...svc, date: dateStr, fromTime: "", toTime: "" }))
         );
@@ -184,7 +247,11 @@ export default function Step3Time({ selectedServices, setSelectedServices }: Ste
                         id="calendar-date-input"
                         className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                         value={selectedFullDate}
-                        onChange={(e) => handleDateSelect(e.target.value)}
+                        onChange={(e) => {
+                            const v = e.target.value;
+                            if (!v || isVacationOrInvalidDay(v)) return;
+                            handleDateSelect(v);
+                        }}
                     />
                     <div className="bg-white border border-gray-200 rounded-full p-2 shadow-sm cursor-pointer hover:bg-gray-50">
                         <Calendar size={20} className="text-[#623ce1]" />
@@ -209,18 +276,24 @@ export default function Step3Time({ selectedServices, setSelectedServices }: Ste
                 <div className="flex overflow-x-auto pb-2 gap-3 scrollbar-thin">
                     {daysInMonth.map((day) => {
                         const isSelected = selectedFullDate === day.fullDate;
+                        const isOff = isVacationOrInvalidDay(day.fullDate);
                         return (
                             <button
                                 key={day.fullDate}
-                                onClick={() => handleDateSelect(day.fullDate)}
+                                type="button"
+                                disabled={isOff}
+                                title={isOff ? "Professional unavailable (day off)" : undefined}
+                                onClick={() => !isOff && handleDateSelect(day.fullDate)}
                                 className={`flex flex-col items-center justify-center min-w-[70px] py-3 rounded-full transition-all
-                                    ${isSelected
-                                        ? 'bg-[#623ce1] text-white shadow-md'
-                                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'
+                                    ${isOff
+                                        ? "opacity-40 cursor-not-allowed bg-gray-100 text-gray-400 border border-gray-100"
+                                        : isSelected
+                                            ? "bg-[#623ce1] text-white shadow-md"
+                                            : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200"
                                     }`}
                             >
                                 <span className="text-xl font-bold">{day.dayNumber}</span>
-                                <span className={`text-xs ${isSelected ? 'text-white/80' : 'text-gray-500'}`}>
+                                <span className={`text-xs ${isSelected && !isOff ? "text-white/80" : "text-gray-500"}`}>
                                     {day.dayName}
                                 </span>
                             </button>

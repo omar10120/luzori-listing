@@ -223,6 +223,7 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
                             <Step3Time
                                 selectedServices={selectedServices}
                                 setSelectedServices={setSelectedServices}
+                                selectedBranchId={selectedBranchId}
                             />
                         )}
 

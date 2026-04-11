@@ -18,6 +18,19 @@ function toLocalDateKey(date: Date): string {
     return `${y}-${m}-${d}`;
 }
 
+/** Parse `YYYY-MM-DD` as local calendar date (avoids UTC shift from `new Date(isoString)`). */
+function parseLocalDateKey(dateKey: string): Date | null {
+    if (!dateKey) return null;
+    const [y, m, d] = dateKey.split("-").map(Number);
+    if (!y || !m || !d) return null;
+    return new Date(y, m - 1, d);
+}
+
+/** Strictly before local today (compare as ISO date strings). */
+function isBeforeLocalToday(dateKey: string, todayKey: string): boolean {
+    return dateKey < todayKey;
+}
+
 /** Same worker resolution as booking submit / step 2 (branch pool, then explicit id). */
 function resolveWorkerForService(
     svc: SelectedService,
@@ -152,17 +165,24 @@ export default function Step3Time({
         [selectedServices, selectedBranchId]
     );
 
-    const isVacationOrInvalidDay = (dateKey: string) => vacationDateKeys.has(dateKey);
+    const todayKey = toLocalDateKey(new Date());
+
+    const isDateUnavailable = (dateKey: string) =>
+        vacationDateKeys.has(dateKey) || isBeforeLocalToday(dateKey, todayKey);
 
     const selectedDateKey = selectedServices[0]?.date ?? "";
 
-    // Drop date/time if the chosen worker(s) have that day off (e.g. data refreshed).
+    // Drop date/time if in the past or worker vacation (e.g. data refreshed).
     useEffect(() => {
-        if (!selectedDateKey || !vacationDateKeys.has(selectedDateKey)) return;
+        if (!selectedDateKey) return;
+        const blocked =
+            vacationDateKeys.has(selectedDateKey) ||
+            isBeforeLocalToday(selectedDateKey, todayKey);
+        if (!blocked) return;
         setSelectedServices((prev) =>
             prev.map((svc) => ({ ...svc, date: "", fromTime: "", toTime: "" }))
         );
-    }, [selectedDateKey, vacationDateKeys, setSelectedServices]);
+    }, [selectedDateKey, vacationDateKeys, todayKey, setSelectedServices]);
 
     // Navigation: previous month
     const goPrevMonth = () => {
@@ -185,13 +205,17 @@ export default function Step3Time({
 
     // Handle date selection (both from circular picker and calendar)
     const handleDateSelect = (dateStr: string) => {
-        if (isVacationOrInvalidDay(dateStr)) return;
+        if (isDateUnavailable(dateStr)) return;
         setSelectedServices(prev =>
             prev.map(svc => ({ ...svc, date: dateStr, fromTime: "", toTime: "" }))
         );
         // Optionally, if the selected date is outside current month, update the picker to that month
-        const selectedDateObj = new Date(dateStr);
-        if (selectedDateObj.getMonth() !== currentMonth || selectedDateObj.getFullYear() !== currentYear) {
+        const selectedDateObj = parseLocalDateKey(dateStr);
+        if (
+            selectedDateObj &&
+            (selectedDateObj.getMonth() !== currentMonth ||
+                selectedDateObj.getFullYear() !== currentYear)
+        ) {
             setCurrentYear(selectedDateObj.getFullYear());
             setCurrentMonth(selectedDateObj.getMonth());
         }
@@ -218,7 +242,7 @@ export default function Step3Time({
 
     const mainService = selectedServices[0];
     const serviceNames = selectedServices.map(s => s.name).join(" + ");
-    const selectedDate = mainService?.date ? new Date(mainService.date) : null;
+    const selectedDate = mainService?.date ? parseLocalDateKey(mainService.date) : null;
     const fromTimeDisplay = mainService?.fromTime ? to12HourFormat(mainService.fromTime) : "";
     const toTimeDisplay = mainService?.toTime ? to12HourFormat(mainService.toTime) : "";
     const timeRange = fromTimeDisplay && toTimeDisplay
@@ -245,11 +269,12 @@ export default function Step3Time({
                     <input
                         type="date"
                         id="calendar-date-input"
+                        min={todayKey}
                         className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                         value={selectedFullDate}
                         onChange={(e) => {
                             const v = e.target.value;
-                            if (!v || isVacationOrInvalidDay(v)) return;
+                            if (!v || isDateUnavailable(v)) return;
                             handleDateSelect(v);
                         }}
                     />
@@ -276,13 +301,21 @@ export default function Step3Time({
                 <div className="flex overflow-x-auto pb-2 gap-3 scrollbar-thin">
                     {daysInMonth.map((day) => {
                         const isSelected = selectedFullDate === day.fullDate;
-                        const isOff = isVacationOrInvalidDay(day.fullDate);
+                        const isPast = isBeforeLocalToday(day.fullDate, todayKey);
+                        const isVacation = vacationDateKeys.has(day.fullDate);
+                        const isOff = isPast || isVacation;
                         return (
                             <button
                                 key={day.fullDate}
                                 type="button"
                                 disabled={isOff}
-                                title={isOff ? "Professional unavailable (day off)" : undefined}
+                                title={
+                                    isPast
+                                        ? "Past dates cannot be selected"
+                                        : isVacation
+                                            ? "Professional unavailable (day off)"
+                                            : undefined
+                                }
                                 onClick={() => !isOff && handleDateSelect(day.fullDate)}
                                 className={`flex flex-col items-center justify-center min-w-[70px] py-3 rounded-full transition-all
                                     ${isOff

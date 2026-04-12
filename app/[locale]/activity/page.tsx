@@ -14,6 +14,7 @@ import {
     MapPin,
     Store,
     ChevronRight,
+    ChevronLeft,
     CheckCircle2,
     Clock,
 } from "lucide-react";
@@ -178,6 +179,29 @@ export default function ActivityPage() {
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [tab, setTab] = useState<ActivityTab>("all");
     const [search, setSearch] = useState("");
+    /** On small screens: list vs full-width detail (avoids stacking list + long scroll). */
+    const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
+
+    useEffect(() => {
+        const mq = window.matchMedia("(min-width: 1024px)");
+        const sync = () => {
+            if (mq.matches) setMobileDetailOpen(false);
+        };
+        sync();
+        mq.addEventListener("change", sync);
+        return () => mq.removeEventListener("change", sync);
+    }, []);
+
+    useEffect(() => {
+        if (mobileDetailOpen) window.scrollTo({ top: 0, behavior: "auto" });
+    }, [mobileDetailOpen]);
+
+    const selectBooking = (id: number) => {
+        setSelectedId(id);
+        if (typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches) {
+            setMobileDetailOpen(true);
+        }
+    };
 
     useEffect(() => {
         const run = async () => {
@@ -305,7 +329,10 @@ export default function ActivityPage() {
                                 <button
                                     key={t.id}
                                     type="button"
-                                    onClick={() => setTab(t.id)}
+                                    onClick={() => {
+                                        setTab(t.id);
+                                        setMobileDetailOpen(false);
+                                    }}
                                     className={cn(
                                         "px-4 py-2 rounded-full text-sm font-semibold transition-all",
                                         tab === t.id
@@ -338,8 +365,13 @@ export default function ActivityPage() {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                                {/* List */}
-                                <div className="lg:col-span-5 space-y-8">
+                                {/* List — full width on mobile until a booking opens */}
+                                <div
+                                    className={cn(
+                                        "space-y-8 lg:col-span-5",
+                                        mobileDetailOpen && "hidden lg:block"
+                                    )}
+                                >
                                     {upcoming.length > 0 && (
                                         <section>
                                             <h2 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
@@ -356,7 +388,7 @@ export default function ActivityPage() {
                                                     <li key={b.id}>
                                                         <button
                                                             type="button"
-                                                            onClick={() => setSelectedId(b.id)}
+                                                            onClick={() => selectBooking(b.id)}
                                                             className={cn(
                                                                 "w-full text-left rounded-2xl border-2 p-3 flex gap-3 transition-all bg-white hover:shadow-md",
                                                                 effectiveSelectedId === b.id
@@ -408,7 +440,7 @@ export default function ActivityPage() {
                                                     <li key={b.id}>
                                                         <button
                                                             type="button"
-                                                            onClick={() => setSelectedId(b.id)}
+                                                            onClick={() => selectBooking(b.id)}
                                                             className={cn(
                                                                 "w-full text-left rounded-2xl border p-3 flex gap-3 transition-all bg-white/80 hover:bg-white border-gray-100",
                                                                 effectiveSelectedId === b.id && "border-2 shadow-sm"
@@ -447,24 +479,45 @@ export default function ActivityPage() {
                                     )}
                                 </div>
 
-                                {/* Detail */}
+                                {/* Detail — hidden on mobile until a booking is selected */}
                                 {selected && (
-                                    <div className="lg:col-span-7">
+                                    <div
+                                        className={cn(
+                                            "min-w-0 lg:col-span-7",
+                                            !mobileDetailOpen && "hidden lg:block"
+                                        )}
+                                    >
                                         <div
                                             className="rounded-3xl border bg-white overflow-hidden shadow-sm"
                                             style={{ borderColor: `${BORDER}55` }}
                                         >
-                                            <div className="relative aspect-[21/9] min-h-[200px] max-h-[280px]">
+                                            {/* Mobile: fixed layout row above hero (no sticky overlay on image) */}
+                                            <div className="lg:hidden flex min-h-[3.25rem] items-center gap-3 border-b border-gray-200 bg-white px-4 py-3">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setMobileDetailOpen(false)}
+                                                    className="flex shrink-0 items-center gap-0.5 rounded-lg px-1 py-1 text-sm font-semibold text-[#225D5C] hover:bg-[#225D5C]/8 active:bg-[#225D5C]/12"
+                                                >
+                                                    <ChevronLeft size={22} strokeWidth={2.25} aria-hidden />
+                                                    <span>Bookings</span>
+                                                </button>
+                                                <span className="min-w-0 flex-1 truncate text-left text-sm font-semibold text-gray-900">
+                                                    {selected.center_name}
+                                                </span>
+                                            </div>
+
+                                            <div className="relative h-48 w-full overflow-hidden bg-gray-100 sm:h-56 lg:h-64">
                                                 <Image
                                                     src={bookingHeroImage(selected)}
                                                     alt={selected.center_name}
-                                                    fill
-                                                    className="object-cover"
+                                                    width={1920}
+                                                    height={1080}
                                                     priority
-                                                    sizes="(max-width:1024px) 100vw, 60vw"
+                                                    sizes="100vw"
                                                     unoptimized
+                                                    className="h-full w-full object-cover object-center"
                                                 />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                                                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                                                 <div className="absolute bottom-4 left-4 right-4">
                                                     {upcomingLabel(selected.booking_date) && (
                                                         <p className="text-xs font-medium text-white/90 mb-1">
@@ -477,7 +530,7 @@ export default function ActivityPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="p-6 sm:p-8 space-y-8 max-h-[calc(100vh-12rem)] overflow-y-auto">
+                                            <div className="space-y-8 overflow-y-auto p-5 sm:p-8 lg:max-h-[calc(100vh-12rem)]">
                                                 <div>
                                                     <span
                                                         className={cn(

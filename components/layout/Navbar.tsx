@@ -222,11 +222,75 @@ const Navbar: React.FC = () => {
                                     <span className="text-xs text-gray-500">{user.email}</span>
                                 </div>
                             </div>
+
+                            <nav className="flex flex-col gap-0.5 border-b border-gray-100 pb-3" aria-label="Account">
+                                <Link
+                                    href="/profile"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    onClick={() => setMobileOpen(false)}
+                                >
+                                    <User size={18} className="shrink-0 text-gray-500" />
+                                    {t("profile")}
+                                </Link>
+                                <Link
+                                    href="/activity"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    onClick={() => setMobileOpen(false)}
+                                >
+                                    <Calendar size={18} className="shrink-0 text-gray-500" />
+                                    {t("activity")}
+                                </Link>
+                                <Link
+                                    href="/wallet"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    onClick={() => setMobileOpen(false)}
+                                >
+                                    <Wallet size={18} className="shrink-0 text-gray-500" />
+                                    {t("wallet")}
+                                </Link>
+                                <Link
+                                    href="/favorites"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    onClick={() => setMobileOpen(false)}
+                                >
+                                    <Heart size={18} className="shrink-0 text-gray-500" />
+                                    {t("favorites")}
+                                </Link>
+                                <Link
+                                    href="/forms"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    onClick={() => setMobileOpen(false)}
+                                >
+                                    <ClipboardList size={18} className="shrink-0 text-gray-500" />
+                                    {t("forms")}
+                                </Link>
+                                <Link
+                                    href="/product_orders"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    onClick={() => setMobileOpen(false)}
+                                >
+                                    <ShoppingBag size={18} className="shrink-0 text-gray-500" />
+                                    {t("product_orders")}
+                                </Link>
+                                <Link
+                                    href="/settings"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    onClick={() => setMobileOpen(false)}
+                                >
+                                    <Settings size={18} className="shrink-0 text-gray-500" />
+                                    {t("settings")}
+                                </Link>
+                            </nav>
+
                             <button
-                                onClick={handleLogout}
+                                type="button"
+                                onClick={() => {
+                                    handleLogout();
+                                    setMobileOpen(false);
+                                }}
                                 className="flex h-10 items-center justify-center rounded-lg border border-red-100 bg-red-50 text-sm font-medium text-red-600 hover:bg-red-100"
                             >
-                                {t('logout') || "Logout"}
+                                {t("logout")}
                             </button>
                         </div>
                     )}

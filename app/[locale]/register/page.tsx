@@ -89,7 +89,7 @@ const RegisterPage = () => {
             {/* Dynamic Background (Reflecting the design image) */}
             <div className="absolute inset-0 z-0">
                 <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-900/40 rounded-full blur-[120px] animate-pulse" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-900/30 rounded-full blur-[120px]" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[5n 0%] h-[50%] bg-purple-900/30 rounded-full blur-[120px]" />
                 {/* Particle effect simulation overlay */}
                 {/* <div className="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]" /> */}
                 <div className="absolute inset-0 opacity-30 bg-[url('/background.jpg')] bg-cover bg-center bg-no-repeat" />

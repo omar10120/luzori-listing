@@ -1,5 +1,12 @@
 'use server'
-import { API_ENDPOINTS, CenterResponse, CenterDetailResponse, CenterDetailData } from "./apiEndpoints";
+import {
+    API_ENDPOINTS,
+    CenterResponse,
+    CenterDetailResponse,
+    CenterDetailData,
+    BookingListResponse,
+    BookingListItem,
+} from "./apiEndpoints";
 import { Business, CenterRate } from "./types";
 
 /**
@@ -164,6 +171,26 @@ export const fetchUserProfile = async (token: string): Promise<any> => {
     } catch (error) {
         console.error("Fetch Profile Error:", error);
         return null;
+    }
+};
+
+export const fetchBookingsList = async (token: string): Promise<BookingListItem[]> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.BOOKING_LIST, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+            },
+        });
+
+        if (!response.ok) return [];
+        const json: BookingListResponse = await response.json();
+        return Array.isArray(json.data?.bookings) ? json.data.bookings : [];
+    } catch (error) {
+        console.error("Fetch bookings list error:", error);
+        return [];
     }
 };
 

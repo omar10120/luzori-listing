@@ -19,7 +19,7 @@ const Navbar: React.FC = () => {
     const t = useTranslations();
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<any>(null); //eslint-disable-line
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     useEffect(() => {

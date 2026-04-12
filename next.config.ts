@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "www.dashboard.luzori.com",
       },
+      {
+        protocol: "https",
+        hostname: "staticmap.openstreetmap.de",
+      },
     ],
   },
 };

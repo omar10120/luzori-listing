@@ -13,8 +13,53 @@ export const API_ENDPOINTS = {
     USER_SOCIAL_LOGIN: `${API_BASE_URL}/app_api/auth/social-login`,
     USER_UPDATE_PROFILE: `${API_BASE_URL}/app_api/auth/update-profile`,
     STORE_BOOKING: `${API_BASE_URL}/app_api/booking/store`,
+    BOOKING_LIST: `${API_BASE_URL}/app_api/booking/list`,
     INFO: `${API_BASE_URL}/app_api/info`,
 };
+
+/** Single line item on a user booking (from booking list API). */
+export interface BookingListService {
+    name: string;
+    worker_name: string;
+    price: number;
+    from_time: string;
+    to_time: string;
+    booking_source: string;
+    image?: string;
+    worker_image?: string;
+}
+
+export interface BookingListBranch {
+    id: number;
+    name: string;
+    latitude?: string | number | null;
+    longitude?: string | number | null;
+}
+
+export interface BookingListItem {
+    center_id: number;
+    center_name: string;
+    center_domain: string;
+    center_logo?: string | null;
+    center_primary_images?: string[] | null;
+    id: number;
+    booking_date: string;
+    full_name: string;
+    mobile: string;
+    payment_type: string;
+    total_price: number;
+    branch: BookingListBranch;
+    services: BookingListService[];
+    booking_status: string;
+    created_at: string;
+}
+
+export interface BookingListResponse {
+    message: string;
+    data: {
+        bookings: BookingListItem[];
+    };
+}
 
 export interface Branch {
     id: number;

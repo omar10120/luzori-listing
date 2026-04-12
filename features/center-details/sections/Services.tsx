@@ -50,7 +50,9 @@ export default function Services({ services, activeTab, onTabChange, tabs, onBoo
 
                         <div className="flex items-start gap-4 flex-1 min-w-0">
                             {/* Service Image or Category Icon */}
+
                             <div className="relative h-16 w-16 overflow-hidden rounded-xl bg-gray-50 border border-gray-100 shrink-0 shadow-sm transition-transform group-hover:scale-105  ">
+                                
                                 {svc.image && !svc.image.includes('avatars/1.png') ? (
 
                                     <Image
@@ -58,6 +60,7 @@ export default function Services({ services, activeTab, onTabChange, tabs, onBoo
                                         alt={svc.name}
                                         fill
                                         className="object-contain"
+                                        unoptimized
                                     />
                                 ) : (
                                     <div className="flex h-full w-full items-center justify-center text-gray-400">

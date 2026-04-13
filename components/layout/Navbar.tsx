@@ -85,7 +85,7 @@ const Navbar: React.FC = () => {
                                 aria-label="User profile"
                             >
                                 {user?.image ? (
-                                    <Image src={user.image} alt={user.name} width={36} height={36} className="h-full w-full object-cover" />
+                                    <Image src={user.image_url || "/assets/img/avatars/1.png"} alt={user.name} width={36} height={36} className="h-full w-full object-cover" unoptimized />
                                 ) : (
                                     (user?.name?.charAt(0) || "U")
                                 )}
@@ -227,7 +227,7 @@ const Navbar: React.FC = () => {
                             <div className="flex items-center gap-3 rounded-2xl border border-[#225D5C]/10 bg-white/90 px-3 py-3 shadow-sm">
                                 <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[#163D3C] text-white ring-2 ring-[#D8B48A]/30">
                                     {user.image ? (
-                                        <Image src={user.image} alt={user.name} width={40} height={40} className="object-cover" />
+                                            <Image src={user.image_url || "/assets/img/avatars/1.png"} alt={user.name} width={40} height={40} className="object-cover" unoptimized />
                                     ) : user.name?.charAt(0) || "U"}
                                 </div>
                                 <div className="flex flex-col">

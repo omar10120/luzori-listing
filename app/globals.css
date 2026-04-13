@@ -34,6 +34,7 @@ body {
 
 /* ─── Smooth scroll ─── */
 html {
+  font-size: 15px;
   scroll-behavior: smooth;
 }
 

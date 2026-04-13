@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -9,22 +10,31 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const menuItems = [
-    { label: "Profile", href: "/profile", icon: User },
-    { label: "Activity", href: "/activity", icon: Calendar },
-    { label: "Wallet", href: "/wallet", icon: Wallet },
-    { label: "Favorites", href: "/favorites", icon: Heart },
-    { label: "Forms", href: "/forms", icon: ClipboardList },
-    { label: "Product orders", href: "/product-orders", icon: ShoppingBag },
-    { label: "Settings", href: "/settings", icon: Settings },
-];
+
+
+
 
 interface AccountSidebarProps {
     userName?: string;
 }
 
+
+
 export default function AccountSidebar({ userName }: AccountSidebarProps) {
+
+    
     const pathname = usePathname();
+    const t = useTranslations();
+
+    const menuItems = [
+        { label: t("profile"), href: "/profile", icon: User },
+        { label: t("activity"), href: "/activity", icon: Calendar },
+        { label: t("wallet"), href: "/wallet", icon: Wallet },
+        { label: t("favorites"), href: "/favorites", icon: Heart },
+        { label: t("forms"), href: "/forms", icon: ClipboardList },
+        { label: t("product_orders"), href: "/product-orders", icon: ShoppingBag },
+        { label: t("settings"), href: "/settings", icon: Settings },
+    ];
 
     // Strip locale prefix, e.g. /en/profile → /profile
     const cleanPath = pathname.replace(/^\/[a-z]{2}/, "") || "/";
@@ -64,3 +74,4 @@ export default function AccountSidebar({ userName }: AccountSidebarProps) {
         </aside>
     );
 }
+

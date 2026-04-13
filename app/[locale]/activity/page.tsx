@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { generateCenterSlug } from "@/lib/slugify";
+import { useTranslations } from "next-intl";
 
 const BORDER = "#225D5C";
 const HERO_FALLBACK =
@@ -56,6 +57,13 @@ function formatDuration(fromTime: string, toTime: string): string {
     return parts.join(", ") || "—";
 }
 
+function formatDurationLabel(value: string, t: ReturnType<typeof useTranslations>): string {
+    if (!value || value === "—") return value || "—";
+    return value
+        .replace(/\bhours?\b/g, (m) => (m === "hour" ? t("activity_hour") : t("activity_hours")))
+        .replace(/\bminutes?\b/g, (m) => (m === "minute" ? t("activity_minute") : t("activity_minutes")));
+}
+
 function formatDateTimeLabel(bookingDate: string, fromTime: string): string {
     const d = new Date(`${bookingDate}T12:00:00`);
     const time = fromTime
@@ -78,12 +86,12 @@ function daysUntil(bookingDate: string): number | null {
     return diff;
 }
 
-function upcomingLabel(bookingDate: string): string | null {
+function upcomingLabel(bookingDate: string, t: ReturnType<typeof useTranslations>): string | null {
     const d = daysUntil(bookingDate);
     if (d === null) return null;
-    if (d === 0) return "Today";
-    if (d === 1) return "Tomorrow";
-    return `In ${d} days`;
+    if (d === 0) return t("activity_today");
+    if (d === 1) return t("activity_tomorrow");
+    return t("activity_in_days", { days: d });
 }
  
 function bookingReference(id: number): string {
@@ -120,49 +128,6 @@ function getDirectionsUrl(b: BookingListItem): string {
     return `https://www.google.com/maps/search/?api=1&query=${q}`;
 }
 
-/** OSM static preview (no API key). Falls back to empty string if coords missing. */
-function branchStaticMapUrl(b: BookingListItem): string {
-    const lat = parseCoord(b.branch?.latitude);
-    const lng = parseCoord(b.branch?.longitude);
-    if (lat == null || lng == null) return "";
-    return `https://staticmap.openstreetmap.de/staticmap.php?center=${lat},${lng}&zoom=15&size=800x320&maptype=mapnik&markers=${lat},${lng},red-pushpin`;
-}
-
-function downloadCalendarIcs(booking: BookingListItem) {
-    const svc = booking.services[0];
-    const from = svc?.from_time || "09:00";
-    const to = svc?.to_time || "10:00";
-    const date = booking.booking_date.replace(/-/g, "");
-    const [fh, fm = "00"] = from.split(":");
-    const [th, tm = "00"] = to.split(":");
-    const pad = (n: string) => n.padStart(2, "0");
-    const dtStart = `${date}T${pad(fh)}${pad(fm)}00`;
-    const dtEnd = `${date}T${pad(th)}${pad(tm)}00`;
-    const stamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
-    const summary = booking.center_name.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,");
-    const ics = [
-        "BEGIN:VCALENDAR",
-        "VERSION:2.0",
-        "PRODID:-//Luzori//Bookings//EN",
-        "CALSCALE:GREGORIAN",
-        "BEGIN:VEVENT",
-        `UID:luzori-${booking.id}@luzori.com`,
-        `DTSTAMP:${stamp}`,
-        `DTSTART:${dtStart}`,
-        `DTEND:${dtEnd}`,
-        `SUMMARY:${summary}`,
-        "END:VEVENT",
-        "END:VCALENDAR",
-    ].join("\r\n");
-    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `luzori-booking-${booking.id}.ics`;
-    a.click();
-    URL.revokeObjectURL(url);
-}
-
 function statusBadgeClass(status: string): string {
     const s = status.toLowerCase();
     if (s === "confirmed" || s === "complete" || s === "completed")
@@ -172,6 +137,7 @@ function statusBadgeClass(status: string): string {
 }
 
 export default function ActivityPage() {
+    const t = useTranslations();
     const router = useRouter();
     const [user, setUser] = useState<{ name?: string } | null>(null);
     const [loading, setLoading] = useState(true);
@@ -274,7 +240,7 @@ export default function ActivityPage() {
     const primaryService = selected?.services?.[0];
     const durationLabel =
         primaryService && primaryService.from_time && primaryService.to_time
-            ? formatDuration(primaryService.from_time, primaryService.to_time)
+            ? formatDurationLabel(formatDuration(primaryService.from_time, primaryService.to_time), t)
             : null;
     const dateTimeLabel =
         selected && primaryService
@@ -292,11 +258,11 @@ export default function ActivityPage() {
     }
 
     const tabs: { id: ActivityTab; label: string }[] = [
-        { id: "all", label: "All" },
-        { id: "appointments", label: "Appointments" },
-        { id: "gift_cards", label: "Gift Cards" },
-        { id: "memberships", label: "Memberships" },
-        { id: "products", label: "Products" },
+        { id: "all", label: t("all") },
+        { id: "appointments", label: t("activity_appointments") },
+        { id: "gift_cards", label: t("activity_gift_cards") },
+        { id: "memberships", label: t("activity_memberships") },
+        { id: "products", label: t("activity_products") },
     ];
 
     return (
@@ -307,7 +273,7 @@ export default function ActivityPage() {
 
                     <div className="flex-1 min-w-0">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-                            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Activity</h1>
+                            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">{t("activity")}</h1>
                             <div className="relative max-w-xs w-full sm:w-64">
                                 <Search
                                     className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -316,7 +282,7 @@ export default function ActivityPage() {
                                 />
                                 <input
                                     type="search"
-                                    placeholder="Search bookings…"
+                                    placeholder={t("activity_search_bookings")}
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     className="w-full h-11 pl-10 pr-3 rounded-xl border border-[#225D5C]/30 bg-white text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#225D5C]/40"
@@ -325,22 +291,22 @@ export default function ActivityPage() {
                         </div>
 
                         <div className="flex flex-wrap gap-2 mb-8">
-                            {tabs.map((t) => (
+                            {tabs.map((tabItem) => (
                                 <button
-                                    key={t.id}
+                                    key={tabItem.id}
                                     type="button"
                                     onClick={() => {
-                                        setTab(t.id);
+                                        setTab(tabItem.id);
                                         setMobileDetailOpen(false);
                                     }}
                                     className={cn(
                                         "px-4 py-2 rounded-full text-sm font-semibold transition-all",
-                                        tab === t.id
+                                        tab === tabItem.id
                                             ? "bg-gray-900 text-white"
                                             : "bg-white text-gray-700 border border-gray-200 hover:border-[#225D5C]/40"
                                     )}
                                 >
-                                    {t.label}
+                                    {tabItem.label}
                                 </button>
                             ))}
                         </div>
@@ -350,17 +316,17 @@ export default function ActivityPage() {
                                 className="rounded-2xl border border-dashed p-12 text-center text-gray-500 bg-white"
                                 style={{ borderColor: `${BORDER}55` }}
                             >
-                                No {tabs.find((x) => x.id === tab)?.label.toLowerCase()} yet.
+                                {t("activity_no_tab_yet", { tab: tabs.find((x) => x.id === tab)?.label.toLowerCase() || "" })}
                             </div>
                         ) : listForSidebar.length === 0 ? (
                             <div
                                 className="rounded-2xl border bg-white p-12 text-center text-gray-600"
                                 style={{ borderColor: `${BORDER}66` }}
                             >
-                                <p className="font-medium text-gray-900 mb-1">No bookings</p>
-                                <p className="text-sm">When you book a service, it will show up here.</p>
+                                <p className="font-medium text-gray-900 mb-1">{t("activity_no_bookings")}</p>
+                                <p className="text-sm">{t("activity_no_bookings_hint")}</p>
                                 <Button className="mt-6" variant="primary" size="md" onClick={() => router.push("/")}>
-                                    Browse venues
+                                    {t("activity_browse_venues")}
                                 </Button>
                             </div>
                         ) : (
@@ -375,7 +341,7 @@ export default function ActivityPage() {
                                     {upcoming.length > 0 && (
                                         <section>
                                             <h2 className="text-sm font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                                Upcoming
+                                                {t("activity_upcoming")}
                                                 <span
                                                     className="inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-full text-xs font-bold text-[#225D5C] bg-white border px-1.5"
                                                     style={{ borderColor: `${BORDER}99` }}
@@ -421,8 +387,7 @@ export default function ActivityPage() {
                                                                     )}
                                                                 </p>
                                                                 <p className="text-xs text-gray-500 mt-1">
-                                                                    AED {b.total_price} · {b.services.length} item
-                                                                    {b.services.length === 1 ? "" : "s"}
+                                                                    {t("activity_currency_aed")} {b.total_price} · {b.services.length} {b.services.length === 1 ? t("activity_item") : t("activity_items")}
                                                                 </p>
                                                             </div>
                                                         </button>
@@ -434,7 +399,7 @@ export default function ActivityPage() {
 
                                     {past.length > 0 && (
                                         <section>
-                                            <h2 className="text-sm font-bold text-gray-500 mb-3">Past</h2>
+                                            <h2 className="text-sm font-bold text-gray-500 mb-3">{t("activity_past")}</h2>
                                             <ul className="space-y-3">
                                                 {past.map((b) => (
                                                     <li key={b.id}>
@@ -499,7 +464,7 @@ export default function ActivityPage() {
                                                     className="flex shrink-0 items-center gap-0.5 rounded-lg px-1 py-1 text-sm font-semibold text-[#225D5C] hover:bg-[#225D5C]/8 active:bg-[#225D5C]/12"
                                                 >
                                                     <ChevronLeft size={22} strokeWidth={2.25} aria-hidden />
-                                                    <span>Bookings</span>
+                                                    <span>{t("activity_bookings")}</span>
                                                 </button>
                                                 <span className="min-w-0 flex-1 truncate text-left text-sm font-semibold text-gray-900">
                                                     {selected.center_name}
@@ -519,9 +484,9 @@ export default function ActivityPage() {
                                                 />
                                                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
                                                 <div className="absolute bottom-4 left-4 right-4">
-                                                    {upcomingLabel(selected.booking_date) && (
+                                                    {upcomingLabel(selected.booking_date, t) && (
                                                         <p className="text-xs font-medium text-white/90 mb-1">
-                                                            {upcomingLabel(selected.booking_date)}
+                                                            {upcomingLabel(selected.booking_date, t)}
                                                         </p>
                                                     )}
                                                     <p className="text-xl sm:text-2xl font-bold text-white drop-shadow-sm">
@@ -547,13 +512,13 @@ export default function ActivityPage() {
                                                     {durationLabel && (
                                                         <p className="text-sm text-gray-500 mt-1 flex items-center gap-1.5">
                                                             <Clock size={16} className="shrink-0" />
-                                                            {durationLabel} duration
+                                                            {durationLabel} {t("activity_duration")}
                                                         </p>
                                                     )}
                                                 </div>
 
                                                 <div className="flex flex-col gap-2">
-                                                    <Button
+                                                    {/* <Button
                                                         type="button"
                                                         variant="outline"
                                                         size="md"
@@ -562,7 +527,7 @@ export default function ActivityPage() {
                                                     >
                                                         <Calendar size={18} className="text-[#225D5C]" />
                                                         Add to calendar
-                                                    </Button>
+                                                    </Button> */}
                                                     <Button
                                                         type="button"
                                                         variant="outline"
@@ -573,7 +538,7 @@ export default function ActivityPage() {
                                                         }
                                                     >
                                                         <MapPin size={18} className="text-[#225D5C]" />
-                                                        Get directions
+                                                        {t("get_directions")}
                                                     </Button>
                                                     <Button
                                                         type="button"
@@ -587,7 +552,7 @@ export default function ActivityPage() {
                                                         }
                                                     >
                                                         <Store size={18} className="text-[#225D5C]" />
-                                                        Venue details
+                                                        {t("activity_venue_details")}
                                                         <ChevronRight
                                                             size={18}
                                                             className="ml-auto text-gray-400"
@@ -597,7 +562,7 @@ export default function ActivityPage() {
                                                 </div>
 
                                                 <section>
-                                                    <h4 className="text-sm font-bold text-gray-900 mb-3">Overview</h4>
+                                                    <h4 className="text-sm font-bold text-gray-900 mb-3">{t("activity_overview")}</h4>
                                                     <div
                                                         className="rounded-2xl border p-4 space-y-3"
                                                         style={{ borderColor: `${BORDER}44` }}
@@ -627,14 +592,13 @@ export default function ActivityPage() {
                                                         </div>
                                                         {durationLabel && (
                                                             <p className="text-xs text-gray-500">
-                                                                {durationLabel} · {selected.services.length} service
-                                                                {selected.services.length === 1 ? "" : "s"}
+                                                                {durationLabel} · {selected.services.length} {selected.services.length === 1 ? t("activity_service") : t("activity_services")}
                                                             </p>
                                                         )}
                                                         <div className="border-t border-gray-100 pt-3 flex justify-between items-baseline">
-                                                            <span className="font-bold text-gray-900">Total</span>
+                                                            <span className="font-bold text-gray-900">{t("activity_total")}</span>
                                                             <span className="text-lg font-bold text-gray-900">
-                                                                AED {selected.total_price}
+                                                                {t("activity_currency_aed")} {selected.total_price}
                                                             </span>
                                                         </div>
                                                     </div>
@@ -642,12 +606,12 @@ export default function ActivityPage() {
 
                                                 <section>
                                                     <h4 className="text-sm font-bold text-gray-900 mb-3">
-                                                        More details
+                                                        {t("activity_more_details")}
                                                     </h4>
                                                     <p className="text-sm text-gray-600 mb-4">
-                                                        Please cancel at least 1 hour before your appointment.
+                                                        {t("activity_cancel_policy")}
                                                     </p>
-                                                    <div className="flex flex-col gap-2">
+                                                    {/* <div className="flex flex-col gap-2">
                                                         <Button
                                                             type="button"
                                                             variant="outline"
@@ -672,17 +636,17 @@ export default function ActivityPage() {
                                                                 alert("Contact the venue to cancel this booking.")
                                                             }
                                                         >
-                                                            {/* <span className="flex items-center gap-2">
+                                                            <span className="flex items-center gap-2">
                                                                 Cancel appointment
-                                                            </span> */}
+                                                            </span>
                                                             <ChevronRight size={18} className="text-gray-400" />
                                                         </Button>
-                                                    </div>
+                                                    </div> */}
                                                 </section>
 
                                                 <section>
                                                     <h4 className="text-sm font-bold text-gray-900 mb-3">
-                                                        Getting there
+                                                        {t("activity_getting_there")}
                                                     </h4>
                                                     {/* <a
                                                         href={getDirectionsUrl(selected)}
@@ -725,12 +689,12 @@ export default function ActivityPage() {
                                                         rel="noreferrer"
                                                         className="text-sm font-semibold text-[#225D5C] hover:underline mt-1 inline-block"
                                                     >
-                                                        Open in Maps
+                                                        {t("activity_open_in_maps")}
                                                     </a>
                                                 </section>
 
                                                 <p className="text-xs text-gray-400 pt-2 border-t border-gray-100">
-                                                    Booking reference {bookingReference(selected.id)}
+                                                    {t("activity_booking_reference")} {bookingReference(selected.id)}
                                                 </p>
                                             </div>
                                         </div>

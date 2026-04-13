@@ -70,18 +70,22 @@ export default function Header() {
                             <div className="hidden flex-col items-end sm:flex text-right">
                                 <span className="text-sm font-semibold text-gray-900">{user.name}</span>
                                 <span className="text-xs text-gray-500">{user.email}</span>
+                                
                             </div>
                             <div className="relative">
+                            
                                 <button
                                     onClick={() => setIsProfileOpen(!isProfileOpen)}
                                     className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#d4af37] overflow-hidden transition-transform hover:scale-105 active:scale-95 focus:outline-none"
                                 >
+                                    
                                     <Image
-                                        src={user.image || "/assets/img/avatars/1.png"}
+                                        src={user.image_url || "/assets/img/avatars/1.png"}
                                         alt={user.name}
                                         width={40}
                                         height={40}
                                         className="h-full w-full object-cover"
+                                        unoptimized
                                     />
                                 </button>
                                 {/* Dropdown placeholder or Logout bit */}

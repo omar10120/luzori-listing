@@ -128,37 +128,37 @@ const ProfilePage = () => {
                         className="flex items-center gap-2 text-gray-500 hover:text-gray-900 mb-8 transition-colors"
                     >
                         <ArrowLeft size={20} />
-                        <span>Back</span>
+                        <span>{t("back")}</span>
                     </button>
 
-                    <h1 className="text-4xl font-bold text-gray-900 mb-10">Edit profile details</h1>
+                    <h1 className="text-4xl font-bold text-gray-900 mb-10">{t("edit_profile_details")}</h1>
 
                     <form onSubmit={handleSubmit} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-gray-900">First name</label>
+                                <label className="text-sm font-bold text-gray-900">{t("first_name")}</label>
                                 <input
                                     type="text"
                                     value={formData.first_name}
                                     onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                                     className="w-full h-12 px-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#225D5C] transition-all"
-                                    placeholder="Amr"
+                                    placeholder={t("first_name")}
                                 />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-gray-900">Last name</label>
+                                <label className="text-sm font-bold text-gray-900">{t("last_name")}</label>
                                 <input
                                     type="text"
                                     value={formData.last_name}
                                     onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
                                     className="w-full h-12 px-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#225D5C] transition-all"
-                                    placeholder="dawoodi"
+                                    placeholder={t("last_name")}
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-900">Mobile number</label>
+                            <label className="text-sm font-bold text-gray-900">{t("mobile_number")}</label>
                             <div className="flex gap-3">
                                 <div className="relative w-24">
                                     <select
@@ -182,30 +182,30 @@ const ProfilePage = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-900">Email address</label>
+                            <label className="text-sm font-bold text-gray-900">{t("email_address")}</label>
                             <input
                                 type="email"
                                 value={formData.email}
                                 disabled
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 className="w-full h-12 px-4 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#225D5C] transition-all"
-                                placeholder="amrooody7@gmail.com"
+                                placeholder={t("email_address")}
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-900">Address</label>
+                            <label className="text-sm font-bold text-gray-900">{t("address")}</label>
                             <textarea
                                 value={formData.address}
                                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                                 rows={3}
                                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#225D5C] transition-all resize-y min-h-[88px]"
-                                placeholder="Street, city"
+                                placeholder={t("address")}
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-900">Date of birth</label>
+                            <label className="text-sm font-bold text-gray-900">{t("date_of_birth")}</label>
                             <input
                                 type="date"
                                 value={formData.birth}
@@ -215,16 +215,16 @@ const ProfilePage = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-gray-900">Gender</label>
+                            <label className="text-sm font-bold text-gray-900">{t("gender")}</label>
                             <div className="relative">
                                 <select
                                     value={formData.gender}
                                     onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                                     className="w-full h-12 pl-4 pr-10 appearance-none rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#225D5C] bg-white transition-all text-sm text-gray-900"
                                 >
-                                    <option value="">Prefer not to say</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
+                                    <option value="">{t("prefer_not_to_say")}</option>
+                                    <option value="male">{t("male")}</option>
+                                    <option value="female">{t("female")}</option>
                                 </select>
                                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
                             </div>
@@ -240,7 +240,7 @@ const ProfilePage = () => {
                                     )}
                                 </div>
                                 <label className="cursor-pointer bg-gray-50 hover:bg-gray-100 px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium transition-all">
-                                    Change photo
+                                    {t("change_photo")}
                                     <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                                 </label>
                             </div>
@@ -257,7 +257,7 @@ const ProfilePage = () => {
                             disabled={submitting}
                             className="w-full h-14 bg-[#225D5C] text-[#FFD6A8] rounded-xl font-bold text-lg hover:opacity-90 transition-all disabled:opacity-50"
                         >
-                            {submitting ? "Updating..." : "Save changes"}
+                            {submitting ? t("updating") : t("save_changes")}
                         </button>
                     </form>
                 </Container>
@@ -275,7 +275,7 @@ const ProfilePage = () => {
 
                     {/* Main Content */}
                     <div className="flex-1">
-                        <h1 className="text-2xl font-bold text-gray-900 mb-8">Profile</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 mb-8">{t("profile")}</h1>
                         <div className="grid grid-cols-1 lg:grid-cols-14 gap-8">
                             {/* User Details Card */}
                             <div className="lg:col-span-5 bg-white rounded-3xl shadow-sm border border-gray-100 p-8 overflow-hidden relative">
@@ -283,7 +283,7 @@ const ProfilePage = () => {
                                     onClick={() => setIsEditing(true)}
                                     className="absolute top-6 right-8 text-sm font-medium text-blue-600 hover:underline"
                                 >
-                                    Edit
+                                    {t("edit")}
                                 </button>
                                 
                                 <div className="flex flex-col items-center mb-8">
@@ -304,27 +304,27 @@ const ProfilePage = () => {
 
                                 <div className="space-y-6">
                                     <div>
-                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">First name</p>
+                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t("first_name")}</p>
                                         <p className="text-sm font-medium text-gray-900">{user.first_name || "-"}</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Last name</p>
+                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t("last_name")}</p>
                                         <p className="text-sm font-medium text-gray-900">{user.last_name || "-"}</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Mobile number</p>
+                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t("mobile_number")}</p>
                                         <p className="text-sm font-medium text-gray-900">{user.full_phone || user.phone || "-"}</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Email</p>
+                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t("email")}</p>
                                         <p className="text-sm font-medium text-gray-900">{user.email || "-"}</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Address</p>
+                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t("address")}</p>
                                         <p className="text-sm font-medium text-gray-900 whitespace-pre-wrap">{user.address || "-"}</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Date of birth</p>
+                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t("date_of_birth")}</p>
                                         <p className="text-sm font-medium text-gray-900">
                                             {user.birth
                                                 ? (() => {
@@ -337,7 +337,7 @@ const ProfilePage = () => {
                                         </p>
                                     </div>
                                     <div>
-                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">Gender</p>
+                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t("gender")}</p>
                                         <p className="text-sm font-medium text-gray-900">
                                             {user.gender
                                                 ? String(user.gender).charAt(0).toUpperCase() +
@@ -351,7 +351,7 @@ const ProfilePage = () => {
                             {/* Addresses & Other Info */}
                             <div className="lg:col-span-8 space-y-8">
                                 <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-                                    <h3 className="text-xl font-bold text-gray-900 mb-6">My addresses</h3>
+                                    <h3 className="text-xl font-bold text-gray-900 mb-6">{t("my_addresses")}</h3>
 
                                     <div className="space-y-4 mb-6">
                                         <div className="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-gray-200 transition-all cursor-pointer">
@@ -359,8 +359,8 @@ const ProfilePage = () => {
                                                 <Home size={20} className="text-gray-500" />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-semibold text-gray-900">Home</p>
-                                                <p className="text-xs text-gray-400">Add a home address</p>
+                                                <p className="text-sm font-semibold text-gray-900">{t("home")}</p>
+                                                <p className="text-xs text-gray-400">{t("add_a_home_address")}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-gray-200 transition-all cursor-pointer">
@@ -368,15 +368,15 @@ const ProfilePage = () => {
                                                 <Briefcase size={20} className="text-gray-500" />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-semibold text-gray-900">Work</p>
-                                                <p className="text-xs text-gray-400">Add a work address</p>
+                                                <p className="text-sm font-semibold text-gray-900">{t("work")}</p>
+                                                <p className="text-xs text-gray-400">{t("add_a_work_address")}</p>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* <button className="flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all">
                                 <Plus size={16} />
-                                Add
+                                {t("add")}
                             </button> */}
                                 </div>
                             </div>

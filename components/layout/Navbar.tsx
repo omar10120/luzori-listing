@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import {
     Menu, X, User, Calendar, Wallet, Heart, ClipboardList,
     ShoppingBag, Settings, LogOut, Download, HelpCircle,
-    Globe, Building2, ChevronRight
+    Globe
 } from "lucide-react";
 import Link from "next/link";
 import Container from "@/components/ui/Container";
@@ -180,7 +180,13 @@ const Navbar: React.FC = () => {
                     <LocaleSwitcher />
                     <button
                         type="button"
-                        className="inline-flex items-center justify-center rounded-lg p-2 text-gray-700 hover:bg-gray-100"
+                        className={cn(
+                            "inline-flex items-center justify-center rounded-xl p-2.5 text-[#225D5C] shadow-sm ring-1 ring-[#225D5C]/10 transition-all duration-300",
+                            "hover:-translate-y-0.5 hover:bg-white/90 hover:shadow-md",
+                            mobileOpen
+                                ? "bg-white text-[#1B4B4A]"
+                                : "bg-white/75 backdrop-blur-sm"
+                        )}
                         onClick={() => setMobileOpen(!mobileOpen)}
                         aria-label="Toggle navigation menu"
                     >
@@ -190,13 +196,20 @@ const Navbar: React.FC = () => {
             </Container>
 
             {/* Mobile dropdown */}
-            {mobileOpen && (
-                <div className="border-t border-gray-100 bg-white px-4 pb-4 pt-2 sm:hidden transition-all duration-300">
+            <div
+                className={cn(
+                    "sm:hidden overflow-hidden border-t border-[#225D5C]/10 bg-gradient-to-b from-[#FFFDFC] to-[#F6F8F8] transition-all duration-300 ease-out",
+                    mobileOpen
+                        ? "max-h-[85vh] translate-y-0 opacity-100"
+                        : "max-h-0 -translate-y-2 opacity-0"
+                )}
+            >
+                <div className="px-4 pb-4 pt-3">
                     {!user ? (
                         <div className="flex flex-col gap-2">
                             <Link
                                 href="/login"
-                                className="flex h-10 items-center justify-center rounded-lg border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 bg-white"
+                                className="flex h-11 items-center justify-center rounded-xl border border-[#225D5C]/20 bg-white text-sm font-semibold text-[#225D5C] shadow-sm transition-all duration-200 hover:bg-[#225D5C]/5"
                                 onClick={() => setMobileOpen(false)}
                             >
                                 {t('login')}
@@ -211,8 +224,8 @@ const Navbar: React.FC = () => {
                         </div>
                     ) : (
                         <div className="flex flex-col gap-4">
-                            <div className="flex items-center gap-3 px-2 py-2 border-b border-gray-50">
-                                <div className="h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center text-white overflow-hidden">
+                            <div className="flex items-center gap-3 rounded-2xl border border-[#225D5C]/10 bg-white/90 px-3 py-3 shadow-sm">
+                                <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[#163D3C] text-white ring-2 ring-[#D8B48A]/30">
                                     {user.image ? (
                                         <Image src={user.image} alt={user.name} width={40} height={40} className="object-cover" />
                                     ) : user.name?.charAt(0) || "U"}
@@ -223,61 +236,61 @@ const Navbar: React.FC = () => {
                                 </div>
                             </div>
 
-                            <nav className="flex flex-col gap-0.5 border-b border-gray-100 pb-3" aria-label="Account">
+                            <nav className="flex flex-col gap-1 rounded-2xl border border-[#225D5C]/10 bg-white/85 p-2 shadow-sm" aria-label="Account">
                                 <Link
                                     href="/profile"
-                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 transition-colors duration-200 hover:bg-[#225D5C]/8"
                                     onClick={() => setMobileOpen(false)}
                                 >
-                                    <User size={18} className="shrink-0 text-gray-500" />
+                                    <User size={18} className="shrink-0 text-[#225D5C]" />
                                     {t("profile")}
                                 </Link>
                                 <Link
                                     href="/activity"
-                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 transition-colors duration-200 hover:bg-[#225D5C]/8"
                                     onClick={() => setMobileOpen(false)}
                                 >
-                                    <Calendar size={18} className="shrink-0 text-gray-500" />
+                                    <Calendar size={18} className="shrink-0 text-[#225D5C]" />
                                     {t("activity")}
                                 </Link>
                                 <Link
                                     href="/wallet"
-                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 transition-colors duration-200 hover:bg-[#225D5C]/8"
                                     onClick={() => setMobileOpen(false)}
                                 >
-                                    <Wallet size={18} className="shrink-0 text-gray-500" />
+                                    <Wallet size={18} className="shrink-0 text-[#225D5C]" />
                                     {t("wallet")}
                                 </Link>
                                 <Link
                                     href="/favorites"
-                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 transition-colors duration-200 hover:bg-[#225D5C]/8"
                                     onClick={() => setMobileOpen(false)}
                                 >
-                                    <Heart size={18} className="shrink-0 text-gray-500" />
+                                    <Heart size={18} className="shrink-0 text-[#225D5C]" />
                                     {t("favorites")}
                                 </Link>
                                 <Link
                                     href="/forms"
-                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 transition-colors duration-200 hover:bg-[#225D5C]/8"
                                     onClick={() => setMobileOpen(false)}
                                 >
-                                    <ClipboardList size={18} className="shrink-0 text-gray-500" />
+                                    <ClipboardList size={18} className="shrink-0 text-[#225D5C]" />
                                     {t("forms")}
                                 </Link>
                                 <Link
                                     href="/product_orders"
-                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 transition-colors duration-200 hover:bg-[#225D5C]/8"
                                     onClick={() => setMobileOpen(false)}
                                 >
-                                    <ShoppingBag size={18} className="shrink-0 text-gray-500" />
+                                    <ShoppingBag size={18} className="shrink-0 text-[#225D5C]" />
                                     {t("product_orders")}
                                 </Link>
                                 <Link
                                     href="/settings"
-                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 hover:bg-gray-50"
+                                    className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 transition-colors duration-200 hover:bg-[#225D5C]/8"
                                     onClick={() => setMobileOpen(false)}
                                 >
-                                    <Settings size={18} className="shrink-0 text-gray-500" />
+                                    <Settings size={18} className="shrink-0 text-[#225D5C]" />
                                     {t("settings")}
                                 </Link>
                             </nav>
@@ -288,17 +301,17 @@ const Navbar: React.FC = () => {
                                     handleLogout();
                                     setMobileOpen(false);
                                 }}
-                                className="flex h-10 items-center justify-center rounded-lg border border-red-100 bg-red-50 text-sm font-medium text-red-600 hover:bg-red-100"
+                                className="flex h-11 items-center justify-center rounded-xl border border-red-200 bg-red-50 text-sm font-semibold text-red-600 transition-colors duration-200 hover:bg-red-100"
                             >
                                 {t("logout")}
                             </button>
                         </div>
                     )}
                     <div className="mt-4">
-                        <Button variant="outline" size="sm" className="w-full">
+                        <Button variant="outline" size="sm" className="w-full border-[#225D5C]/20 bg-white/90 text-[#225D5C] hover:bg-[#225D5C]/5">
                             <Link
                                 href="https://dashboard.luzori.com"
-                                className="text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors"
+                                className="text-sm font-semibold text-[#225D5C] transition-colors hover:text-[#163D3C]"
                                 target="_blank"
                                 onClick={() => setMobileOpen(false)}
                             >
@@ -307,7 +320,7 @@ const Navbar: React.FC = () => {
                         </Button>
                     </div>
                 </div>
-            )}
+            </div>
         </header>
     );
 };

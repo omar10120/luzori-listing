@@ -4,15 +4,17 @@ import React from "react";
 import Container from "@/components/ui/Container";
 import { useTranslations } from "next-intl";
 import SectionHeader from "../ui/SectionHeader";
+import { fetchInfo } from "@/lib/api";
+import Link from "next/link";
+import type { InfoData } from "@/lib/apiEndpoints";
 
 const Footer: React.FC = () => {
     const t = useTranslations();
     const currentYear = new Date().getFullYear();
-    const [info, setInfo] = React.useState<import("@/lib/apiEndpoints").InfoData | null>(null);
+    const [info, setInfo] = React.useState<InfoData | null>(null);
 
     React.useEffect(() => {
-        const { fetchInfo } = require("@/lib/api");
-        fetchInfo().then((data: any) => {
+        fetchInfo().then((data: InfoData | null) => {
             if (data) setInfo(data);
         });
     }, []);
@@ -22,16 +24,16 @@ const Footer: React.FC = () => {
             title: t('about_luzori'),
             links: [
                 { label: t('about'), href: "/legal?tab=about_us" },
-                { label: "Careers", href: "#" },
-                { label: "Partners", href: "#" },
-                { label: "Press", href: "#" },
+                { label: t('careers'), href: "#" },
+                { label: t('partners'), href: "#" },
+                { label: t('press'), href: "#" },
             ],
         },
         {
             title: t('support'),
             links: [
-                { label: "Help center", href: "#" },
-                { label: "Contact us", href: "#" },
+                { label: t('help_center'), href: "#" },
+                { label: t('contact_us'), href: "#" },
                 { label: t('privacy_policy'), href: "/legal?tab=privacy_policy" },
                 { label: t('terms_of_use'), href: "/legal?tab=terms_of_use" },
             ],
@@ -40,9 +42,9 @@ const Footer: React.FC = () => {
             title: t('solutions'),
             links: [
                 { label: t('luzori_for_business'), href: "#" },
-                { label: "Pricing", href: "#" },
-                { label: "Features", href: "#" },
-                { label: "Integrations", href: "#" },
+                { label: t('pricing'), href: "#" },
+                { label: t('features'), href: "#" },
+                { label: t('integrations'), href: "#" },
             ],
         },
         {
@@ -51,7 +53,7 @@ const Footer: React.FC = () => {
                 { label: t('privacy_policy'), href: "/legal?tab=privacy_policy" },
                 { label: t('terms_of_use'), href: "/legal?tab=terms_of_use" },
                 { label: t('terms_of_service'), href: "/legal?tab=terms_of_service" },
-                { label: "Cookie policy", href: "#" },
+                { label: t('cookie_policy'), href: "#" },
             ],
         },
     ];
@@ -65,15 +67,13 @@ const Footer: React.FC = () => {
                 <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:grid-cols-5">
                     {/* Brand column */}
                     <div className="col-span-2 sm:col-span-4 lg:col-span-1">
-                        <a
+                        <Link
                             href="/"
                             className="text-xl font-bold tracking-tight text-gray-900"
                             aria-label="Luzori home"
                         >
                             <SectionHeader heading={t('Luzori')} />
-
-
-                        </a>
+                        </Link>
                         <div 
                             className="mt-3 max-w-xs text-sm text-gray-900"
                             dangerouslySetInnerHTML={{ 

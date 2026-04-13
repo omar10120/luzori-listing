@@ -14,10 +14,13 @@ export default function About({ centerName }: AboutProps) {
             <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('about')}</h2>
             <div className="prose prose-sm max-w-none text-gray-600">
                 <p className="leading-relaxed">
-                    Welcome to <strong>{centerName}</strong> — your premier destination for self-care and beauty services.
+                    {/* Welcome to <strong>{centerName}</strong> — your premier destination for self-care and beauty services.
                     We offer a wide range of professional treatments including hair styling, skincare, body treatments,
                     nail care, and exclusive bridal packages. Our team of certified professionals is dedicated to
-                    providing you with an exceptional experience in a luxurious and relaxing environment.
+                    providing you with an exceptional experience in a luxurious and relaxing environment. */}
+                    {t('about_center')}  <strong>{centerName}</strong> - {t('about_center_description')}
+                  
+
                 </p>
                 <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {[

@@ -97,7 +97,7 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
     const handleSubmit = async () => {
         const token = localStorage.getItem("authToken");
         if (!token) {
-            alert(t('login_required') || "Please login to book services.");
+            alert(t('login_required'));
             return;
         }
 
@@ -129,7 +129,7 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
 
                 const totalPrice = selectedServices.reduce((sum, s) => sum + Number(s.price), 0);
                 if (currentWallet < totalPrice) {
-                    alert(t('insufficient_balance') || "Insufficient wallet balance");
+                    alert(t('insufficient_balance'));
                     setIsSubmitting(false);
                     return;
                 }
@@ -141,11 +141,11 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
                 // Extract the sale ID as the booking reference number
                 setSuccessData({ id: res.data?.sale?.id ?? res.data?.id ?? "—" });
             } else {
-                alert(res.message || "Failed to create booking.");
+                alert(res.message || t("booking_failed_create"));
             }
         } catch (err) {
             console.error(err);
-            alert("An error occurred during booking.");
+            alert(t("booking_error_during_booking"));
         } finally {
             setIsSubmitting(false);
         }
@@ -269,7 +269,7 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
                         </div>
 
                         <h2 className="text-2xl font-bold text-gray-900 mb-4 tracking-tight">
-                            {t('booking_success') || "Your appointment has been booked successfully"}
+                            {t('booking_success')}
                         </h2>
 
                         <p className="text-gray-500 font-medium leading-relaxed">

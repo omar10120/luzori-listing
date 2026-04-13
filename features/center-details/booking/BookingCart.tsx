@@ -6,6 +6,7 @@ import { CenterDetailData } from "@/lib/apiEndpoints";
 import { SelectedService, BookingStep } from "./BookingWizard";
 import { Star } from "lucide-react";
 import Button from "@/components/ui/Button";
+import { useTranslations } from "next-intl";
 
 interface BookingCartProps {
     center: CenterDetailData;
@@ -17,6 +18,7 @@ interface BookingCartProps {
 }
 
 export default function BookingCart({ center, selectedServices, currentStep, onNext, professionalType, isSubmitting }: BookingCartProps) {
+    const t = useTranslations();
     const total = selectedServices.reduce((sum, s) => {
         const p = typeof s.price === 'string' ? parseFloat(s.price) : s.price;
         return sum + (p || 0);
@@ -33,9 +35,9 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
     };
 
     const getButtonText = () => {
-        if (isSubmitting) return "Processing...";
-        if (currentStep === "confirm") return "Confirm Booking";
-        return "Continue";
+        if (isSubmitting) return t("booking_processing");
+        if (currentStep === "confirm") return t("booking_confirm_booking");
+        return t("save_and_continue");
     };
 
     return (
@@ -76,16 +78,16 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
                             <div className="flex-1">
                                 <p className="text-sm font-bold text-gray-900 leading-snug">{svc.name}</p>
                                 <p className="text-xs text-gray-500 mt-1">
-                                    {svc.duration || "1 hr"} • {professionalType === 'any' ? "Any professional" : "Selected professional"}
+                                    {svc.duration || t("booking_default_short_duration")} • {professionalType === 'any' ? t("booking_any_professional") : t("booking_selected_professional")}
                                 </p>
                                 {svc.date && svc.fromTime && (
                                      <p className="text-xs font-medium text-[#225D5C] mt-1">
-                                        {svc.date} at {svc.fromTime}
+                                        {svc.date} {t("booking_at")} {svc.fromTime}
                                      </p>
                                 )}
                             </div>
                             <span className="text-sm font-bold text-gray-900 whitespace-nowrap">
-                                AED {svc.price}
+                                {t("activity_currency_aed")} {svc.price}
                             </span>
                         </div>
                     ))}
@@ -94,8 +96,8 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
 
             {/* Total */}
             <div className="flex justify-between items-center py-4 border-t border-gray-100">
-                <span className="text-base font-bold text-gray-900">Total</span>
-                <span className="text-xl font-black text-gray-900">AED {total}</span>
+                <span className="text-base font-bold text-gray-900">{t("activity_total")}</span>
+                <span className="text-xl font-black text-gray-900">{t("activity_currency_aed")} {total}</span>
             </div>
 
             <Button 

@@ -1,7 +1,7 @@
 import React from "react";
 import { CenterDetailData } from "@/lib/apiEndpoints";
 import { SelectedService } from "./BookingWizard";
-import { CheckCircle2, User, Clock, MapPin, Wallet, CreditCard, Banknote } from "lucide-react";
+import { CheckCircle2, User, Clock, MapPin, Wallet, CreditCard } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 
@@ -27,26 +27,26 @@ export default function Step4Confirm({
     const isWalletDisabled = userWallet < totalPrice;
 
     const paymentOptions = [
-        { id: "wallet", label: t('wallet') || "Wallet", icon: Wallet, description: `${t('current_balance') || 'Balance'}: AED ${userWallet}`, disabled: isWalletDisabled },
+        { id: "wallet", label: t('wallet') || "Wallet", icon: Wallet, description: `${t('current_balance') || 'Balance'}: ${t("activity_currency_aed")} ${userWallet}`, disabled: isWalletDisabled },
         // { id: "service_cash", label: t('cash') || "Service Cash", icon: Banknote, description: "Pay at the center" },
-        { id: "credit_card", label: t('credit_card') || "Credit Card", icon: CreditCard, description: "Secure online payment" },
+        { id: "credit_card", label: t('credit_card') || "Credit Card", icon: CreditCard, description: t("booking_secure_online_payment") },
     ];
 
     return (
         <div className="flex flex-col gap-8 w-full">
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">Confirm Booking</h1>
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">{t("booking_confirm_booking")}</h1>
 
             <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm flex flex-col gap-8">
 
                 {/* Header Note */}
                 <div className="flex items-center gap-4 p-4 bg-[#225D5C]/5 rounded-2xl border border-[#225D5C]/10 text-[#225D5C]">
                     <CheckCircle2 size={24} className="text-[#225D5C] shrink-0" />
-                    <p className="font-medium text-sm">Please review your booking details below. Click "Book Now" on the right to finalize your appointment.</p>
+                    <p className="font-medium text-sm">{t("booking_review_details_hint")}</p>
                 </div>
 
                 {/* Location */}
                 <div className="flex flex-col gap-3">
-                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Location</h3>
+                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider">{t("booking_location")}</h3>
                     <div className="flex items-start gap-4">
                         <div className="mt-1">
                             <MapPin size={20} className="text-gray-400" />
@@ -61,7 +61,7 @@ export default function Step4Confirm({
 
                 {/* Services Checklist */}
                 <div className="flex flex-col gap-4 border-t border-gray-100 pt-8">
-                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">Services ({selectedServices.length})</h3>
+                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">{t("services")} ({selectedServices.length})</h3>
 
                     <div className="flex flex-col gap-6">
                         {selectedServices.map((svc, i) => (
@@ -73,7 +73,7 @@ export default function Step4Confirm({
                                         <div className="flex items-center gap-2">
                                             <User size={16} className="text-gray-400" />
                                             <span className="font-medium capitalize">
-                                                {professionalType === 'any' ? "Any professional" : (svc.workers?.find(w => w.id === svc.selectedWorkerId)?.name || 'Selected professional')}
+                                                {professionalType === 'any' ? t("booking_any_professional") : (svc.workers?.find(w => w.id === svc.selectedWorkerId)?.name || t("booking_selected_professional"))}
                                             </span>
                                         </div>
 
@@ -86,7 +86,7 @@ export default function Step4Confirm({
                                     </div>
                                 </div>
                                 <div className="text-lg font-black text-gray-900 text-right">
-                                    AED {svc.price}
+                                    {t("activity_currency_aed")} {svc.price}
                                 </div>
                             </div>
                         ))}
@@ -95,8 +95,8 @@ export default function Step4Confirm({
 
                 {/* Total Price (Mobile Helper) */}
                 <div className="flex justify-between items-center sm:hidden border-t border-gray-100 pt-6">
-                    <span className="text-gray-500 font-bold">Total Price</span>
-                    <span className="text-2xl font-black text-gray-900">AED {totalPrice}</span>
+                    <span className="text-gray-500 font-bold">{t("booking_total_price")}</span>
+                    <span className="text-2xl font-black text-gray-900">{t("activity_currency_aed")} {totalPrice}</span>
                 </div>
 
                 {/* Payment Method Selection */}

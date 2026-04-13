@@ -5,6 +5,7 @@ import { CenterDetailData, Service } from "@/lib/apiEndpoints";
 import { SelectedService } from "./BookingWizard";
 import { Plus, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface Step1ServicesProps {
     center: CenterDetailData;
@@ -13,8 +14,8 @@ interface Step1ServicesProps {
 }
 
 export default function Step1Services({ center, selectedServices, setSelectedServices }: Step1ServicesProps) {
+    const t = useTranslations();
     const categories = center.categories || [];
-    const allServices = categories.flatMap(c => c.services.map(s => ({ ...s, categoryName: c.name })));
 
     // Tabs
     const tabs = ["all", ...categories.map(c => c.name)];
@@ -31,7 +32,7 @@ export default function Step1Services({ center, selectedServices, setSelectedSer
 
     return (
         <div className="flex flex-col gap-6 w-full">
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">Services</h1>
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">{t("services")}</h1>
             
             {/* Tabs */}
             <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3 mb-2 border-b border-gray-100">
@@ -46,7 +47,7 @@ export default function Step1Services({ center, selectedServices, setSelectedSer
                                 : "bg-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                         )}
                     >
-                        {tab === "all" ? "All services" : tab}
+                        {tab === "all" ? t("all_treatments") : tab}
                     </button>
                 ))}
             </div>
@@ -77,9 +78,9 @@ export default function Step1Services({ center, selectedServices, setSelectedSer
                                             <div className="flex-1 pr-4">
                                                 <p className="text-base font-bold text-gray-900">{svc.name}</p>
                                                 <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                                                    {svc.description || svc.duration || "1 hr, 30 min"} • {svc.workers?.length || 1} services 
+                                                    {svc.description || svc.duration || t("booking_default_duration")} • {svc.workers?.length || 1} {svc.workers?.length === 1 ? t("activity_service") : t("activity_services")}
                                                 </p>
-                                                <p className="text-sm font-bold text-gray-900 mt-3">AED {svc.price}</p>
+                                                <p className="text-sm font-bold text-gray-900 mt-3">{t("activity_currency_aed")} {svc.price}</p>
                                             </div>
                                             
                                             <div className={cn(

@@ -5,6 +5,7 @@ import { SelectedService } from "./BookingWizard";
 import { Users, UserPlus, Check, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 interface Step2ProfessionalProps {
     selectedServices: SelectedService[];
@@ -25,6 +26,7 @@ export default function Step2Professional({
     selectedBranchId,
     setSelectedBranchId,
 }: Step2ProfessionalProps) {
+    const t = useTranslations();
 
     const handleTypeSelect = (newType: "any" | "per_service", branchId: number | null = selectedBranchId) => {
         setType(newType);
@@ -68,12 +70,12 @@ export default function Step2Professional({
 
     return (
         <div className="flex flex-col gap-8 w-full">
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">Select professional</h1>
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">{t("booking_select_professional")}</h1>
 
             {/* Branch Selection */}
             {branches.length > 1 && (
                 <div className="flex flex-col gap-4">
-                    <h3 className="text-lg font-bold text-gray-900">Select branch</h3>
+                    <h3 className="text-lg font-bold text-gray-900">{t("booking_select_branch")}</h3>
                     <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide">
                         {branches.map((branch) => (
                             <div
@@ -106,7 +108,7 @@ export default function Step2Professional({
 
             {/* Assign Type: Any / Per Service */}
             <div className="flex flex-col gap-4">
-                <h3 className="text-lg font-bold text-gray-900">Assign professionals</h3>
+                <h3 className="text-lg font-bold text-gray-900">{t("booking_assign_professionals")}</h3>
 
                 <div
                     onClick={() => handleTypeSelect("any")}
@@ -120,15 +122,15 @@ export default function Step2Professional({
                             <Users size={28} />
                         </div>
                         <div>
-                            <p className="text-lg font-bold text-gray-900">Any professional</p>
-                            <p className="text-sm text-gray-500 mt-1">for maximum availability</p>
+                            <p className="text-lg font-bold text-gray-900">{t("booking_any_professional")}</p>
+                            <p className="text-sm text-gray-500 mt-1">{t("booking_for_maximum_availability")}</p>
                         </div>
                     </div>
                     <div className={cn(
                         "px-6 py-2 rounded-full text-sm font-bold transition-all border",
                         type === "any" ? "bg-[#225D5C] text-white border-[#225D5C]" : "bg-white text-gray-900 border-gray-200"
                     )}>
-                        {type === "any" ? "Selected" : "Select"}
+                        {type === "any" ? t("booking_selected") : t("booking_select")}
                     </div>
                 </div>
 
@@ -144,15 +146,15 @@ export default function Step2Professional({
                             <UserPlus size={28} />
                         </div>
                         <div>
-                            <p className="text-lg font-bold text-gray-900">Select professional per service</p>
-                            <p className="text-sm text-gray-500 mt-1">choose exactly who you want</p>
+                            <p className="text-lg font-bold text-gray-900">{t("booking_select_professional_per_service")}</p>
+                            <p className="text-sm text-gray-500 mt-1">{t("booking_choose_exactly_who_you_want")}</p>
                         </div>
                     </div>
                     <div className={cn(
                         "px-6 py-2 rounded-full text-sm font-bold transition-all border",
                         type === "per_service" ? "bg-[#225D5C] text-white border-[#225D5C]" : "bg-white text-gray-900 border-gray-200"
                     )}>
-                        {type === "per_service" ? "Selected" : "Select"}
+                        {type === "per_service" ? t("booking_selected") : t("booking_select")}
                     </div>
                 </div>
             </div>
@@ -168,11 +170,11 @@ export default function Step2Professional({
                                 {/* Service label */}
                                 <div className="flex items-center justify-between">
                                     <p className="text-base font-bold text-gray-900">{svc.name}</p>
-                                    <span className="text-sm font-semibold text-gray-500">AED {svc.price}</span>
+                                    <span className="text-sm font-semibold text-gray-500">{t("activity_currency_aed")} {svc.price}</span>
                                 </div>
 
                                 {branchWorkers.length === 0 ? (
-                                    <p className="text-sm text-gray-400 italic">No professionals available for this branch.</p>
+                                    <p className="text-sm text-gray-400 italic">{t("booking_no_professionals_available_for_branch")}</p>
                                 ) : (
                                     <div className="flex flex-col gap-3">
                                         {branchWorkers.map(worker => {
@@ -208,7 +210,7 @@ export default function Step2Professional({
                                                     {/* Info */}
                                                     <div className="flex-1 min-w-0">
                                                         <p className="text-base font-bold text-gray-900">{worker.name}</p>
-                                                        <p className="text-sm text-gray-500 mt-0.5">Professional</p>
+                                                        <p className="text-sm text-gray-500 mt-0.5">{t("professional")}</p>
                                                     </div>
 
                                                     {/* Select / Check */}

@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { SelectedService } from "./BookingWizard";
 import type { Worker } from "@/lib/apiEndpoints";
 import { Calendar, Clock, Star, MapPin, ChevronRight, ChevronLeft } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 
 interface Step3TimeProps {
     selectedServices: SelectedService[];
@@ -174,12 +175,14 @@ export default function Step3Time({
     setSelectedServices,
     selectedBranchId,
 }: Step3TimeProps) {
+    const t = useTranslations();
+    const locale = useLocale();
     // State for the currently displayed month in the circular picker
     const today = new Date();
     const [currentYear, setCurrentYear] = useState(today.getFullYear());
     const [currentMonth, setCurrentMonth] = useState(today.getMonth()); // 0-indexed
     const daysInMonth = getDaysInMonth(currentYear, currentMonth);
-    const monthYearString = new Date(currentYear, currentMonth).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const monthYearString = new Date(currentYear, currentMonth).toLocaleDateString(locale, { month: 'long', year: 'numeric' });
 
     const vacationDateKeys = useMemo(
         () => collectWorkerVacationDateKeys(selectedServices, selectedBranchId),
@@ -258,7 +261,7 @@ export default function Step3Time({
         if (isTimeSlotUnavailable(time24h, dateKey, todayKey)) return;
         setSelectedServices(prev =>
             prev.map(svc => {
-                const durationMinutes = parseDurationToMinutes(svc.duration || "1 hr");
+                const durationMinutes = parseDurationToMinutes(svc.duration || t("booking_default_short_duration"));
                 const toTime = addMinutesTo24h(time24h, durationMinutes);
                 return { ...svc, fromTime: time24h, toTime };
             })
@@ -281,22 +284,22 @@ export default function Step3Time({
     const toTimeDisplay = mainService?.toTime ? to12HourFormat(mainService.toTime) : "";
     const timeRange = fromTimeDisplay && toTimeDisplay
         ? `${fromTimeDisplay}–${toTimeDisplay}`
-        : "Select time";
-    const duration = mainService?.duration || "1 hr";
+        : t("booking_select_time");
+    const duration = mainService?.duration || t("booking_default_short_duration");
 
     // Determine which date is currently selected across all services (assuming same date for all)
     const selectedFullDate = mainService?.date || "";
 
     return (
         <div className="flex flex-col gap-8 w-full max-w-3xl mx-auto">
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">Select time</h1>
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">{t("booking_select_time")}</h1>
 
             <div className="flex justify-between items-center">
                 <button
                     onClick={handleNoPreference}
                     className="text-sm font-medium text-gray-600 hover:text-[#225D5C] transition-colors"
                 >
-                    No preference
+                    {t("booking_no_preference")}
                 </button>
                 {/* Calendar icon for normal date picker */}
                 <div className="relative">
@@ -345,9 +348,9 @@ export default function Step3Time({
                                 disabled={isOff}
                                 title={
                                     isPast
-                                        ? "Past dates cannot be selected"
+                                        ? t("booking_past_dates_cannot_be_selected")
                                         : isVacation
-                                            ? "Professional unavailable (day off)"
+                                            ? t("booking_professional_unavailable_day_off")
                                             : undefined
                                 }
                                 onClick={() => !isOff && handleDateSelect(day.fullDate)}
@@ -373,7 +376,7 @@ export default function Step3Time({
             <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                 <div className="flex items-center gap-2 mb-4">
                     <Clock size={18} className="text-[#225D5C]" />
-                    <span className="font-semibold text-gray-800">Available time slots</span>
+                    <span className="font-semibold text-gray-800">{t("booking_available_time_slots")}</span>
                 </div>
                 <div className="flex flex-wrap gap-3">
                     {TIME_SLOTS_24H.map((slot24h, idx) => {
@@ -382,10 +385,10 @@ export default function Step3Time({
                         const slotOff = isTimeSlotUnavailable(slot24h, selectedFullDate, todayKey);
                         const slotTitle =
                             !selectedFullDate
-                                ? "Select a date first"
+                                ? t("booking_select_date_first")
                                 : selectedFullDate === todayKey &&
                                     time24hToMinutes(slot24h) <= getNowMinutesLocal()
-                                    ? "This time has already passed"
+                                    ? t("booking_time_already_passed")
                                     : undefined;
                         return (
                             <button
@@ -409,8 +412,8 @@ export default function Step3Time({
                 </div>
                 <p className="text-xs text-gray-400 mt-4">
                     {!selectedFullDate
-                        ? "Choose a date to see available times."
-                        : `Duration: ${duration} • End time calculated automatically`}
+                        ? t("booking_choose_date_to_see_available_times")
+                        : t("booking_duration_with_auto_end", { duration })}
                 </p>
             </div>
 
@@ -419,7 +422,7 @@ export default function Step3Time({
                 <div className="p-5 border-b border-gray-100">
                     <div className="flex items-start justify-between">
                         <div>
-                            <h3 className="font-bold text-xl text-gray-900">Wow Beauty Lab MYMALL</h3>
+                            <h3 className="font-bold text-xl text-gray-900">{t("booking_sample_center_name")}</h3>
                             <div className="flex items-center gap-1 mt-1">
                                 <Star size={16} className="fill-yellow-400 text-yellow-400" />
                                 <span className="font-medium text-gray-800">5.0</span>
@@ -427,7 +430,7 @@ export default function Step3Time({
                             </div>
                             <div className="flex items-center gap-1 mt-1 text-gray-500 text-sm">
                                 <MapPin size={14} />
-                                <span>My Mall, Franklin Roosevelt, Limassol</span>
+                                <span>{t("booking_sample_center_address")}</span>
                             </div>
                         </div>
                     </div>
@@ -435,20 +438,20 @@ export default function Step3Time({
                 <div className="p-5 bg-gray-50/40">
                     <div className="flex flex-col gap-3">
                         <div className="flex justify-between items-center">
-                            <span className="text-gray-500 text-sm">Date & Time</span>
+                            <span className="text-gray-500 text-sm">{t("booking_date_time")}</span>
                             <span className="font-medium text-gray-800">
                                 {selectedDate ? (
                                     <>
-                                        {selectedDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                                        {selectedDate.toLocaleDateString(locale, { weekday: 'short', month: 'short', day: 'numeric' })}
                                         , {timeRange}
                                     </>
                                 ) : (
-                                    "Not selected"
+                                    t("booking_not_selected")
                                 )}
                             </span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-gray-500 text-sm">Service</span>
+                            <span className="text-gray-500 text-sm">{t("services")}</span>
                             <span className="font-medium text-gray-800 text-right max-w-[60%]">
                                 {serviceNames} • {duration}
                             </span>
@@ -467,7 +470,7 @@ export default function Step3Time({
             </div>
 
             <p className="text-sm text-gray-500 bg-blue-50 text-blue-800 p-4 rounded-xl">
-                Select a date and time slot for your appointment. The end time will be set automatically based on service duration.
+                {t("booking_select_date_time_hint")}
             </p>
         </div>
     );

@@ -198,7 +198,7 @@ const Navbar: React.FC = () => {
             {/* Mobile dropdown */}
             <div
                 className={cn(
-                    "fixed inset-x-0 bottom-0 top-16 z-40 sm:hidden overflow-y-auto border-t border-[#225D5C]/10 bg-gradient-to-b from-[#FFFDFC] to-[#F6F8F8] transition-all duration-300 ease-out",
+                    "absolute inset-x-0 top-full z-40 h-[calc(100dvh-4rem)] sm:hidden overflow-y-auto border-t border-[#225D5C]/10 bg-gradient-to-b from-[#FFFDFC] to-[#F6F8F8] transition-all duration-300 ease-out",
                     mobileOpen
                         ? "pointer-events-auto translate-y-0 opacity-100"
                         : "pointer-events-none translate-y-3 opacity-0"

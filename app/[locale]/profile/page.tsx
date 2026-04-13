@@ -77,36 +77,43 @@ const ProfilePage = () => {
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setSubmitting(true);
-        setStatusMsg({ type: "", text: "" });
+        try{
+                e.preventDefault();
+            setSubmitting(true);
+            setStatusMsg({ type: "", text: "" });
 
-        const token = localStorage.getItem("authToken");
-        if (!token) return;
+            const token = localStorage.getItem("authToken");
+            if (!token) return;
 
-        const body = new FormData();
-        body.append("first_name", formData.first_name);
-        body.append("last_name", formData.last_name);
-        body.append("email", formData.email);
-        body.append("phone", formData.phone);
-        body.append("country_code", formData.country_code);
-        body.append("address", formData.address);
-        body.append("birth", formData.birth);
-        body.append("gender", formData.gender);
-        if (selectedImage) {
-            body.append("image", selectedImage);
+            const body = new FormData();
+            body.append("first_name", formData.first_name);
+            body.append("last_name", formData.last_name);
+            body.append("email", formData.email);
+            body.append("phone", formData.phone);
+            body.append("country_code", formData.country_code);
+            body.append("address", formData.address);
+            body.append("birth", formData.birth);
+            body.append("gender", formData.gender);
+            if (selectedImage) {
+                body.append("image", selectedImage);
+            }
+
+            const result = await updateUserProfile(token, body);
+
+            if (result.success) {
+                setStatusMsg({ type: "success", text: result.message });
+                await fetchUser();
+                setTimeout(() => setIsEditing(false), 1500);
+            } else {
+                setStatusMsg({ type: "error", text: result.message });
+                }
+                setSubmitting(false);
+        } catch (error) {
+            console.error("Error updating profile:", error);
+            setStatusMsg({ type: "error", text: "An error occurred while updating your profile. Please try again." });
+        } finally {
+            setSubmitting(false);
         }
-
-        const result = await updateUserProfile(token, body);
-
-        if (result.success) {
-            setStatusMsg({ type: "success", text: result.message });
-            await fetchUser();
-            setTimeout(() => setIsEditing(false), 1500);
-        } else {
-            setStatusMsg({ type: "error", text: result.message });
-        }
-        setSubmitting(false);
     };
 
     if (loading) {

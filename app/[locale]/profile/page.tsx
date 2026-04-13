@@ -233,8 +233,8 @@ const ProfilePage = () => {
                         <div className="space-y-4 pt-4">
                             <div className="flex items-center gap-4">
                                 <div className="relative w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200">
-                                    {(imagePreview || user.image) ? (
-                                        <Image src={imagePreview || user.image} alt="Preview" fill className="object-cover" />
+                                    {(imagePreview || user.image_url) ? (
+                                        <Image src={imagePreview || user.image_url} alt="Preview" fill className="object-cover" unoptimized/>
                                     ) : (
                                         <Camera className="text-gray-400" size={24} />
                                     )}
@@ -285,11 +285,11 @@ const ProfilePage = () => {
                                 >
                                     Edit
                                 </button>
-
+                                
                                 <div className="flex flex-col items-center mb-8">
                                     <div className="relative w-32 h-32 rounded-full bg-[#5d4037] flex items-center justify-center text-white text-4xl font-bold overflow-hidden mb-4">
-                                        {user.image ? (
-                                            <Image src={user.image} alt={user.name} fill className="object-cover" />
+                                        {user.image_url ? (
+                                            <Image src={user.image_url} alt={user.name} fill className="object-cover" unoptimized/>
                                         ) : (
                                             user.name?.charAt(0) || "U"
                                         )}

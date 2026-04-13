@@ -253,5 +253,7 @@
     "booking_processing": "Processing...",
     "booking_at": "at",
     "booking_failed_create": "Failed to create booking.",
-    "booking_error_during_booking": "An error occurred during booking."
+    "booking_error_during_booking": "An error occurred during booking.",
+    "add_a_home_address" : "Add a home address",
+    "add_a_work_address" : "Add a work address"
 }

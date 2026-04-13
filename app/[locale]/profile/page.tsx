@@ -313,7 +313,7 @@ const ProfilePage = () => {
                                     </div>
                                     <div>
                                         <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t("mobile_number")}</p>
-                                        <p className="text-sm font-medium text-gray-900">{user.full_phone || user.phone || "-"}</p>
+                                        <p className="text-sm font-medium text-gray-900">{user.full_phone || user.phone || ""}</p>
                                     </div>
                                     <div>
                                         <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t("email")}</p>

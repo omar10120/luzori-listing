@@ -27,7 +27,7 @@ const BusinessSection: React.FC = () => {
                         viewport={{ once: true, margin: "-80px" }}
                         transition={{ duration: 0.6 }}
                     >
-                        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+                        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-2xl">
                             {t('luzori_for_business')}
                         </h2>
                         <p className="mt-4 max-w-md text-base text-gray-500 sm:text-lg">

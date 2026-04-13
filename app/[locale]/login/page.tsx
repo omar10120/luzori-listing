@@ -66,7 +66,7 @@ const LoginPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="flex flex-col items-center mb-10"
                 >
-                    <Link href="/" className="text-4xl font-light tracking-[0.2em] text-white flex flex-col items-center leading-none hover:opacity-80 transition-opacity">
+                    <Link href="/" className="text-2xl font-light tracking-[0.2em] text-white flex flex-col items-center leading-none hover:opacity-80 transition-opacity">
                         <Image src="/logo.svg" alt="Logo" width={150} height={150} />
                     </Link>
                 </motion.div>

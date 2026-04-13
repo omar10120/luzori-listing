@@ -289,7 +289,7 @@ export default function Step3Time({
 
     return (
         <div className="flex flex-col gap-8 w-full max-w-3xl mx-auto">
-            <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">Select time</h1>
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">Select time</h1>
 
             <div className="flex justify-between items-center">
                 <button

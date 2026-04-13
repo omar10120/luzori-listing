@@ -34,7 +34,7 @@ export default function Step4Confirm({
 
     return (
         <div className="flex flex-col gap-8 w-full">
-            <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">Confirm Booking</h1>
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">Confirm Booking</h1>
 
             <div className="bg-white p-6 sm:p-8 rounded-3xl border border-gray-100 shadow-sm flex flex-col gap-8">
 

@@ -11,7 +11,7 @@ interface Step2ProfessionalProps {
     setSelectedServices: React.Dispatch<React.SetStateAction<SelectedService[]>>;
     type: "any" | "per_service";
     setType: (t: "any" | "per_service") => void;
-    branches: any[];
+    branches: any[]; //eslint-disable-line
     selectedBranchId: number | null;
     setSelectedBranchId: (id: number) => void;
 }
@@ -68,7 +68,7 @@ export default function Step2Professional({
 
     return (
         <div className="flex flex-col gap-8 w-full">
-            <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">Select professional</h1>
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">Select professional</h1>
 
             {/* Branch Selection */}
             {branches.length > 1 && (

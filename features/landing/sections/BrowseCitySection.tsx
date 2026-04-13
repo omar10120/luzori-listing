@@ -10,13 +10,21 @@ import type { CityGroup } from "@/lib/types";
 
 interface LinkGroupProps {
     group: CityGroup;
+    getTranslatedLocation: (name: string, type: "country" | "city") => string;
 }
 
-const LinkGroup: React.FC<LinkGroupProps> = ({ group }) => {
+const toLocationKey = (name: string) =>
+    name
+        .toLowerCase()
+        .replace(/&/g, "and")
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "");
+
+const LinkGroup: React.FC<LinkGroupProps> = ({ group, getTranslatedLocation }) => {
     return (
         <div>
             <h3 className="mb-3 text-sm font-semibold text-gray-900">
-                {group.country}
+                {getTranslatedLocation(group.country, "country")}
             </h3>
             <ul className="space-y-1.5">
                 {group.cities.map((city) => (
@@ -25,7 +33,7 @@ const LinkGroup: React.FC<LinkGroupProps> = ({ group }) => {
                             href="#"
                             className="text-sm text-gray-900 transition-colors hover:text-gray-900"
                         >
-                            {city}
+                            {getTranslatedLocation(city, "city")}
                         </a>
                     </li>
                 ))}
@@ -36,6 +44,10 @@ const LinkGroup: React.FC<LinkGroupProps> = ({ group }) => {
 
 const BrowseCitySection: React.FC = () => {
     const t = useTranslations();
+    const getTranslatedLocation = (name: string, type: "country" | "city"): string => {
+        const key = `${type}_${toLocationKey(name)}`;
+        return t.has(key) ? t(key) : name;
+    };
 
     return (
         <section className="border-t border-gray-100 py-16 sm:py-24">
@@ -49,7 +61,11 @@ const BrowseCitySection: React.FC = () => {
                     className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6"
                 >
                     {cityGroups.map((group) => (
-                        <LinkGroup key={group.country} group={group} />
+                        <LinkGroup
+                            key={group.country}
+                            group={group}
+                            getTranslatedLocation={getTranslatedLocation}
+                        />
                     ))}
                 </motion.div>
             </Container>

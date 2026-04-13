@@ -131,7 +131,7 @@ const ProfilePage = () => {
                         <span>{t("back")}</span>
                     </button>
 
-                    <h1 className="text-4xl font-bold text-gray-900 mb-10">{t("edit_profile_details")}</h1>
+                    <h1 className="text-2xl font-bold text-gray-900 mb-10">{t("edit_profile_details")}</h1>
 
                     <form onSubmit={handleSubmit} className="space-y-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -287,7 +287,7 @@ const ProfilePage = () => {
                                 </button>
                                 
                                 <div className="flex flex-col items-center mb-8">
-                                    <div className="relative w-32 h-32 rounded-full bg-[#5d4037] flex items-center justify-center text-white text-4xl font-bold overflow-hidden mb-4">
+                                    <div className="relative w-32 h-32 rounded-full bg-[#5d4037] flex items-center justify-center text-white text-2xl font-bold overflow-hidden mb-4">
                                         {user.image_url ? (
                                             <Image src={user.image_url} alt={user.name} fill className="object-cover" unoptimized/>
                                         ) : (

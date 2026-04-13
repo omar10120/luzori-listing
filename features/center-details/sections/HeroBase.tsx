@@ -30,7 +30,7 @@ export default function HeroBase({ center, isFav, onToggleFav }: HeroBaseProps) 
             {/* Title Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div className="flex-1">
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-3">{center.name}</h1>
+                    <h1 className="text-3xl md:text-2xl font-bold text-gray-900 mb-3">{center.name}</h1>
                     <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                         <div className="flex items-center gap-1">
                             <span className="font-bold text-gray-900">

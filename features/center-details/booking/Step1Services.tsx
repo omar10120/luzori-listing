@@ -31,7 +31,7 @@ export default function Step1Services({ center, selectedServices, setSelectedSer
 
     return (
         <div className="flex flex-col gap-6 w-full">
-            <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">Services</h1>
+            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">Services</h1>
             
             {/* Tabs */}
             <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-3 mb-2 border-b border-gray-100">

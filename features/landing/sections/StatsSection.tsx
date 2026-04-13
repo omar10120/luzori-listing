@@ -46,7 +46,7 @@ const Counter: React.FC<CounterProps> = ({ stat }) => {
     return (
 
         <div className="flex flex-col items-center gap-1">
-            <span className="flex items-baseline gap-1 text-3xl font-bold text-gray-900 sm:text-4xl lg:text-5xl">
+            <span className="flex items-baseline gap-1 text-3xl font-bold text-gray-900 sm:text-2xl lg:text-5xl">
                 <motion.span ref={ref}>{rounded}</motion.span>
                 <span>{stat.suffix}</span>
             </span>
@@ -67,7 +67,7 @@ const StatsSection: React.FC = () => {
                     viewport={{ once: true, margin: "-80px" }}
                     transition={{ duration: 0.5 }}
                 >
-                    <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
+                    <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-2xl">
                         {t('top_rated_destination')}
                     </h2>
                     <p className="mx-auto mt-3 max-w-xl text-base text-gray-500 sm:text-lg">

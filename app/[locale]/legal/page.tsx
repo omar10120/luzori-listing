@@ -59,7 +59,7 @@ export default function LegalPage() {
         <main className="min-h-screen bg-white pt-24 pb-20">
             <Container>
                 <div className="max-w-4xl mx-auto">
-                    <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-12">
+                    <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight mb-12">
                         {t('legal') || "Legal"}
                     </h1>
 

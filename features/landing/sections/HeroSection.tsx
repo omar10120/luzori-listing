@@ -24,7 +24,7 @@ const HeroSection: React.FC = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
-                    className="mx-auto max-w-3xl text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl"
+                    className="mx-auto max-w-3xl text-2xl font-bold tracking-tight text-gray-900 sm:text-2xl lg:text-6xl"
                 >
                     {t('hero_heading')}
                 </motion.h1>

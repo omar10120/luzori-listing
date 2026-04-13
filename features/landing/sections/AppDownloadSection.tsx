@@ -38,7 +38,7 @@ const AppDownloadSection: React.FC = () => {
                             </div>
                         </div>
 
-                        <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-2xl lg:text-4xl max-w-lg leading-[1.1]">
+                        <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-2xl lg:text-2xl max-w-lg leading-[1.1]">
                             {t('download_app_heading')}
                         </h2>
                         <p className="mt-6 max-w-md text-lg text-gray-600 font-medium">

@@ -198,13 +198,13 @@ const Navbar: React.FC = () => {
             {/* Mobile dropdown */}
             <div
                 className={cn(
-                    "sm:hidden overflow-hidden border-t border-[#225D5C]/10 bg-gradient-to-b from-[#FFFDFC] to-[#F6F8F8] transition-all duration-300 ease-out",
+                    "fixed inset-x-0 bottom-0 top-16 z-40 sm:hidden overflow-y-auto border-t border-[#225D5C]/10 bg-gradient-to-b from-[#FFFDFC] to-[#F6F8F8] transition-all duration-300 ease-out",
                     mobileOpen
-                        ? "max-h-[85vh] translate-y-0 opacity-100"
-                        : "max-h-0 -translate-y-2 opacity-0"
+                        ? "pointer-events-auto translate-y-0 opacity-100"
+                        : "pointer-events-none translate-y-3 opacity-0"
                 )}
             >
-                <div className="px-4 pb-4 pt-3">
+                <div className="min-h-full px-4 pb-6 pt-4">
                     {!user ? (
                         <div className="flex flex-col gap-2">
                             <Link

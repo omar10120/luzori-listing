@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Container from "@/components/ui/Container";
-import type { CenterDetailData, Service, Worker } from "@/lib/apiEndpoints";
+import type { CenterDetailData, Service } from "@/lib/apiEndpoints";
 import { ChevronRight, ArrowLeft, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -13,6 +13,16 @@ import Step3Time from "./Step3Time";
 import Step4Confirm from "./Step4Confirm";
 import BookingCart from "./BookingCart";
 
+const BOOKING_RESUME_KEY = "luzori_booking_resume_state";
+
+function getLocalizedLoginPath(pathname: string): string {
+    const parts = pathname.split("/").filter(Boolean);
+    const maybeLocale = parts[0];
+    if (maybeLocale && maybeLocale.length <= 5) {
+        return `/${maybeLocale}/login`;
+    }
+    return "/login";
+}
 
 interface BookingWizardProps {
     center: CenterDetailData;
@@ -43,7 +53,7 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
     const [selectedBranchId, setSelectedBranchId] = useState<number | null>(
         center.branches && center.branches.length > 0 ? center.branches[0].id : null
     );
-    const [paymentType, setPaymentType] = useState<string>("service_cash");
+    const [paymentType, setPaymentType] = useState<string>("");
     const [userWallet, setUserWallet] = useState<number>(0);
 
     const fetchWalletBalance = async () => {
@@ -72,6 +82,26 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successData, setSuccessData] = useState<{ id: string | number } | null>(null);
+    const [didRestoreFromSession, setDidRestoreFromSession] = useState(false);
+
+    const clearResumeState = () => {
+        if (typeof window === "undefined") return;
+        sessionStorage.removeItem(BOOKING_RESUME_KEY);
+    };
+
+    const persistResumeState = (step: BookingStep = currentStep) => {
+        if (typeof window === "undefined") return;
+        const payload = {
+            centerId: center.id,
+            path: window.location.pathname,
+            currentStep: step,
+            selectedServices,
+            professionalType,
+            selectedBranchId,
+            paymentType,
+        };
+        sessionStorage.setItem(BOOKING_RESUME_KEY, JSON.stringify(payload));
+    };
 
     const handleNext = async () => {
         if (currentStep === "confirm") {
@@ -83,14 +113,18 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
         if (currentStep === "time") {
             const token = localStorage.getItem("authToken");
             if (!token) {
-                window.location.href = "/login";
+                persistResumeState("confirm");
+                const redirect = encodeURIComponent(window.location.pathname);
+                window.location.href = `${getLocalizedLoginPath(window.location.pathname)}?redirect=${redirect}`;
                 return;
             }
         }
 
         const currentIndex = steps.indexOf(currentStep);
         if (currentIndex < steps.length - 1) {
-            setCurrentStep(steps[currentIndex + 1]);
+            const nextStep = steps[currentIndex + 1];
+            setCurrentStep(nextStep);
+            persistResumeState(nextStep);
         }
     };
 
@@ -99,6 +133,7 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
         if (currentIndex > 0) {
             setCurrentStep(steps[currentIndex - 1]);
         } else {
+            clearResumeState();
             onCancel(); // exit booking mode if back pressed on first step
         }
     };
@@ -106,7 +141,10 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
     const handleSubmit = async () => {
         const token = localStorage.getItem("authToken");
         if (!token) {
+            persistResumeState("confirm");
             alert(t('login_required'));
+            const redirect = encodeURIComponent(window.location.pathname);
+            window.location.href = `${getLocalizedLoginPath(window.location.pathname)}?redirect=${redirect}`;
             return;
         }
 
@@ -149,6 +187,7 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
             if (res.success) {
                 // Extract the sale ID as the booking reference number
                 setSuccessData({ id: res.data?.sale?.id ?? res.data?.id ?? "—" });
+                clearResumeState();
             } else {
                 alert(res.message || t("booking_failed_create"));
             }
@@ -173,7 +212,7 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
 
         return (
             <div className="flex items-center gap-2 text-sm font-medium mb-8 overflow-x-auto whitespace-nowrap scrollbar-hide">
-                <button onClick={onCancel} className="text-gray-400 hover:text-gray-900 transition-colors mr-2">
+                <button onClick={handleBack} className="text-gray-400 hover:text-gray-900 transition-colors mr-2">
                     <ArrowLeft size={18} />
                 </button>
                 {steps.map((step, idx) => {
@@ -198,6 +237,47 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
             </div>
         );
     };
+
+    useEffect(() => {
+        if (typeof window === "undefined" || didRestoreFromSession) return;
+        const raw = sessionStorage.getItem(BOOKING_RESUME_KEY);
+        if (!raw) {
+            setDidRestoreFromSession(true);
+            return;
+        }
+        try {
+            const parsed = JSON.parse(raw) as {
+                centerId?: number;
+                path?: string;
+                currentStep?: BookingStep;
+                selectedServices?: SelectedService[];
+                professionalType?: "any" | "per_service";
+                selectedBranchId?: number | null;
+                paymentType?: string;
+            };
+            if (parsed.centerId !== center.id) {
+                setDidRestoreFromSession(true);
+                return;
+            }
+            if (parsed.selectedServices && parsed.selectedServices.length > 0) {
+                setSelectedServices(parsed.selectedServices);
+            }
+            if (parsed.professionalType) setProfessionalType(parsed.professionalType);
+            if (parsed.selectedBranchId !== undefined) setSelectedBranchId(parsed.selectedBranchId);
+            if (parsed.paymentType) setPaymentType(parsed.paymentType);
+            if (parsed.currentStep) setCurrentStep(parsed.currentStep);
+        } catch {
+            sessionStorage.removeItem(BOOKING_RESUME_KEY);
+        } finally {
+            setDidRestoreFromSession(true);
+        }
+    }, [center.id, didRestoreFromSession]);
+
+    useEffect(() => {
+        if (!didRestoreFromSession) return;
+        persistResumeState(currentStep);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentStep, selectedServices, professionalType, selectedBranchId, paymentType, didRestoreFromSession]);
 
     return (
         <div className="min-h-screen bg-[#fafafa] pt-24 pb-32">
@@ -256,6 +336,7 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
                             selectedServices={selectedServices}
                             onNext={handleNext}
                             professionalType={professionalType}
+                            paymentType={paymentType}
                             isSubmitting={isSubmitting}
                         />
                     </div>

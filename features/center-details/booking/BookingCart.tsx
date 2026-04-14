@@ -14,10 +14,11 @@ interface BookingCartProps {
     currentStep: BookingStep;
     onNext: () => void;
     professionalType: "any" | "per_service";
+    paymentType: string;
     isSubmitting?: boolean;
 }
 
-export default function BookingCart({ center, selectedServices, currentStep, onNext, professionalType, isSubmitting }: BookingCartProps) {
+export default function BookingCart({ center, selectedServices, currentStep, onNext, professionalType, paymentType, isSubmitting }: BookingCartProps) {
     const t = useTranslations();
     const total = selectedServices.reduce((sum, s) => {
         const p = typeof s.price === 'string' ? parseFloat(s.price) : s.price;
@@ -30,6 +31,10 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
         if (currentStep === "time") {
             // Must have selected time for all
             return selectedServices.some(s => !s.date || !s.fromTime || !s.toTime);
+        }
+        if (currentStep === "confirm") {
+            const validPaymentTypes = new Set(["wallet", "credit_card", "service_cash"]);
+            return !validPaymentTypes.has(paymentType);
         }
         return false;
     };

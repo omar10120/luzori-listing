@@ -16,6 +16,8 @@ import Sidebar from '@/features/center-details/sections/Sidebar';
 import BookingWizard from '@/features/center-details/booking/BookingWizard';
 import { useTranslations } from "next-intl";
 
+const BOOKING_RESUME_KEY = "luzori_booking_resume_state";
+
 /* ─── Main Component ─────────────────────────────────────────────── */
 
 interface Props {
@@ -86,6 +88,20 @@ export default function CenterDetailClient({ center }: Props) {
             date: t("center_review_3_date"),
         },
     ];
+
+    React.useEffect(() => {
+        if (typeof window === "undefined") return;
+        const raw = sessionStorage.getItem(BOOKING_RESUME_KEY);
+        if (!raw) return;
+        try {
+            const parsed = JSON.parse(raw) as { centerId?: number; selectedServices?: SelectedService[] };
+            if (parsed.centerId !== center.id) return;
+            setPreSelectedServices(parsed.selectedServices || []);
+            setIsBookingMode(true);
+        } catch {
+            sessionStorage.removeItem(BOOKING_RESUME_KEY);
+        }
+    }, [center.id]);
 
     return (
         <div className="min-h-screen bg-white flex flex-col">

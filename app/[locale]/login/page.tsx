@@ -6,13 +6,14 @@ import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Container from "@/components/ui/Container";
 import { loginUser } from "@/lib/api";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 
 const LoginPage = () => {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [showPassword, setShowPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
@@ -38,7 +39,8 @@ const LoginPage = () => {
 
                 setStatusMessage({ type: 'success', text: result.message });
                 // Redirect after success
-                setTimeout(() => { window.location.href = "/" }, 2000);
+                const redirectTarget = searchParams.get("redirect") || "/";
+                setTimeout(() => { window.location.href = redirectTarget }, 1200);
             } else {
                 setStatusMessage({ type: 'error', text: result.message });
             }

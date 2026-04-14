@@ -9,7 +9,7 @@ export const SITE_DESCRIPTION =
 export const NAV_CTA_TEXT = "List your business";
 
 /* ─── Hero ─── */
-export const HERO_HEADING = "Book local selfcare services";
+export const HERO_HEADING = "Book local selfcare services2";
 export const HERO_SUBTITLE =
     "Discover top-rated beauty, salon, massage, wellness, and barber services near you — book in seconds.";
 export const HERO_STATS_TEXT = "141,863 appointments booked today";

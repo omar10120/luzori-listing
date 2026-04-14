@@ -165,7 +165,7 @@ const LoginPage = () => {
                             <GoogleLoginButton text="Sign in with Google" className="bg-white/50 border-white/20 hover:bg-white/20" />
 
                             <div className="text-sm text-gray-400 mt-2">
-                                Don't have an account?{' '}
+                                Don&apos;t have an account?{' '}
                                 <Link href="/register" className="text-[#d4af37] hover:underline font-medium transition-colors">
                                     Register here
                                 </Link>

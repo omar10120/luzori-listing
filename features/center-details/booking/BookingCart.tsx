@@ -7,6 +7,8 @@ import { SelectedService, BookingStep } from "./BookingWizard";
 import { Star } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/hooks/useAuth";
+
 
 interface BookingCartProps {
     center: CenterDetailData;
@@ -20,6 +22,7 @@ interface BookingCartProps {
 
 export default function BookingCart({ center, selectedServices, currentStep, onNext, professionalType, paymentType, isSubmitting }: BookingCartProps) {
     const t = useTranslations();
+    const { isAuthenticated, isLoading } = useAuth();
     const total = selectedServices.reduce((sum, s) => {
         const p = typeof s.price === 'string' ? parseFloat(s.price) : s.price;
         return sum + (p || 0);
@@ -29,6 +32,7 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
         if (isSubmitting) return true;
         if (currentStep === "services" && selectedServices.length === 0) return true;
         if (currentStep === "time") {
+            if (isLoading) return true;
             // Must have selected time for all
             return selectedServices.some(s => !s.date || !s.fromTime || !s.toTime);
         }
@@ -41,7 +45,8 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
 
     const getButtonText = () => {
         if (isSubmitting) return t("booking_processing");
-        if (currentStep === "confirm") return t("booking_confirm_booking");
+        if (currentStep === "time" && !isLoading && !isAuthenticated) return t("login");
+        if (currentStep === "confirm" ) return t("booking_confirm_booking");
         return t("save_and_continue");
     };
 
@@ -106,7 +111,10 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
             </div>
 
             <Button 
-                onClick={onNext}
+                onClick={() => {
+                    // `onNext` handles auth redirect + booking state persist.
+                    onNext();
+                }}
                 disabled={isNextDisabled()}
                 className="w-full bg-black hover:bg-gray-800 text-white rounded-2xl h-14 font-bold text-lg disabled:opacity-50"
             >

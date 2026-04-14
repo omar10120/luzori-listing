@@ -33,8 +33,9 @@ export default function GoogleLoginButton({ className, text }: GoogleLoginButton
     const recheckPhone = usePhoneRequirementRefetch();
 
     const finishLoginRedirect = () => {
+        const redirectTarget = new URLSearchParams(window.location.search).get("redirect") || "/";
         setTimeout(() => {
-            window.location.href = "/";
+            window.location.href = redirectTarget;
         }, 400);
     };
 

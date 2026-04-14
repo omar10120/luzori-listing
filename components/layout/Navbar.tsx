@@ -37,7 +37,8 @@ const Navbar: React.FC = () => {
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem("authToken");
+        localStorage.clear();
+        sessionStorage.clear();
         setUser(null);
         window.location.reload();
     };

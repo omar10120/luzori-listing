@@ -256,6 +256,7 @@
     "booking_error_during_booking": "حدث خطأ أثناء الحجز.",
     "add_a_home_address" : "إضافة عنوان",
     "add_a_work_address" : "إضافة مكان عمل",
-    "edit": "Edit"
+    "edit": "تعديل",
+    "email_address" : "البريد الإلكتروني"
 
 }

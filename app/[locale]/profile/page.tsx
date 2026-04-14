@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Container from "@/components/ui/Container";
 import Image from "next/image";
 import { fetchUserProfile } from "@/lib/api";
-import { Home, Briefcase, Pencil, ArrowLeft, ChevronDown } from "lucide-react";
+import { Home, Briefcase, Pencil, ArrowLeft, ChevronDown ,User} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { updateUserProfile } from "@/lib/api";
@@ -298,7 +298,12 @@ const ProfilePage = () => {
 
                     {/* Main Content */}
                     <div className="flex-1">
-                        <h1 className="text-2xl font-bold text-gray-900 mb-8">{t("profile")}</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 mb-8">
+                            <div className="flex items-center gap-2">
+                                {/* <div>{t("profile")} </div> */}
+                                <User size={30} className="text-[#225D5C]" />
+                            </div>
+                        </h1>
                         <div className="grid grid-cols-1 lg:grid-cols-14 gap-8">
                             {/* User Details Card */}
                             <div className="lg:col-span-5 bg-white rounded-3xl shadow-sm border border-gray-100 p-8 overflow-hidden relative">

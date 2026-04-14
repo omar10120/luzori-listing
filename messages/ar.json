@@ -255,6 +255,7 @@
     "booking_failed_create": "فشل إنشاء الحجز.",
     "booking_error_during_booking": "حدث خطأ أثناء الحجز.",
     "add_a_home_address" : "إضافة عنوان",
-    "add_a_work_address" : "إضافة مكان عمل"
+    "add_a_work_address" : "إضافة مكان عمل",
+    "edit": "Edit"
 
 }

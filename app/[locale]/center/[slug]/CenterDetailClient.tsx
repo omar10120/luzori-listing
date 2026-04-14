@@ -14,7 +14,6 @@ import Team from '@/features/center-details/sections/Team';
 import Reviews from '@/features/center-details/sections/Reviews';
 import Sidebar from '@/features/center-details/sections/Sidebar';
 import BookingWizard from '@/features/center-details/booking/BookingWizard';
-import { useAuth } from '@/hooks/useAuth';
 import { useTranslations } from "next-intl";
 
 /* ─── Main Component ─────────────────────────────────────────────── */
@@ -29,13 +28,8 @@ export default function CenterDetailClient({ center }: Props) {
     const [isFav, setIsFav] = useState(false);
     const [isBookingMode, setIsBookingMode] = useState(false);
     const [preSelectedServices, setPreSelectedServices] = useState<SelectedService[]>([]);
-    const { isAuthenticated } = useAuth();
 
     const handleBookNow = (service?: Service & { category?: string }) => {
-        if (!isAuthenticated) {
-            window.location.href = "/login";
-            return;
-        }
         if (service) {
             setPreSelectedServices([{ ...service, categoryName: service.category }]);
         } else {

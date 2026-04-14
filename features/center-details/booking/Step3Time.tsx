@@ -209,6 +209,7 @@ export default function Step3Time({
     }, [selectedDateKey, vacationDateKeys, todayKey, setSelectedServices]);
 
     const selectedFromTime = selectedServices[0]?.fromTime ?? "";
+    const visibleDays = daysInMonth.filter((day) => !isBeforeLocalToday(day.fullDate, todayKey));
 
     // Clear time if it's today and the chosen slot is now in the past.
     useEffect(() => {
@@ -289,6 +290,9 @@ export default function Step3Time({
 
     // Determine which date is currently selected across all services (assuming same date for all)
     const selectedFullDate = mainService?.date || "";
+    const visibleTimeSlots = TIME_SLOTS_24H
+        .map((slot24h, idx) => ({ slot24h, slot12h: TIME_SLOTS_12H[idx] }))
+        .filter(({ slot24h }) => selectedFullDate && !isTimeSlotUnavailable(slot24h, selectedFullDate, todayKey));
 
     return (
         <div className="flex flex-col gap-8 w-full max-w-3xl mx-auto">
@@ -336,20 +340,17 @@ export default function Step3Time({
                     </button>
                 </div>
                 <div className="flex overflow-x-auto pb-2 gap-3 scrollbar-thin">
-                    {daysInMonth.map((day) => {
+                    {visibleDays.map((day) => {
                         const isSelected = selectedFullDate === day.fullDate;
-                        const isPast = isBeforeLocalToday(day.fullDate, todayKey);
                         const isVacation = vacationDateKeys.has(day.fullDate);
-                        const isOff = isPast || isVacation;
+                        const isOff = isVacation;
                         return (
                             <button
                                 key={day.fullDate}
                                 type="button"
                                 disabled={isOff}
                                 title={
-                                    isPast
-                                        ? t("booking_past_dates_cannot_be_selected")
-                                        : isVacation
+                                    isVacation
                                             ? t("booking_professional_unavailable_day_off")
                                             : undefined
                                 }
@@ -379,30 +380,17 @@ export default function Step3Time({
                     <span className="font-semibold text-gray-800">{t("booking_available_time_slots")}</span>
                 </div>
                 <div className="flex flex-wrap gap-3">
-                    {TIME_SLOTS_24H.map((slot24h, idx) => {
-                        const slot12h = TIME_SLOTS_12H[idx];
+                    {visibleTimeSlots.map(({ slot24h, slot12h }) => {
                         const isSelected = mainService?.fromTime === slot24h;
-                        const slotOff = isTimeSlotUnavailable(slot24h, selectedFullDate, todayKey);
-                        const slotTitle =
-                            !selectedFullDate
-                                ? t("booking_select_date_first")
-                                : selectedFullDate === todayKey &&
-                                    time24hToMinutes(slot24h) <= getNowMinutesLocal()
-                                    ? t("booking_time_already_passed")
-                                    : undefined;
                         return (
                             <button
                                 key={slot24h}
                                 type="button"
-                                disabled={slotOff}
-                                title={slotTitle}
-                                onClick={() => !slotOff && handleTimeSelect(slot24h)}
+                                onClick={() => handleTimeSelect(slot24h)}
                                 className={`px-5 py-2.5 rounded-full font-medium transition-all
-                                    ${slotOff
-                                        ? "opacity-40 cursor-not-allowed bg-gray-100 text-gray-400 border border-gray-100"
-                                        : isSelected
-                                            ? "bg-[#225D5C] text-white shadow-md"
-                                            : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
+                                    ${isSelected
+                                        ? "bg-[#225D5C] text-white shadow-md"
+                                        : "bg-gray-50 text-gray-700 border border-gray-200 hover:bg-gray-100"
                                     }`}
                             >
                                 {slot12h}

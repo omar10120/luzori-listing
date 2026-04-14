@@ -79,6 +79,15 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
             return;
         }
 
+        // Enforce login right before entering the confirm step.
+        if (currentStep === "time") {
+            const token = localStorage.getItem("authToken");
+            if (!token) {
+                window.location.href = "/login";
+                return;
+            }
+        }
+
         const currentIndex = steps.indexOf(currentStep);
         if (currentIndex < steps.length - 1) {
             setCurrentStep(steps[currentIndex + 1]);

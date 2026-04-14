@@ -359,10 +359,6 @@ const ProfilePage = () => {
                                         <p className="text-sm font-medium text-gray-900">{user.email || "-"}</p>
                                     </div>
                                     <div>
-                                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t("address")}</p>
-                                        <p className="text-sm font-medium text-gray-900 whitespace-pre-wrap">{user.address || "-"}</p>
-                                    </div>
-                                    <div>
                                         <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-1">{t("date_of_birth")}</p>
                                         <p className="text-sm font-medium text-gray-900">
                                             {user.birth
@@ -398,7 +394,7 @@ const ProfilePage = () => {
                                                 <Home size={20} className="text-gray-500" />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-semibold text-gray-900">{t("home")}</p>
+                                                <p className="text-sm font-semibold text-gray-900">{user.address || "-"}</p>
                                                 <p className="text-xs text-gray-400">{t("add_a_home_address")}</p>
                                             </div>
                                         </div>

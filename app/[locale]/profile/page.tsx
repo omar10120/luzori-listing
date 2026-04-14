@@ -4,19 +4,34 @@ import React, { useState, useEffect } from "react";
 import Container from "@/components/ui/Container";
 import Image from "next/image";
 import { fetchUserProfile } from "@/lib/api";
-import { Camera, Home, Briefcase, Plus, Pencil, ArrowLeft, ChevronDown } from "lucide-react";
+import { Home, Briefcase, Pencil, ArrowLeft, ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { updateUserProfile } from "@/lib/api";
 import AccountSidebar from "@/components/account/AccountSidebar";
 
+interface ProfileUser {
+    name?: string;
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    phone?: string;
+    full_phone?: string;
+    country_code?: string;
+    address?: string | null;
+    birth?: string | null;
+    gender?: string | null;
+    image_url?: string;
+}
+
 const ProfilePage = () => {
     const t = useTranslations();
     const router = useRouter();
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<ProfileUser | null>(null);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [submitting, setSubmitting] = useState(false);
+    const [imageSubmitting, setImageSubmitting] = useState(false);
     const [statusMsg, setStatusMsg] = useState({ type: "", text: "" });
 
     // Form states
@@ -30,10 +45,7 @@ const ProfilePage = () => {
         birth: "",
         gender: "",
     });
-    const [selectedImage, setSelectedImage] = useState<File | null>(null);
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
-
-    const fetchUser = async () => {
+    const fetchUser = React.useCallback(async () => {
         const token = localStorage.getItem("authToken");
         if (!token) {
             router.push("/login");
@@ -59,20 +71,43 @@ const ProfilePage = () => {
             router.push("/login");
         }
         setLoading(false);
-    };
+    }, [router]);
 
     useEffect(() => {
         const fetchData = async () => {
             await fetchUser();
         };
         fetchData();
-    }, [router]);
+    }, [fetchUser]);
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0];
-            setSelectedImage(file);
-            setImagePreview(URL.createObjectURL(file));
+    const handleAvatarOnlyUpdate = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            router.push("/login");
+            return;
+        }
+
+        try {
+            setImageSubmitting(true);
+            setStatusMsg({ type: "", text: "" });
+            const body = new FormData();
+            body.append("image", file);
+            const result = await updateUserProfile(token, body);
+            if (result.success) {
+                setStatusMsg({ type: "success", text: result.message });
+                await fetchUser();
+            } else {
+                setStatusMsg({ type: "error", text: result.message });
+            }
+        } catch (error) {
+            console.error("Error updating profile image:", error);
+            setStatusMsg({ type: "error", text: "An error occurred while updating your profile image. Please try again." });
+        } finally {
+            setImageSubmitting(false);
+            e.target.value = "";
         }
     };
 
@@ -94,9 +129,6 @@ const ProfilePage = () => {
             body.append("address", formData.address);
             body.append("birth", formData.birth);
             body.append("gender", formData.gender);
-            if (selectedImage) {
-                body.append("image", selectedImage);
-            }
 
             const result = await updateUserProfile(token, body);
 
@@ -237,22 +269,6 @@ const ProfilePage = () => {
                             </div>
                         </div>
 
-                        <div className="space-y-4 pt-4">
-                            <div className="flex items-center gap-4">
-                                <div className="relative w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden border border-gray-200">
-                                    {(imagePreview || user.image_url) ? (
-                                        <Image src={imagePreview || user.image_url} alt="Preview" fill className="object-cover" unoptimized/>
-                                    ) : (
-                                        <Camera className="text-gray-400" size={24} />
-                                    )}
-                                </div>
-                                <label className="cursor-pointer bg-gray-50 hover:bg-gray-100 px-4 py-2 rounded-lg border border-gray-200 text-sm font-medium transition-all">
-                                    {t("change_photo")}
-                                    <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
-                                </label>
-                            </div>
-                        </div>
-
                         {statusMsg.text && (
                             <div className={`p-4 rounded-xl text-sm ${statusMsg.type === "success" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
                                 {statusMsg.text}
@@ -296,16 +312,32 @@ const ProfilePage = () => {
                                 <div className="flex flex-col items-center mb-8">
                                     <div className="relative w-32 h-32 rounded-full bg-[#5d4037] flex items-center justify-center text-white text-2xl font-bold overflow-hidden mb-4">
                                         {user.image_url ? (
-                                            <Image src={user.image_url} alt={user.name} fill className="object-cover" unoptimized/>
+                                            <Image src={user.image_url} alt={user.name || "User avatar"} fill className="object-cover" unoptimized/>
                                         ) : (
                                             user.name?.charAt(0) || "U"
                                         )}
-                                        <div className="absolute bottom-0 right-0 p-1 bg-white rounded-full border border-gray-200 shadow-sm cursor-pointer">
+                                        <label
+                                            className="absolute bottom-1 right-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm transition-colors hover:bg-gray-50"
+                                            aria-label={t("change_photo")}
+                                        >
                                             <Pencil size={14} className="text-gray-600" />
-                                        </div>
+                                            <input
+                                                type="file"
+                                                className="hidden"
+                                                accept="image/*"
+                                                onChange={handleAvatarOnlyUpdate}
+                                                disabled={imageSubmitting}
+                                            />
+                                        </label>
                                     </div>
                                     <h2 className="text-2xl font-bold text-gray-900">{user.name}</h2>
                                 </div>
+
+                                {statusMsg.text && (
+                                    <div className={`mb-6 rounded-xl p-3 text-sm ${statusMsg.type === "success" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
+                                        {statusMsg.text}
+                                    </div>
+                                )}
 
                                 <div className="h-px bg-gray-100 w-full mb-8" />
 

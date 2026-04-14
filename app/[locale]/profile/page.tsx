@@ -316,11 +316,12 @@ const ProfilePage = () => {
                                         ) : (
                                             user.name?.charAt(0) || "U"
                                         )}
+                                        
                                         <label
-                                            className="absolute bottom-1 right-1 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm transition-colors hover:bg-gray-50"
+                                            className="absolute bottom-4 right-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm transition-colors hover:bg-gray-50 z-100 "
                                             aria-label={t("change_photo")}
                                         >
-                                            <Pencil size={14} className="text-gray-600" />
+                                            <Pencil size={14} className="text-gray-600 z-1000" />
                                             <input
                                                 type="file"
                                                 className="hidden"

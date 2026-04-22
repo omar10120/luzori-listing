@@ -1,5 +1,3 @@
-import { CenterRate } from "./types";
-
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
 
 export const API_ENDPOINTS = {
@@ -13,6 +11,7 @@ export const API_ENDPOINTS = {
     USER_SOCIAL_LOGIN: `${API_BASE_URL}/app_api/auth/social-login`,
     USER_UPDATE_PROFILE: `${API_BASE_URL}/app_api/auth/update-profile`,
     STORE_BOOKING: `${API_BASE_URL}/app_api/booking/store`,
+    STORE_PACKAGES: (centerId: string | number) => `${API_BASE_URL}/app_api/packages/store/${centerId}`,
     BOOKING_LIST: `${API_BASE_URL}/app_api/booking/list`,
     INFO: `${API_BASE_URL}/app_api/info`,
 };
@@ -99,6 +98,20 @@ export interface Service {
     workers?: Worker[];
 }
 
+export interface PackageServiceEntry {
+    id: number;
+    service: Service;
+    created_at: string;
+}
+
+export interface CenterPackage {
+    id: number;
+    name: string;
+    ServicePaid: PackageServiceEntry[];
+    ServiceFree: PackageServiceEntry[];
+    created_at: string;
+}
+
 export interface Category {
     id: number;
     name: string;
@@ -119,6 +132,7 @@ export interface CenterDetailData {
     branches: Branch[];
     categories: Category[];
     services: Service[]; // Root level services if any
+    packages?: CenterPackage[];
 }
 
 export interface CenterDetailResponse {

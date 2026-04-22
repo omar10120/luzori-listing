@@ -358,6 +358,49 @@ export const storeBooking = async (token: string, bookingData: any): Promise<{ s
     }
 };
 
+export const storePackages = async (
+    token: string,
+    centerId: string | number,
+    packageIds: number[],
+    paymentType: string = "cash"
+): Promise<{ success: boolean; message: string; data?: any }> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.STORE_PACKAGES(centerId), {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json",
+            },
+            body: JSON.stringify({
+                packages: packageIds.map((id) => ({ id })),
+                payment_type: paymentType,
+            }),
+        });
+
+        const json = await response.json();
+        if (!response.ok) {
+            return {
+                success: false,
+                message: json.message || "Package purchase failed",
+                data: json.errors || json,
+            };
+        }
+
+        return {
+            success: true,
+            message: json.message || "Package purchased successfully",
+            data: json.data,
+        };
+    } catch (error) {
+        console.error("Store Packages Error:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred during package purchase",
+        };
+    }
+};
+
 export const fetchInfo = async (): Promise<import("./apiEndpoints").InfoData | null> => {
     try {
         const response = await fetch(API_ENDPOINTS.INFO, {

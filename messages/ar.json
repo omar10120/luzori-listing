@@ -257,6 +257,12 @@
     "add_a_home_address" : "إضافة عنوان",
     "add_a_work_address" : "إضافة مكان عمل",
     "edit": "تعديل",
-    "email_address" : "البريد الإلكتروني"
+    "email_address" : "البريد الإلكتروني",
+    "packages": "الباقات",
+    "package_includes_count": "{count} خدمة ضمن الباقة",
+    "package_free_label": "مجاني",
+    "package_no_services": "لا توجد خدمات في هذه الباقة.",
+    "package_purchase_success": "تم شراء الباقة بنجاح.",
+    "package_purchase_failed": "فشل شراء الباقة."
 
 }

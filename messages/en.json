@@ -257,5 +257,11 @@
     "booking_error_during_booking": "An error occurred during booking.",
     "add_a_home_address" : "Add a home address",
     "add_a_work_address" : "Add a work address",
-    "email_address" : "Email address"
+    "email_address" : "Email address",
+    "packages": "Packages",
+    "package_includes_count": "{count} services included",
+    "package_free_label": "Free",
+    "package_no_services": "No services in this package.",
+    "package_purchase_success": "Package purchased successfully.",
+    "package_purchase_failed": "Failed to purchase package."
 }

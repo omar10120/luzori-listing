@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Container from "@/components/ui/Container";
-import type { CenterDetailData, Service } from "@/lib/apiEndpoints";
+import type { CenterDetailData, CenterPackage, Service } from "@/lib/apiEndpoints";
 import type { SelectedService } from '@/features/center-details/booking/BookingWizard';
 
 import Header from '@/features/center-details/sections/Header';
@@ -15,6 +15,7 @@ import Reviews from '@/features/center-details/sections/Reviews';
 import Sidebar from '@/features/center-details/sections/Sidebar';
 import BookingWizard from '@/features/center-details/booking/BookingWizard';
 import { useTranslations } from "next-intl";
+import { storePackages } from "@/lib/api";
 
 const BOOKING_RESUME_KEY = "luzori_booking_resume_state";
 
@@ -30,6 +31,7 @@ export default function CenterDetailClient({ center }: Props) {
     const [isFav, setIsFav] = useState(false);
     const [isBookingMode, setIsBookingMode] = useState(false);
     const [preSelectedServices, setPreSelectedServices] = useState<SelectedService[]>([]);
+    const [purchasingPackageId, setPurchasingPackageId] = useState<number | null>(null);
 
     const handleBookNow = (service?: Service & { category?: string }) => {
         if (service) {
@@ -41,7 +43,12 @@ export default function CenterDetailClient({ center }: Props) {
     };
 
     // Derived Tabs from API
-    const categoryTabs = ["all", ...(center.categories?.map(c => c.name) || [])];
+    const centerPackages = center.packages || [];
+    const categoryTabs = [
+        "all",
+        ...(center.categories?.map(c => c.name) || []),
+        ...(centerPackages.length > 0 ? ["packages"] : []),
+    ];
 
     // Filtered Services from API Categories
     const allServices: (Service & { category?: string })[] = center.categories?.flatMap(c =>
@@ -51,7 +58,28 @@ export default function CenterDetailClient({ center }: Props) {
     const filteredServices =
         activeServiceTab === "all"
             ? allServices
-            : allServices.filter((s) => s.category === activeServiceTab);
+            : activeServiceTab === "packages"
+              ? []
+              : allServices.filter((s) => s.category === activeServiceTab);
+
+    const handlePurchasePackage = async (pkg: CenterPackage) => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            const redirect = encodeURIComponent(window.location.pathname);
+            const localePrefix = window.location.pathname.split("/").filter(Boolean)[0] || "en";
+            window.location.href = `/${localePrefix}/login?redirect=${redirect}`;
+            return;
+        }
+
+        setPurchasingPackageId(pkg.id);
+        const result = await storePackages(token, center.id, [pkg.id], "cash");
+        if (result.success) {
+            window.alert(result.message || t("package_purchase_success"));
+        } else {
+            window.alert(result.message || t("package_purchase_failed"));
+        }
+        setPurchasingPackageId(null);
+    };
 
     const fallbackImage =
         "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&h=600&fit=crop";
@@ -132,10 +160,13 @@ export default function CenterDetailClient({ center }: Props) {
                             <div className="lg:col-span-2 space-y-10">
                                 <Services
                                     services={filteredServices}
+                                    packages={centerPackages}
                                     activeTab={activeServiceTab}
                                     onTabChange={setActiveServiceTab}
                                     tabs={categoryTabs}
                                     onBookNow={handleBookNow}
+                                    onPurchasePackage={handlePurchasePackage}
+                                    purchasingPackageId={purchasingPackageId}
                                 />
 
                                 <About centerName={center.name} />

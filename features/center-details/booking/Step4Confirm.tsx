@@ -8,23 +8,19 @@ import { cn } from "@/lib/utils";
 interface Step4ConfirmProps {
     center: CenterDetailData;
     selectedServices: SelectedService[];
-    setSelectedServices: React.Dispatch<React.SetStateAction<SelectedService[]>>;
     professionalType: "any" | "per_service";
     paymentType: string;
     setPaymentType: (t: string) => void;
     userWallet: number;
-    purchasedPackageIds: number[];
 }
 
 export default function Step4Confirm({
     center,
     selectedServices,
-    setSelectedServices,
     professionalType,
     paymentType,
     setPaymentType,
-    userWallet,
-    purchasedPackageIds,
+    userWallet
 }: Step4ConfirmProps) {
     const t = useTranslations();
     const totalPrice = selectedServices.reduce((sum, s) => sum + Number(s.price), 0);
@@ -35,15 +31,6 @@ export default function Step4Confirm({
         // { id: "service_cash", label: t('cash') || "Service Cash", icon: Banknote, description: "Pay at the center" },
         { id: "credit_card", label: t('credit_card') || "Credit Card", icon: CreditCard, description: t("booking_secure_online_payment") },
     ];
-
-    const availablePackages = (center.packages || []).filter((pkg) => purchasedPackageIds.includes(pkg.id));
-
-    const handleServicePackageChange = (serviceId: number, packageIdValue: string) => {
-        const normalized = packageIdValue ? [Number(packageIdValue)] : [];
-        setSelectedServices((prev) =>
-            prev.map((svc) => (svc.id === serviceId ? { ...svc, userPackageIds: normalized } : svc))
-        );
-    };
 
     return (
         <div className="flex flex-col gap-8 w-full">
@@ -97,31 +84,6 @@ export default function Step4Confirm({
                                             </span>
                                         </div>
                                     </div>
-                                    {availablePackages.length > 0 && (
-                                        <div className="mt-3">
-                                            <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-500">
-                                                {t("package_use_for_service")}
-                                            </label>
-                                            <select
-                                                value={svc.userPackageIds?.[0] ? String(svc.userPackageIds[0]) : ""}
-                                                onChange={(e) => handleServicePackageChange(svc.id, e.target.value)}
-                                                className="h-10 w-full rounded-xl border border-gray-200 px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#225D5C]/40"
-                                            >
-                                                <option value="">{t("package_do_not_use")}</option>
-                                                {availablePackages
-                                                    .filter((pkg) => {
-                                                        const paid = pkg.ServicePaid || [];
-                                                        const free = pkg.ServiceFree || [];
-                                                        return [...paid, ...free].some((entry) => entry.service?.id === svc.id);
-                                                    })
-                                                    .map((pkg) => (
-                                                        <option key={pkg.id} value={pkg.id}>
-                                                            {pkg.name}
-                                                        </option>
-                                                    ))}
-                                            </select>
-                                        </div>
-                                    )}
                                 </div>
                                 <div className="text-lg font-black text-gray-900 text-right">
                                     {t("activity_currency_aed")} {svc.price}

@@ -266,5 +266,8 @@
     "package_purchase_failed": "Failed to purchase package.",
     "package_purchased": "Purchased",
     "package_use_for_service": "Use package for this service",
-    "package_do_not_use": "Do not use package"
+    "package_do_not_use": "Do not use package",
+    "my_packages": "My Packages",
+    "package_no_services_to_assign": "No selected services to assign packages.",
+    "package_not_available_for_service": "No available purchased package for this service."
 }

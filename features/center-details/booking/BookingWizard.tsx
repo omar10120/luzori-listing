@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Container from "@/components/ui/Container";
-import type { CenterDetailData, Service } from "@/lib/apiEndpoints";
+import type { CenterDetailData, Service, UserPurchasedPackage } from "@/lib/apiEndpoints";
 import { ChevronRight, ArrowLeft, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -10,6 +10,7 @@ import Image from "next/image";
 import Step1Services from "./Step1Services";
 import Step2Professional from "./Step2Professional";
 import Step3Time from "./Step3Time";
+import Step4Packages from "./Step4Packages";
 import Step4Confirm from "./Step4Confirm";
 import BookingCart from "./BookingCart";
 
@@ -28,10 +29,10 @@ interface BookingWizardProps {
     center: CenterDetailData;
     onCancel: () => void;
     initialSelectedServices?: SelectedService[];
-    purchasedPackageIds?: number[];
+    purchasedPackages?: UserPurchasedPackage[];
 }
 
-export type BookingStep = "services" | "professional" | "time" | "confirm";
+export type BookingStep = "services" | "professional" | "time" | "packages" | "confirm";
 
 export interface SelectedService extends Service {
     categoryName?: string;
@@ -42,7 +43,7 @@ export interface SelectedService extends Service {
     userPackageIds?: number[];
 }
 
-export default function BookingWizard({ center, onCancel, initialSelectedServices = [], purchasedPackageIds = [] }: BookingWizardProps) {
+export default function BookingWizard({ center, onCancel, initialSelectedServices = [], purchasedPackages = [] }: BookingWizardProps) {
     const t = useTranslations();
 
     // -- Wizard State --
@@ -80,7 +81,7 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
     // We can also have global date/time if we change to "per booking" time, 
     // but the API dictates time per service. We'll track it in the selectedServices objects.
 
-    const steps: BookingStep[] = ["services", "professional", "time", "confirm"];
+    const steps: BookingStep[] = ["services", "professional", "time", "packages", "confirm"];
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successData, setSuccessData] = useState<{ id: string | number } | null>(null);
@@ -115,7 +116,7 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
         if (currentStep === "time") {
             const token = localStorage.getItem("authToken");
             if (!token) {
-                persistResumeState("confirm");
+                persistResumeState("packages");
                 const redirect = encodeURIComponent(window.location.pathname);
                 window.location.href = `${getLocalizedLoginPath(window.location.pathname)}?redirect=${redirect}`;
                 return;
@@ -209,6 +210,7 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
                 case "services": return t('services') || "Services";
                 case "professional": return t('professional') || "Professional";
                 case "time": return t('time') || "Time";
+                case "packages": return t('my_packages') || "My Packages";
                 case "confirm": return t('confirm') || "Confirm";
             }
         };
@@ -319,16 +321,23 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
                             />
                         )}
 
+                        {currentStep === "packages" && (
+                            <Step4Packages
+                                selectedServices={selectedServices}
+                                setSelectedServices={setSelectedServices}
+                                centerPackages={center.packages || []}
+                                purchasedPackages={purchasedPackages}
+                            />
+                        )}
+
                         {currentStep === "confirm" && (
                             <Step4Confirm
                                 center={center}
                                 selectedServices={selectedServices}
-                                setSelectedServices={setSelectedServices}
                                 professionalType={professionalType}
                                 paymentType={paymentType}
                                 setPaymentType={setPaymentType}
                                 userWallet={userWallet}
-                                purchasedPackageIds={purchasedPackageIds}
                             />
                         )}
                     </div>

@@ -266,6 +266,9 @@
     "package_purchase_failed": "فشل شراء الباقة.",
     "package_purchased": "تم الشراء",
     "package_use_for_service": "استخدم باقة لهذه الخدمة",
-    "package_do_not_use": "عدم استخدام باقة"
+    "package_do_not_use": "عدم استخدام باقة",
+    "my_packages": "باقاتي",
+    "package_no_services_to_assign": "لا توجد خدمات محددة لتعيين الباقات.",
+    "package_not_available_for_service": "لا توجد باقة مشتراة متاحة لهذه الخدمة."
 
 }

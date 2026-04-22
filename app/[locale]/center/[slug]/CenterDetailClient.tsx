@@ -170,7 +170,7 @@ export default function CenterDetailClient({ center }: Props) {
                         center={center}
                         onCancel={() => { setIsBookingMode(false); setPreSelectedServices([]); }}
                         initialSelectedServices={preSelectedServices}
-                        purchasedPackageIds={purchasedPackages.map((p) => p.package_id)}
+                        purchasedPackages={purchasedPackages}
                     />
                 ) : (
                     <Container className="py-4">

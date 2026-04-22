@@ -121,6 +121,18 @@ export interface UserPurchasedPackage {
     status: string;
     package_type: string;
     created_at: string;
+    used_packages?: UserPackageUsage[];
+}
+
+export interface UserPackageUsage {
+    id: number;
+    user_id: number;
+    user_package_id: number;
+    booking_id: number;
+    service_id: number;
+    service_name: string;
+    is_free: boolean;
+    created_at: string;
 }
 
 export interface Category {

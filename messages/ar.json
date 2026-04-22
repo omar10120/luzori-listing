@@ -263,6 +263,9 @@
     "package_free_label": "مجاني",
     "package_no_services": "لا توجد خدمات في هذه الباقة.",
     "package_purchase_success": "تم شراء الباقة بنجاح.",
-    "package_purchase_failed": "فشل شراء الباقة."
+    "package_purchase_failed": "فشل شراء الباقة.",
+    "package_purchased": "تم الشراء",
+    "package_use_for_service": "استخدم باقة لهذه الخدمة",
+    "package_do_not_use": "عدم استخدام باقة"
 
 }

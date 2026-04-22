@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Container from "@/components/ui/Container";
-import type { CenterDetailData, CenterPackage, Service } from "@/lib/apiEndpoints";
+import type { CenterDetailData, CenterPackage, Service, UserPurchasedPackage } from "@/lib/apiEndpoints";
 import type { SelectedService } from '@/features/center-details/booking/BookingWizard';
 
 import Header from '@/features/center-details/sections/Header';
@@ -15,7 +15,7 @@ import Reviews from '@/features/center-details/sections/Reviews';
 import Sidebar from '@/features/center-details/sections/Sidebar';
 import BookingWizard from '@/features/center-details/booking/BookingWizard';
 import { useTranslations } from "next-intl";
-import { storePackages } from "@/lib/api";
+import { fetchUserPurchasedPackages, storePackages } from "@/lib/api";
 
 const BOOKING_RESUME_KEY = "luzori_booking_resume_state";
 
@@ -32,6 +32,7 @@ export default function CenterDetailClient({ center }: Props) {
     const [isBookingMode, setIsBookingMode] = useState(false);
     const [preSelectedServices, setPreSelectedServices] = useState<SelectedService[]>([]);
     const [purchasingPackageId, setPurchasingPackageId] = useState<number | null>(null);
+    const [purchasedPackages, setPurchasedPackages] = useState<UserPurchasedPackage[]>([]);
 
     const handleBookNow = (service?: Service & { category?: string }) => {
         if (service) {
@@ -75,6 +76,21 @@ export default function CenterDetailClient({ center }: Props) {
         const result = await storePackages(token, center.id, [pkg.id], "cash");
         if (result.success) {
             window.alert(result.message || t("package_purchase_success"));
+            setPurchasedPackages((prev) => {
+                if (prev.some((p) => p.package_id === pkg.id)) return prev;
+                return [
+                    ...prev,
+                    {
+                        id: Date.now(),
+                        package_id: pkg.id,
+                        package_name: pkg.name,
+                        price: 0,
+                        status: "active",
+                        package_type: "cash",
+                        created_at: new Date().toISOString(),
+                    },
+                ];
+            });
         } else {
             window.alert(result.message || t("package_purchase_failed"));
         }
@@ -131,6 +147,19 @@ export default function CenterDetailClient({ center }: Props) {
         }
     }, [center.id]);
 
+    React.useEffect(() => {
+        const loadPurchasedPackages = async () => {
+            const token = localStorage.getItem("authToken");
+            if (!token) {
+                setPurchasedPackages([]);
+                return;
+            }
+            const list = await fetchUserPurchasedPackages(token, center.id);
+            setPurchasedPackages(list);
+        };
+        void loadPurchasedPackages();
+    }, [center.id]);
+
     return (
         <div className="min-h-screen bg-white flex flex-col">
             <Header />
@@ -141,6 +170,7 @@ export default function CenterDetailClient({ center }: Props) {
                         center={center}
                         onCancel={() => { setIsBookingMode(false); setPreSelectedServices([]); }}
                         initialSelectedServices={preSelectedServices}
+                        purchasedPackageIds={purchasedPackages.map((p) => p.package_id)}
                     />
                 ) : (
                     <Container className="py-4">
@@ -167,6 +197,7 @@ export default function CenterDetailClient({ center }: Props) {
                                     onBookNow={handleBookNow}
                                     onPurchasePackage={handlePurchasePackage}
                                     purchasingPackageId={purchasingPackageId}
+                                    purchasedPackageIds={purchasedPackages.map((p) => p.package_id)}
                                 />
 
                                 <About centerName={center.name} />

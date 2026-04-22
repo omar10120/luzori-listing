@@ -16,6 +16,7 @@ interface ServicesProps {
     onBookNow: (service?: Service & { category?: string }) => void;
     onPurchasePackage: (pkg: CenterPackage) => void;
     purchasingPackageId?: number | null;
+    purchasedPackageIds?: number[];
 }
 
 export default function Services({
@@ -27,6 +28,7 @@ export default function Services({
     onBookNow,
     onPurchasePackage,
     purchasingPackageId,
+    purchasedPackageIds = [],
 }: ServicesProps) {
     const t = useTranslations();
 
@@ -58,6 +60,7 @@ export default function Services({
                         const paidServices = pkg.ServicePaid || [];
                         const freeServices = pkg.ServiceFree || [];
                         const totalPaidPrice = paidServices.reduce((sum, item) => sum + Number(item.service?.price || 0), 0);
+                        const isPurchased = purchasedPackageIds.includes(pkg.id);
                         
                         return (
                             <div key={pkg.id} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
@@ -75,10 +78,10 @@ export default function Services({
                                         <Button
                                             size="sm"
                                             onClick={() => onPurchasePackage(pkg)}
-                                            disabled={purchasingPackageId === pkg.id}
+                                            disabled={purchasingPackageId === pkg.id || isPurchased}
                                             className="rounded-xl px-5 font-bold uppercase tracking-tight shadow-md hover:shadow-lg transition-all disabled:opacity-60"
                                         >
-                                            {purchasingPackageId === pkg.id ? t("booking_processing") : t("book")}
+                                            {purchasingPackageId === pkg.id ? t("booking_processing") : isPurchased ? t("package_purchased") : t("book")}
                                         </Button>
                                     </div>
                                 </div>

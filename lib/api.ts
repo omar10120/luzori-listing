@@ -6,6 +6,7 @@ import {
     CenterDetailData,
     BookingListResponse,
     BookingListItem,
+    UserPurchasedPackage,
 } from "./apiEndpoints";
 import { Business, CenterRate } from "./types";
 
@@ -398,6 +399,29 @@ export const storePackages = async (
             success: false,
             message: "An unexpected error occurred during package purchase",
         };
+    }
+};
+
+export const fetchUserPurchasedPackages = async (
+    token: string,
+    centerId: string | number
+): Promise<UserPurchasedPackage[]> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.USER_PACKAGES(centerId), {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json",
+            },
+        });
+
+        if (!response.ok) return [];
+        const json = await response.json();
+        return Array.isArray(json?.data) ? json.data : [];
+    } catch (error) {
+        console.error("Fetch User Packages Error:", error);
+        return [];
     }
 };
 

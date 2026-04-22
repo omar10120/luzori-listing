@@ -263,5 +263,8 @@
     "package_free_label": "Free",
     "package_no_services": "No services in this package.",
     "package_purchase_success": "Package purchased successfully.",
-    "package_purchase_failed": "Failed to purchase package."
+    "package_purchase_failed": "Failed to purchase package.",
+    "package_purchased": "Purchased",
+    "package_use_for_service": "Use package for this service",
+    "package_do_not_use": "Do not use package"
 }

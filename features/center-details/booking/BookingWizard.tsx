@@ -28,6 +28,7 @@ interface BookingWizardProps {
     center: CenterDetailData;
     onCancel: () => void;
     initialSelectedServices?: SelectedService[];
+    purchasedPackageIds?: number[];
 }
 
 export type BookingStep = "services" | "professional" | "time" | "confirm";
@@ -38,9 +39,10 @@ export interface SelectedService extends Service {
     date?: string;
     fromTime?: string;
     toTime?: string;
+    userPackageIds?: number[];
 }
 
-export default function BookingWizard({ center, onCancel, initialSelectedServices = [] }: BookingWizardProps) {
+export default function BookingWizard({ center, onCancel, initialSelectedServices = [], purchasedPackageIds = [] }: BookingWizardProps) {
     const t = useTranslations();
 
     // -- Wizard State --
@@ -159,7 +161,8 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
                 worker_id: svc.selectedWorkerId || (svc.workers?.[0]?.id) || 1, // Send first worker ID or fallback
                 date: svc.date,
                 from_time: svc.fromTime,
-                to_time: svc.toTime
+                to_time: svc.toTime,
+                user_package_ids: svc.userPackageIds || [],
             })),
             payment_type: paymentType
         };
@@ -320,10 +323,12 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
                             <Step4Confirm
                                 center={center}
                                 selectedServices={selectedServices}
+                                setSelectedServices={setSelectedServices}
                                 professionalType={professionalType}
                                 paymentType={paymentType}
                                 setPaymentType={setPaymentType}
                                 userWallet={userWallet}
+                                purchasedPackageIds={purchasedPackageIds}
                             />
                         )}
                     </div>

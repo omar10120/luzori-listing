@@ -14,8 +14,9 @@ interface ServicesProps {
     onTabChange: (tab: string) => void;
     tabs: string[];
     onBookNow: (service?: Service & { category?: string }) => void;
-    onPurchasePackage: (pkg: CenterPackage) => void;
-    purchasingPackageId?: number | null;
+    onTogglePackageCart: (pkg: CenterPackage) => void;
+    onStartPackageCheckout: () => void;
+    selectedPackageIds?: number[];
     purchasedPackageIds?: number[];
 }
 
@@ -26,8 +27,9 @@ export default function Services({
     onTabChange,
     tabs,
     onBookNow,
-    onPurchasePackage,
-    purchasingPackageId,
+    onTogglePackageCart,
+    onStartPackageCheckout,
+    selectedPackageIds = [],
     purchasedPackageIds = [],
 }: ServicesProps) {
     const t = useTranslations();
@@ -61,6 +63,7 @@ export default function Services({
                         const freeServices = pkg.ServiceFree || [];
                         const totalPaidPrice = paidServices.reduce((sum, item) => sum + Number(item.service?.price || 0), 0);
                         const isPurchased = purchasedPackageIds.includes(pkg.id);
+                        const isInCart = selectedPackageIds.includes(pkg.id);
                         
                         return (
                             <div key={pkg.id} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
@@ -77,11 +80,11 @@ export default function Services({
                                         </span>
                                         <Button
                                             size="sm"
-                                            onClick={() => onPurchasePackage(pkg)}
-                                            disabled={purchasingPackageId === pkg.id || isPurchased}
+                                            onClick={() => onTogglePackageCart(pkg)}
+                                            disabled={isPurchased}
                                             className="rounded-xl px-5 font-bold uppercase tracking-tight shadow-md hover:shadow-lg transition-all disabled:opacity-60"
                                         >
-                                            {purchasingPackageId === pkg.id ? t("booking_processing") : isPurchased ? t("package_purchased") : t("book")}
+                                            {isPurchased ? t("package_purchased") : isInCart ? t("package_added_to_cart") : t("add_to_cart")}
                                         </Button>
                                     </div>
                                 </div>
@@ -108,6 +111,16 @@ export default function Services({
                             </div>
                         );
                     })}
+                    {selectedPackageIds.length > 0 && (
+                        <div className="sticky bottom-2 z-10 rounded-2xl border border-[#225D5C]/20 bg-white p-4 shadow-md">
+                            <div className="mb-3 text-sm font-semibold text-gray-700">
+                                {t("package_cart_count", { count: selectedPackageIds.length })}
+                            </div>
+                            <Button className="w-full rounded-xl font-bold uppercase" onClick={onStartPackageCheckout}>
+                                {t("save_and_continue")}
+                            </Button>
+                        </div>
+                    )}
                 </div>
             ) : (
                 <div className="divide-y divide-gray-100 bg-white shadow-sm ring-1 ring-gray-100 rounded-2xl overflow-hidden">

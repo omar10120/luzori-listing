@@ -269,6 +269,11 @@
     "package_do_not_use": "عدم استخدام باقة",
     "my_packages": "باقاتي",
     "package_no_services_to_assign": "لا توجد خدمات محددة لتعيين الباقات.",
-    "package_not_available_for_service": "لا توجد باقة مشتراة متاحة لهذه الخدمة."
+    "package_not_available_for_service": "لا توجد باقة مشتراة متاحة لهذه الخدمة.",
+    "add_to_cart": "أضف للسلة",
+    "package_added_to_cart": "تمت الإضافة",
+    "package_cart_count": "{count} باقة في السلة",
+    "package_step_no_action": "لا يلزم أي إجراء في هذه الخطوة.",
+    "package_pay_at_center": "الدفع في المركز"
 
 }

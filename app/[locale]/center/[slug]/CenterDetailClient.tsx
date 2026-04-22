@@ -14,8 +14,9 @@ import Team from '@/features/center-details/sections/Team';
 import Reviews from '@/features/center-details/sections/Reviews';
 import Sidebar from '@/features/center-details/sections/Sidebar';
 import BookingWizard from '@/features/center-details/booking/BookingWizard';
+import PackagePurchaseWizard from '@/features/center-details/packages/PackagePurchaseWizard';
 import { useTranslations } from "next-intl";
-import { fetchUserPurchasedPackages, storePackages } from "@/lib/api";
+import { fetchUserPurchasedPackages } from "@/lib/api";
 
 const BOOKING_RESUME_KEY = "luzori_booking_resume_state";
 
@@ -30,8 +31,9 @@ export default function CenterDetailClient({ center }: Props) {
     const [activeServiceTab, setActiveServiceTab] = useState("all");
     const [isFav, setIsFav] = useState(false);
     const [isBookingMode, setIsBookingMode] = useState(false);
+    const [isPackageCheckoutMode, setIsPackageCheckoutMode] = useState(false);
     const [preSelectedServices, setPreSelectedServices] = useState<SelectedService[]>([]);
-    const [purchasingPackageId, setPurchasingPackageId] = useState<number | null>(null);
+    const [selectedPackageIds, setSelectedPackageIds] = useState<number[]>([]);
     const [purchasedPackages, setPurchasedPackages] = useState<UserPurchasedPackage[]>([]);
 
     const handleBookNow = (service?: Service & { category?: string }) => {
@@ -63,38 +65,9 @@ export default function CenterDetailClient({ center }: Props) {
               ? []
               : allServices.filter((s) => s.category === activeServiceTab);
 
-    const handlePurchasePackage = async (pkg: CenterPackage) => {
-        const token = localStorage.getItem("authToken");
-        if (!token) {
-            const redirect = encodeURIComponent(window.location.pathname);
-            const localePrefix = window.location.pathname.split("/").filter(Boolean)[0] || "en";
-            window.location.href = `/${localePrefix}/login?redirect=${redirect}`;
-            return;
-        }
-
-        setPurchasingPackageId(pkg.id);
-        const result = await storePackages(token, center.id, [pkg.id], "cash");
-        if (result.success) {
-            window.alert(result.message || t("package_purchase_success"));
-            setPurchasedPackages((prev) => {
-                if (prev.some((p) => p.package_id === pkg.id)) return prev;
-                return [
-                    ...prev,
-                    {
-                        id: Date.now(),
-                        package_id: pkg.id,
-                        package_name: pkg.name,
-                        price: 0,
-                        status: "active",
-                        package_type: "cash",
-                        created_at: new Date().toISOString(),
-                    },
-                ];
-            });
-        } else {
-            window.alert(result.message || t("package_purchase_failed"));
-        }
-        setPurchasingPackageId(null);
+    const handleTogglePackageCart = (pkg: CenterPackage) => {
+        if (purchasedPackages.some((p) => p.package_id === pkg.id)) return;
+        setSelectedPackageIds((prev) => (prev.includes(pkg.id) ? prev.filter((id) => id !== pkg.id) : [...prev, pkg.id]));
     };
 
     const fallbackImage =
@@ -160,6 +133,8 @@ export default function CenterDetailClient({ center }: Props) {
         void loadPurchasedPackages();
     }, [center.id]);
 
+    const selectedPackageObjects = centerPackages.filter((pkg) => selectedPackageIds.includes(pkg.id));
+
     return (
         <div className="min-h-screen bg-white flex flex-col">
             <Header />
@@ -172,6 +147,25 @@ export default function CenterDetailClient({ center }: Props) {
                         initialSelectedServices={preSelectedServices}
                         purchasedPackages={purchasedPackages}
                     />
+                ) : isPackageCheckoutMode ? (
+                    <Container className="py-6">
+                        <PackagePurchaseWizard
+                            center={center}
+                            selectedPackages={selectedPackageObjects}
+                            onBack={() => setIsPackageCheckoutMode(false)}
+                            onSuccess={(msg) => {
+                                window.alert(msg || t("package_purchase_success"));
+                                setIsPackageCheckoutMode(false);
+                                setSelectedPackageIds([]);
+                                void (async () => {
+                                    const token = localStorage.getItem("authToken");
+                                    if (!token) return;
+                                    const list = await fetchUserPurchasedPackages(token, center.id);
+                                    setPurchasedPackages(list);
+                                })();
+                            }}
+                        />
+                    </Container>
                 ) : (
                     <Container className="py-4">
                         <HeroBase
@@ -195,8 +189,9 @@ export default function CenterDetailClient({ center }: Props) {
                                     onTabChange={setActiveServiceTab}
                                     tabs={categoryTabs}
                                     onBookNow={handleBookNow}
-                                    onPurchasePackage={handlePurchasePackage}
-                                    purchasingPackageId={purchasingPackageId}
+                                    onTogglePackageCart={handleTogglePackageCart}
+                                    onStartPackageCheckout={() => setIsPackageCheckoutMode(true)}
+                                    selectedPackageIds={selectedPackageIds}
                                     purchasedPackageIds={purchasedPackages.map((p) => p.package_id)}
                                 />
 

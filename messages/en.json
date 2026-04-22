@@ -269,5 +269,10 @@
     "package_do_not_use": "Do not use package",
     "my_packages": "My Packages",
     "package_no_services_to_assign": "No selected services to assign packages.",
-    "package_not_available_for_service": "No available purchased package for this service."
+    "package_not_available_for_service": "No available purchased package for this service.",
+    "add_to_cart": "Add to cart",
+    "package_added_to_cart": "Added",
+    "package_cart_count": "{count} packages in cart",
+    "package_step_no_action": "No action needed for this step.",
+    "package_pay_at_center": "Pay at the center"
 }

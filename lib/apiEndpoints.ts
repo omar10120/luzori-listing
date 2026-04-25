@@ -10,7 +10,7 @@ export const API_ENDPOINTS = {
     USER_PROFILE: `${API_BASE_URL}/app_api/auth/profile`,
     USER_SOCIAL_LOGIN: `${API_BASE_URL}/app_api/auth/social-login`,
     USER_UPDATE_PROFILE: `${API_BASE_URL}/app_api/auth/update-profile`,
-    STORE_BOOKING: `${API_BASE_URL}/app_api/booking/store`, 
+    STORE_BOOKING: `${API_BASE_URL}/app_api/booking/store`,
     STORE_PACKAGES: (centerId: string | number) => `${API_BASE_URL}/app_api/packages/store/${centerId}`,
     USER_PACKAGES: (centerId: string | number) => `${API_BASE_URL}/app_api/packages/${centerId}`,
     BOOKING_LIST: `${API_BASE_URL}/app_api/booking/list`,
@@ -108,6 +108,7 @@ export interface PackageServiceEntry {
 export interface CenterPackage {
     id: number;
     name: string;
+    price: string;
     ServicePaid: PackageServiceEntry[];
     ServiceFree: PackageServiceEntry[];
     created_at: string;

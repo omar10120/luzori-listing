@@ -61,10 +61,10 @@ export default function Services({
                     {packages.map((pkg) => {
                         const paidServices = pkg.ServicePaid || [];
                         const freeServices = pkg.ServiceFree || [];
-                        const totalPaidPrice = paidServices.reduce((sum, item) => sum + Number(item.service?.price || 0), 0);
+                        // const totalPaidPrice = paidServices.reduce((sum, item) => sum + Number(item.service?.price || 0), 0);
                         const isPurchased = purchasedPackageIds.includes(pkg.id);
                         const isInCart = selectedPackageIds.includes(pkg.id);
-                        
+
                         return (
                             <div key={pkg.id} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
                                 <div className="mb-4 flex items-center justify-between gap-4">
@@ -76,7 +76,7 @@ export default function Services({
                                     </div>
                                     <div className="flex items-center gap-4">
                                         <span className="whitespace-nowrap text-lg font-black text-gray-900">
-                                            {totalPaidPrice} <span className="text-xs font-bold text-gray-400">{t("activity_currency_aed")}</span>
+                                            {pkg.price} <span className="text-xs font-bold text-gray-400">{t("activity_currency_aed")}</span>
                                         </span>
                                         <Button
                                             size="sm"
@@ -134,7 +134,7 @@ export default function Services({
                                 {/* Service Image or Category Icon */}
 
                                 <div className="relative h-16 w-16 overflow-hidden rounded-xl bg-gray-50 border border-gray-100 shrink-0 shadow-sm transition-transform group-hover:scale-105  ">
-                                    
+
                                     {svc.image && !svc.image.includes('avatars/1.png') ? (
 
                                         <Image

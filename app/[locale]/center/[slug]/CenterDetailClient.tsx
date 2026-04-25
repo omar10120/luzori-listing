@@ -17,6 +17,7 @@ import BookingWizard from '@/features/center-details/booking/BookingWizard';
 import PackagePurchaseWizard from '@/features/center-details/packages/PackagePurchaseWizard';
 import { useTranslations } from "next-intl";
 import { fetchUserPurchasedPackages } from "@/lib/api";
+import toast from "react-hot-toast";
 
 const BOOKING_RESUME_KEY = "luzori_booking_resume_state";
 
@@ -62,8 +63,8 @@ export default function CenterDetailClient({ center }: Props) {
         activeServiceTab === "all"
             ? allServices
             : activeServiceTab === "packages"
-              ? []
-              : allServices.filter((s) => s.category === activeServiceTab);
+                ? []
+                : allServices.filter((s) => s.category === activeServiceTab);
 
     const handleTogglePackageCart = (pkg: CenterPackage) => {
         if (purchasedPackages.some((p) => p.package_id === pkg.id)) return;
@@ -154,7 +155,7 @@ export default function CenterDetailClient({ center }: Props) {
                             selectedPackages={selectedPackageObjects}
                             onBack={() => setIsPackageCheckoutMode(false)}
                             onSuccess={(msg) => {
-                                window.alert(msg || t("package_purchase_success"));
+                                toast.success(msg || t("package_purchase_success"));
                                 setIsPackageCheckoutMode(false);
                                 setSelectedPackageIds([]);
                                 void (async () => {
@@ -205,7 +206,9 @@ export default function CenterDetailClient({ center }: Props) {
                             <Sidebar center={center} fallbackImage={fallbackImage} onBookNow={handleBookNow} />
                         </div>
                     </Container>
+
                 )}
+
             </main>
         </div>
     );

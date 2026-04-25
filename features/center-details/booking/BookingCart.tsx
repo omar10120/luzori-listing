@@ -37,7 +37,7 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
             return selectedServices.some(s => !s.date || !s.fromTime || !s.toTime);
         }
         if (currentStep === "confirm") {
-            const validPaymentTypes = new Set(["wallet", "credit_card", "service_cash"]);
+            const validPaymentTypes = new Set(["wallet", "service_cash"]);
             return !validPaymentTypes.has(paymentType);
         }
         return false;

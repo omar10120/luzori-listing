@@ -89,7 +89,7 @@ export default function PackagePurchaseWizard({
   const isDisabled =
     submitting ||
     selectedPackages.length === 0 ||
-    (step === "confirm" && !new Set(["wallet", "cash", "credit_card", "service_cash"]).has(paymentType)) ||
+    (step === "confirm" && !new Set(["wallet", "cash", "service_cash"]).has(paymentType)) ||
     (step === "confirm" && paymentType === "wallet" && isWalletDisabled);
 
   return (
@@ -162,10 +162,10 @@ export default function PackagePurchaseWizard({
               //   disabled: false,
               // },
               {
-                id: "credit_card",
-                label: t("credit_card"),
+                id: "service_cash",
+                label: t("cash"),
                 icon: CreditCard,
-                description: t("booking_secure_online_payment"),
+                description: t("package_pay_at_center"),
                 disabled: false,
               },
             ].map((method) => {

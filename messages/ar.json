@@ -286,5 +286,6 @@
     "total_services": "مجموع الخدمات",
     "go_back": "رجوع خطوة",
     "selected_packages": "البكجات المختارة",
-    "order_summary": "تفاصيل الطلب "
+    "order_summary": "تفاصيل الطلب ",
+    "previous": "سابقة"
 }

@@ -31,6 +31,8 @@ export default function Step4Confirm({
         { id: "service_cash", label: t('cash') || "Service Cash", icon: CreditCard, description: "Pay at the center" },
     ];
 
+    const allServicesCoveredByPackages = selectedServices.length > 0 && selectedServices.every(svc => svc.userPackageIds && svc.userPackageIds.length > 0);
+
     return (
         <div className="flex flex-col gap-8 w-full">
             <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight leading-none mb-2">{t("booking_confirm_booking")}</h1>
@@ -99,49 +101,51 @@ export default function Step4Confirm({
                 </div>
 
                 {/* Payment Method Selection */}
-                <div className="flex flex-col gap-4 border-t border-gray-100 pt-8">
-                    <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider">{t('payment_method') || "Payment Method"}</h3>
+                {!allServicesCoveredByPackages && (
+                    <div className="flex flex-col gap-4 border-t border-gray-100 pt-8">
+                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider">{t('payment_method') || "Payment Method"}</h3>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {paymentOptions.map((opt) => {
-                            const Icon = opt.icon;
-                            const isSelected = paymentType === opt.id;
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            {paymentOptions.map((opt) => {
+                                const Icon = opt.icon;
+                                const isSelected = paymentType === opt.id;
 
-                            return (
-                                <button
-                                    key={opt.id}
-                                    onClick={() => !opt.disabled && setPaymentType(opt.id)}
-                                    disabled={opt.disabled}
-                                    className={cn(
-                                        "flex flex-col items-center text-center p-5 rounded-2xl border-2 transition-all gap-2 relative",
-                                        isSelected
-                                            ? "border-[#225D5C] bg-[#225D5C]/5 ring-4 ring-[#225D5C]/10"
-                                            : "border-gray-100 bg-white hover:border-gray-200",
-                                        opt.disabled && "opacity-50 cursor-not-allowed grayscale"
-                                    )}
-                                >
-                                    <Icon className={cn("w-6 h-6", isSelected ? "text-[#225D5C]" : "text-gray-400")} />
-                                    <div>
-                                        <p className="font-bold text-gray-900 text-sm">{opt.label}</p>
-                                        <p className="text-[10px] text-gray-500 mt-0.5 leading-tight">{opt.description}</p>
-                                    </div>
-
-                                    {isSelected && (
-                                        <div className="absolute top-2 right-2 w-5 h-5 bg-[#225D5C] rounded-full flex items-center justify-center text-white">
-                                            <CheckCircle2 size={12} strokeWidth={3} />
+                                return (
+                                    <button
+                                        key={opt.id}
+                                        onClick={() => !opt.disabled && setPaymentType(opt.id)}
+                                        disabled={opt.disabled}
+                                        className={cn(
+                                            "flex flex-col items-center text-center p-5 rounded-2xl border-2 transition-all gap-2 relative",
+                                            isSelected
+                                                ? "border-[#225D5C] bg-[#225D5C]/5 ring-4 ring-[#225D5C]/10"
+                                                : "border-gray-100 bg-white hover:border-gray-200",
+                                            opt.disabled && "opacity-50 cursor-not-allowed grayscale"
+                                        )}
+                                    >
+                                        <Icon className={cn("w-6 h-6", isSelected ? "text-[#225D5C]" : "text-gray-400")} />
+                                        <div>
+                                            <p className="font-bold text-gray-900 text-sm">{opt.label}</p>
+                                            <p className="text-[10px] text-gray-500 mt-0.5 leading-tight">{opt.description}</p>
                                         </div>
-                                    )}
 
-                                    {opt.id === 'wallet' && isWalletDisabled && (
-                                        <span className="text-[10px] text-red-500 font-bold mt-1">
-                                            {t('insufficient_balance') || "Insufficient balance"}
-                                        </span>
-                                    )}
-                                </button>
-                            );
-                        })}
+                                        {isSelected && (
+                                            <div className="absolute top-2 right-2 w-5 h-5 bg-[#225D5C] rounded-full flex items-center justify-center text-white">
+                                                <CheckCircle2 size={12} strokeWidth={3} />
+                                            </div>
+                                        )}
+
+                                        {opt.id === 'wallet' && isWalletDisabled && (
+                                            <span className="text-[10px] text-red-500 font-bold mt-1">
+                                                {t('insufficient_balance') || "Insufficient balance"}
+                                            </span>
+                                        )}
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </div>
     );

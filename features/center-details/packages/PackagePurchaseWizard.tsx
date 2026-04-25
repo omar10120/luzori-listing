@@ -19,6 +19,7 @@ import { useTranslations } from "next-intl";
 import Button from "@/components/ui/Button";
 import { fetchUserProfile, storePackages } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 type PackageStep = "services" | "professional" | "time" | "confirm";
 

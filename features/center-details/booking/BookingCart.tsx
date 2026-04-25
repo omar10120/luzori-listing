@@ -28,6 +28,8 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
         return sum + (p || 0);
     }, 0);
 
+    const allServicesCoveredByPackages = selectedServices.length > 0 && selectedServices.every(svc => svc.userPackageIds && svc.userPackageIds.length > 0);
+
     const isNextDisabled = () => {
         if (isSubmitting) return true;
         if (currentStep === "services" && selectedServices.length === 0) return true;
@@ -37,6 +39,7 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
             return selectedServices.some(s => !s.date || !s.fromTime || !s.toTime);
         }
         if (currentStep === "confirm") {
+            if (allServicesCoveredByPackages) return false;
             const validPaymentTypes = new Set(["wallet", "service_cash"]);
             return !validPaymentTypes.has(paymentType);
         }

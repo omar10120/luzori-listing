@@ -286,5 +286,6 @@
     "total_services": "total services",
     "go_back": "go back",
     "selected_packages": "selected packages",
-    "order_summary": "order summary"
+    "order_summary": "order summary",
+    "previous": "previous"
 }

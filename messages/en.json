@@ -292,5 +292,6 @@
     "activity_no_packages": "No packages yet.",
     "activity_package_type": "Type",
     "activity_package_status": "Status",
-    "activity_package_used_services": "Used services"
+    "activity_package_used_services": "Used services",
+    "activity_package_service_used": "Used"
 }

@@ -25,6 +25,9 @@ export default function ActivityPackagesPanel({ packages }: ActivityPackagesPane
       {packages.map((pkg) => {
         const usedCount = pkg.used_packages?.length || 0;
         const statusLabel = pkg.status || "active";
+        const packageDetails = pkg.package_details;
+        const paidServices = packageDetails?.ServicePaid || [];
+        const freeServices = packageDetails?.ServiceFree || [];
         return (
           <div key={pkg.id} className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
@@ -51,6 +54,44 @@ export default function ActivityPackagesPanel({ packages }: ActivityPackagesPane
                 {t("activity_package_used_services")}: {usedCount}
               </span>
             </div>
+
+            {(paidServices.length > 0 || freeServices.length > 0) && (
+              <div className="mt-3 space-y-2 border-t border-gray-100 pt-3">
+                <p className="text-xs font-bold uppercase tracking-wide text-gray-500">{t("services")}</p>
+                {paidServices.map((entry) => {
+                  const isUsed = (pkg.used_packages || []).some((u) => u.service_id === entry.service.id);
+                  return (
+                    <div
+                      key={`paid-${pkg.id}-${entry.id}`}
+                      className={`flex items-center justify-between rounded-lg px-2.5 py-2 text-xs ${
+                        isUsed ? "bg-amber-50 text-amber-800" : "bg-gray-50 text-gray-700"
+                      }`}
+                    >
+                      <span className={isUsed ? "line-through opacity-80" : ""}>{entry.service.name}</span>
+                      <span className="font-semibold">
+                        {isUsed ? t("activity_package_service_used") : `${entry.service.price} ${t("activity_currency_aed")}`}
+                      </span>
+                    </div>
+                  );
+                })}
+                {freeServices.map((entry) => {
+                  const isUsed = (pkg.used_packages || []).some((u) => u.service_id === entry.service.id);
+                  return (
+                    <div
+                      key={`free-${pkg.id}-${entry.id}`}
+                      className={`flex items-center justify-between rounded-lg px-2.5 py-2 text-xs ${
+                        isUsed ? "bg-amber-50 text-amber-800" : "bg-emerald-50 text-emerald-700"
+                      }`}
+                    >
+                      <span className={isUsed ? "line-through opacity-80" : ""}>{entry.service.name}</span>
+                      <span className="font-semibold">
+                        {isUsed ? t("activity_package_service_used") : t("package_free_label")}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         );
       })}

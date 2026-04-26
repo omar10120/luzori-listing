@@ -124,6 +124,7 @@ export interface UserPurchasedPackage {
     package_type: string;
     created_at: string;
     used_packages?: UserPackageUsage[];
+    package_details?: CenterPackage;
     center?: {
         id: number;
         name: string;

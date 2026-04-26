@@ -33,7 +33,7 @@ export default function Step4Packages({
 
     const getEligibleUserPackagesForService = (serviceId: number) => {
         return purchasedPackages.filter((userPkg) => {
-            const pkgDef = centerPackageMap.get(userPkg.package_id);
+            const pkgDef = userPkg.package_details || centerPackageMap.get(userPkg.package_id);
             if (!pkgDef) return false;
             if (!packageIncludesService(pkgDef, serviceId)) return false;
 

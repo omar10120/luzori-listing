@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
     USER_UPDATE_PROFILE: `${API_BASE_URL}/app_api/auth/update-profile`,
     STORE_BOOKING: `${API_BASE_URL}/app_api/booking/store`,
     STORE_PACKAGES: (centerId: string | number) => `${API_BASE_URL}/app_api/packages/store/${centerId}`,
+    USER_PACKAGES_ALL: `${API_BASE_URL}/app_api/packages`,
     USER_PACKAGES: (centerId: string | number) => `${API_BASE_URL}/app_api/packages/${centerId}`,
     BOOKING_LIST: `${API_BASE_URL}/app_api/booking/list`,
     INFO: `${API_BASE_URL}/app_api/info`,
@@ -123,6 +124,12 @@ export interface UserPurchasedPackage {
     package_type: string;
     created_at: string;
     used_packages?: UserPackageUsage[];
+    center?: {
+        id: number;
+        name: string;
+        domain: string;
+        logo?: string | null;
+    };
 }
 
 export interface UserPackageUsage {

@@ -4,13 +4,12 @@ import React, { useState, useEffect, useMemo } from "react";
 import Container from "@/components/ui/Container";
 import AccountSidebar from "@/components/account/AccountSidebar";
 import Button from "@/components/ui/Button";
-import { fetchUserProfile, fetchBookingsList } from "@/lib/api";
-import type { BookingListItem } from "@/lib/apiEndpoints";
+import { fetchUserProfile, fetchBookingsList, fetchUserPackages } from "@/lib/api";
+import type { BookingListItem, UserPurchasedPackage } from "@/lib/apiEndpoints";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
     Search,
-    Calendar,
     MapPin,
     Store,
     ChevronRight,
@@ -21,12 +20,14 @@ import {
 import { cn } from "@/lib/utils";
 import { generateCenterSlug } from "@/lib/slugify";
 import { useTranslations } from "next-intl";
+import ActivityTabs from "@/features/activity/ActivityTabs";
+import ActivityPackagesPanel from "@/features/activity/ActivityPackagesPanel";
 
 const BORDER = "#225D5C";
 const HERO_FALLBACK =
     "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1200&h=640&fit=crop&q=80";
 
-type ActivityTab = "all" | "appointments" | "gift_cards" | "memberships" | "products";
+type ActivityTab = "all" | "appointments" | "gift_cards" | "memberships" | "products" | "packages";
 
 function todayKey(): string {
     const n = new Date();
@@ -142,6 +143,7 @@ export default function ActivityPage() {
     const [user, setUser] = useState<{ name?: string } | null>(null);
     const [loading, setLoading] = useState(true);
     const [bookings, setBookings] = useState<BookingListItem[]>([]);
+    const [userPackages, setUserPackages] = useState<UserPurchasedPackage[]>([]);
     const [selectedId, setSelectedId] = useState<number | null>(null);
     const [tab, setTab] = useState<ActivityTab>("all");
     const [search, setSearch] = useState("");
@@ -186,6 +188,8 @@ export default function ActivityPage() {
             setUser(profile);
             const list = await fetchBookingsList(token);
             setBookings(list);
+            const packagesList = await fetchUserPackages(token);
+            setUserPackages(packagesList);
             setLoading(false);
         };
         void run();
@@ -206,6 +210,18 @@ export default function ActivityPage() {
                 String(b.id).includes(q)
         );
     }, [filteredByTab, search]);
+
+    const filteredPackages = useMemo(() => {
+        const q = search.trim().toLowerCase();
+        if (!q) return userPackages;
+        return userPackages.filter((p) => {
+            return (
+                p.package_name?.toLowerCase().includes(q) ||
+                p.center?.name?.toLowerCase().includes(q) ||
+                String(p.id).includes(q)
+            );
+        });
+    }, [userPackages, search]);
 
     const upcoming = useMemo(
         () =>
@@ -263,6 +279,8 @@ export default function ActivityPage() {
         { id: "gift_cards", label: t("activity_gift_cards") },
         { id: "memberships", label: t("activity_memberships") },
         { id: "products", label: t("activity_products") },
+        { id: "packages", label: t("activity_packages") },
+        
     ];
 
     return (
@@ -290,28 +308,18 @@ export default function ActivityPage() {
                             </div>
                         </div>
 
-                        <div className="flex flex-wrap gap-2 mb-8">
-                            {tabs.map((tabItem) => (
-                                <button
-                                    key={tabItem.id}
-                                    type="button"
-                                    onClick={() => {
-                                        setTab(tabItem.id);
-                                        setMobileDetailOpen(false);
-                                    }}
-                                    className={cn(
-                                        "px-4 py-2 rounded-full text-sm font-semibold transition-all",
-                                        tab === tabItem.id
-                                            ? "bg-gray-900 text-white"
-                                            : "bg-white text-gray-700 border border-gray-200 hover:border-[#225D5C]/40"
-                                    )}
-                                >
-                                    {tabItem.label}
-                                </button>
-                            ))}
-                        </div>
+                        <ActivityTabs
+                            tabs={tabs}
+                            activeTab={tab}
+                            onChange={(nextTab) => {
+                                setTab(nextTab);
+                                setMobileDetailOpen(false);
+                            }}
+                        />
 
-                        {tab !== "all" && tab !== "appointments" ? (
+                        {tab === "packages" ? (
+                            <ActivityPackagesPanel packages={filteredPackages} />
+                        ) : tab !== "all" && tab !== "appointments" ? (
                             <div
                                 className="rounded-2xl border border-dashed p-12 text-center text-gray-500 bg-white"
                                 style={{ borderColor: `${BORDER}55` }}

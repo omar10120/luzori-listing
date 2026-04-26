@@ -425,6 +425,26 @@ export const fetchUserPurchasedPackages = async (
     }
 };
 
+export const fetchUserPackages = async (token: string): Promise<UserPurchasedPackage[]> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.USER_PACKAGES_ALL, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "Accept": "application/json",
+            },
+        });
+
+        if (!response.ok) return [];
+        const json = await response.json();
+        return Array.isArray(json?.data) ? json.data : [];
+    } catch (error) {
+        console.error("Fetch User Packages (all) Error:", error);
+        return [];
+    }
+};
+
 export const fetchInfo = async (): Promise<import("./apiEndpoints").InfoData | null> => {
     try {
         const response = await fetch(API_ENDPOINTS.INFO, {

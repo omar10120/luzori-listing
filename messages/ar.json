@@ -287,5 +287,10 @@
     "go_back": "رجوع خطوة",
     "selected_packages": "البكجات المختارة",
     "order_summary": "تفاصيل الطلب ",
-    "previous": "سابقة"
+    "previous": "سابقة",
+    "activity_packages" : "البكجات ",
+    "activity_no_packages": "لا توجد باقات حتى الآن.",
+    "activity_package_type": "النوع",
+    "activity_package_status": "الحالة",
+    "activity_package_used_services": "الخدمات المستخدمة"
 }

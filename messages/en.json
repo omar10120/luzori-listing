@@ -287,5 +287,10 @@
     "go_back": "go back",
     "selected_packages": "selected packages",
     "order_summary": "order summary",
-    "previous": "previous"
+    "previous": "previous",
+    "activity_packages" : "packages",
+    "activity_no_packages": "No packages yet.",
+    "activity_package_type": "Type",
+    "activity_package_status": "Status",
+    "activity_package_used_services": "Used services"
 }

@@ -137,8 +137,8 @@ const RegisterPage = () => {
               <form onSubmit={handleSubmit} className="space-y-2.5">
                 <div className="grid grid-cols-1 gap-2.5 md:grid-cols-1">
                   <div className="space-y-1">
-                    <span className="text-[#FF0000]/70">*</span>
                     <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("full_name")}</label>
+                    <span className="text-[#FF0000]/70"> *</span>
                     <div className="relative">
                       <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
                       <input
@@ -155,8 +155,8 @@ const RegisterPage = () => {
               
 
                   <div className="space-y-1 md:col-span-2">
-                    <span className="text-[#FF0000]/70">*</span>
                     <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("email")}</label>
+                    <span className="text-[#FF0000]/70"> *</span>
                     <div className="relative">
                       <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
                       <input
@@ -171,8 +171,8 @@ const RegisterPage = () => {
                   </div>
 
                   <div className="space-y-1 md:col-span-2">
-                  <span className="text-[#FF0000]/70">*</span>
                     <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("phone_number")}</label>
+                  <span className="text-[#FF0000]/70"> *</span>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 z-20">
                         <button
@@ -233,8 +233,8 @@ const RegisterPage = () => {
                   </div>
 
                   <div className="space-y-1 md:col-span-2">
-                  <span className="text-[#FF0000]/70">*</span>
                     <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("password")}</label>
+                  <span className="text-[#FF0000]/70"> *</span>
                     <div className="relative">
                       <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
                       <input

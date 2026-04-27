@@ -32,7 +32,7 @@ const RegisterPage = () => {
 
   const [formData, setFormData] = useState({
     first_name: "",
-    last_name: "",
+    // last_name: "",
     email: "",
     country_code: "971",
     phone: "",
@@ -73,16 +73,16 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen overflow-y-auto bg-[#FFF7ED] lg:h-screen lg:overflow-hidden">
+    <div className="h-[78dvh] md:h-[100dvh] overflow-hidden bg-[#FFF7ED]">
       <Container className="h-full px-0 sm:px-3">
         <motion.div
           initial={{ opacity: 0, y: 12 }} 
           animate={{ opacity: 1, y: 0 }}
-          className="grid h-auto grid-cols-1 lg:h-full lg:grid-cols-2"
+          className="grid h-full grid-rows-[20dvh_1fr] grid-cols-1 lg:grid-cols-2 lg:grid-rows-1"
         >
           <section
             className={cn(
-              "relative overflow-hidden rounded-b-[44px] bg-[#225D5C] px-5 pb-20 pt-8 text-center text-[#FFD6A8] sm:px-8 lg:rounded-none lg:px-12 lg:py-6 lg:text-start lg:flex lg:items-center lg:justify-center",
+              "relative overflow-hidden rounded-b-[34px] bg-[#225D5C] px-5 pb-9 pt-4 max-md:pt-16 text-center text-[#FFD6A8] sm:px-8 lg:rounded-none lg:px-12 lg:py-6 lg:text-start lg:flex lg:items-center lg:justify-center",
               isArabic ? "lg:order-2" : "lg:order-1"
             )}
           >
@@ -98,12 +98,12 @@ const RegisterPage = () => {
               )}
               unoptimized
             />
-            <div className="mx-auto flex max-w-md flex-col items-center gap-3 py-9 md:py-1 lg:gap-6 lg:py-10">
-              <div className="mx-auto mb-1 flex h-20 w-20 items-center justify-center rounded-full bg-[#FFD6A8] shadow-lg shadow-black/20 lg:h-24 lg:w-24">
+            <div className="mx-auto flex max-w-md flex-col items-center gap-1 py-1 md:py-1 lg:gap-18 lg:py-10 ">
+              <div className="mx-auto mb-1 flex h-16 w-16 items-center justify-center rounded-full bg-[#FFD6A8] shadow-lg shadow-black/20 lg:h-24 lg:w-24">
                 <Image src="/logo.svg" alt="Luzori" width={60} height={60} />
               </div>
-              <h2 className="text-[38px] font-bold tracking-tight lg:text-[28px]">{t("welcome_to_luzori")}</h2>
-              <p className="max-w-[320px] text-sm leading-6 text-[#FFEED9] sm:text-sm">
+              <h2 className="text-[20px] font-bold tracking-tight lg:text-[28px] hidden md:block">{t("welcome_to_luzori")}</h2>
+              <p className="max-w-[320px] text-xs leading-5 text-[#FFEED9] sm:text-sm">
                 <span className="hidden lg:inline">{t("hero_subtitle")}</span>
                 <span className="inline lg:hidden">{t("hero_subtitle_mobile")}</span>
               </p>
@@ -118,53 +118,55 @@ const RegisterPage = () => {
 
           <section
             className={cn(
-              "-mt-12 bg-transparent px-4 pb-6 sm:px-6 lg:mt-0 lg:flex lg:items-center lg:bg-white lg:px-10 lg:py-6",
+              "-mt-8 flex h-full flex-col bg-transparent px-4 pb-4 sm:px-6 lg:mt-0 lg:block lg:bg-white lg:px-10 lg:py-6",
               isArabic ? "lg:order-1" : "lg:order-2"
             )}
           >
-            <div className="relative z-20 w-full rounded-[24px] border border-[#E9E2D8] bg-[#F4F4F4] p-4 shadow-xl shadow-black/10 sm:p-6 lg:bg-[#FFFBF7] lg:p-7">
-              <h1 className="mb-4 mt-2 text-center text-[20px] font-extrabold tracking-tight text-[#225D5C] lg:mt-4 lg:text-2xl">
+            <div className="relative z-20 w-full rounded-[24px] border border-[#E9E2D8] bg-[#F4F4F4] p-3 shadow-xl shadow-black/10 sm:p-6 lg:bg-[#FFFBF7] lg:p-7">
+              <h1 className="mb-3 mt-1 text-center text-[20px] font-extrabold tracking-tight text-[#225D5C] lg:mt-4 lg:text-2xl">
                 {t("create_your_account")}
               </h1>
 
-              <form onSubmit={handleSubmit} className="space-y-3">
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              <form onSubmit={handleSubmit} className="space-y-2.5">
+                <div className="grid grid-cols-1 gap-2.5 md:grid-cols-1">
                   <div className="space-y-1">
-                    <label className="ml-1 text-xs font-semibold text-[#225D5C]">{t("first_name")}</label>
+                    <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("full_name")}</label>
                     <div className="relative">
                       <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
                       <input
                         type="text"
-                        placeholder={t("first_name")}
-                        className="h-11 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-9 pr-3 text-xs text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        placeholder={t("full_name")}
+                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-8 pr-2 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.first_name}
                         onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                       />
                     </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="ml-1 text-xs font-semibold text-[#225D5C]">{t("last_name")}</label>
+                  {/* <div className="space-y-1">
+                    <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("last_name")}
+                    <span className="text-[#225D5C]/70"> ({t("optional")})</span>
+                    </label>
                     <div className="relative">
                       <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
                       <input
                         type="text"
                         placeholder={t("last_name")}
-                        className="h-11 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-9 pr-3 text-xs text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-8 pr-2 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.last_name}
                         onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
                       />
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="space-y-1 md:col-span-2">
-                    <label className="ml-1 text-xs font-semibold text-[#225D5C]">{t("email")}</label>
+                    <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("email")}</label>
                     <div className="relative">
                       <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
                       <input
                         type="email"
                         placeholder={t("email")}
-                        className="h-11 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-9 pr-3 text-xs text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-8 pr-2 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       />
@@ -172,7 +174,7 @@ const RegisterPage = () => {
                   </div>
 
                   <div className="space-y-1 md:col-span-2">
-                    <label className="ml-1 text-xs font-semibold text-[#225D5C]">{t("phone_number")}</label>
+                    <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("phone_number")}</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 z-20">
                         <button
@@ -221,7 +223,7 @@ const RegisterPage = () => {
                       <input
                         type="tel"
                         placeholder={t("phone_number")}
-                        className="h-11 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-28 pr-3 text-xs font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-24 pr-2 text-[11px] font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       />
@@ -229,13 +231,13 @@ const RegisterPage = () => {
                   </div>
 
                   <div className="space-y-1 md:col-span-2">
-                    <label className="ml-1 text-xs font-semibold text-[#225D5C]">{t("password")}</label>
+                    <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("password")}</label>
                     <div className="relative">
                       <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder={t("password")}
-                        className="h-11 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-9 pr-9 text-xs text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-8 pr-8 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.password}
                         onChange={(e) => {
                           const v = e.target.value;
@@ -253,23 +255,27 @@ const RegisterPage = () => {
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center space-y-2 md:items-start">
-                  <span className="text-xs font-semibold text-[#225D5C] md:ml-1">{t("profile_picture")}</span>
-                  <label className="group relative flex h-20 w-20 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-[#E9E2D8] bg-[#FFEED9] shadow-md transition-all hover:border-[#225D5C]/50 md:h-24 md:w-24">
-                  {logo ? (
-                      <Image src={URL.createObjectURL(logo)} width={100} height={100} alt="Profile preview" className="absolute inset-0 h-full w-full object-cover" />
-                    ) : (
-                      <div className="flex flex-col items-center">
-                        <Camera className="mb-1 text-[#225D5C]/70 group-hover:text-[#225D5C]" size={17} />
-                        <span className="text-[10px] font-semibold uppercase tracking-wide text-[#225D5C]/80">{t("select")}</span>
+                <span className="text-[11px] font-semibold text-[#225D5C] md:ml-1">{t("profile_picture")} 
+                  <span className="text-[#225D5C]/70"> ({t("optional")})</span>
+                </span>
+                <div className="flex flex-col space-y-1.5 md:items-start">
+                  <div className="flex justify-center">
+                    <label className="group relative flex h-16 w-16 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-[#E9E2D8] bg-[#FFEED9] shadow-md transition-all hover:border-[#225D5C]/50 md:h-24 md:w-24">
+                    {logo ? (
+                        <Image src={URL.createObjectURL(logo)} width={100} height={100} alt="Profile preview" className="absolute inset-0 h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex flex-col items-center">
+                          <Camera className="mb-1 text-[#225D5C]/70 group-hover:text-[#225D5C]" size={14} />
+                          <span className="text-[10px] font-semibold uppercase tracking-wide text-[#225D5C]/80">{t("select")}</span>
 
-                      </div>
-                    )}
-                    <input type="file" className="hidden" accept="image/*" onChange={(e) => e.target.files?.[0] && setLogo(e.target.files[0])} />
-                  </label>
-                  <div className="flex items-center gap-2">
+                        </div>
+                      )}
+                      <input type="file" className="hidden" accept="image/*" onChange={(e) => e.target.files?.[0] && setLogo(e.target.files[0])} />
+                    </label>
+                  </div>
+                  <div className="flex  gap-1.5">
                     <input type="checkbox" className="w-4 h-4 text-[#225D5C] bg-gray-100 rounded border-gray-300 focus:ring-[#225D5C] dark:focus:ring-[#225D5C] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                    <div className="text-xs font-semibold text-[#225D5C]">
+                    <div className="text-[10px] font-semibold text-[#225D5C]">
                       <span className=" text-[#225D5C]/70">{t("i_agree_to_the")} </span>
                       <span className="text-[#225D5C]">{t("terms_of_service")}</span> 
                       <span className="text-[#225D5C]/70"> {t("and")}</span>
@@ -295,7 +301,7 @@ const RegisterPage = () => {
                     type="submit"
                     disabled={isSubmitting}
                     className={cn(
-                      "h-10 w-full  lg:w-1/2   rounded-full bg-[#225D5C] text-sm font-bold text-[#FFD6A8] shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-70",
+                      "h-9 w-full  lg:w-1/2 rounded-full bg-[#225D5C] text-xs font-bold text-[#FFD6A8] shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-70",
                       !isSubmitting && "hover:bg-[#1D4E4D]"
                     )}
                   >

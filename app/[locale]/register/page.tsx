@@ -144,6 +144,7 @@ const RegisterPage = () => {
                       <input
                         type="text"
                         placeholder={t("full_name")}
+                        required
                         className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.first_name}
                         onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
@@ -160,6 +161,7 @@ const RegisterPage = () => {
                       <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
                       <input
                         type="email"
+                        required
                         placeholder={t("email")}
                         className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.email}
@@ -219,6 +221,8 @@ const RegisterPage = () => {
                             {/* <Phone size={14} className="absolute left-[1.8rem]  top-1/2 -translate-y-1/2 text-[#225D5C]/70" /> */}
                             <input
                               type="tel"
+                              minLength={8}
+                              required
                               placeholder={t("phone_number")}
                               className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-24 pr-2 text-[11px] font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                               value={formData.phone}
@@ -238,6 +242,7 @@ const RegisterPage = () => {
                         placeholder={t("password")}
                         className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-8 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.password}
+                        required
                         onChange={(e) => {
                           const v = e.target.value;
                           setFormData({ ...formData, password: v, password_confirmation: v });

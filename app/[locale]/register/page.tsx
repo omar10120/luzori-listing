@@ -80,7 +80,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className=" h-[100dvh] md:h-[100dvh] overflow-y-auto bg-[#F2E8DC]">
+    <div className=" h-[120dvh] md:h-[100dvh] overflow-y-auto bg-[#F2E8DC]">
       <Container className="h-auto min-h-[calc(100dvh-4rem)] px-0 pt-14 sm:px-3 md:pt-0">
         <motion.div
           initial={{ opacity: 0, y: 12 }} 

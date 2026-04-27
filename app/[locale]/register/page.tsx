@@ -80,7 +80,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className=" h-[120dvh] md:h-[100dvh] overflow-y-auto bg-[#F2E8DC]">
+    <div className=" h-[100dvh] md:h-[100dvh] overflow-y-auto bg-[#F2E8DC]">
       <Container className="h-auto min-h-[calc(100dvh-4rem)] px-0 pt-14 sm:px-3 md:pt-0">
         <motion.div
           initial={{ opacity: 0, y: 12 }} 
@@ -129,7 +129,7 @@ const RegisterPage = () => {
               isArabic ? "lg:order-1" : "lg:order-2"
             )}
           >
-            <div className="relative z-20 w-full rounded-[24px] border border-[#E9E2D8] bg-[#F4F4F4] p-3 shadow-xl shadow-black/10 sm:p-6 lg:bg-[#FFFBF7] lg:p-7">
+            <div className="-mt-12 relative z-20 w-full rounded-[24px] border border-[#E9E2D8] bg-[#F4F4F4] p-3 shadow-xl shadow-black/10 sm:p-6 lg:bg-[#FFFBF7] lg:p-7">
               <h1 className="mb-3 mt-1 text-center text-[20px] font-extrabold tracking-tight text-[#225D5C] lg:mt-4 lg:text-2xl">
                 {t("create_your_account")}
               </h1>

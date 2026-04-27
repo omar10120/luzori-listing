@@ -73,28 +73,17 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#FFF7ED]">
-        <Image
-              src={isArabic ? "/fogright.png" : "/fogleft.png"}
-              alt="Decorative side"
-              width={130}
-              height={900}
-              className={cn(
-                "pointer-events-none absolute top-0 hidden h-full w-[120px] object-cover lg:block z-10",
-                isArabic ? "-left-10" : "-right-10"
-              )}
-              unoptimized
-            />  
+    <div className="min-h-screen overflow-y-auto bg-[#FFF7ED] lg:h-screen lg:overflow-hidden">
       <Container className="h-full px-0 sm:px-3">
         <motion.div
           initial={{ opacity: 0, y: 12 }} 
           animate={{ opacity: 1, y: 0 }}
-          className="grid h-full grid-cols-1 lg:grid-cols-2"
+          className="grid h-auto grid-cols-1 lg:h-full lg:grid-cols-2"
         >
           <section
             className={cn(
-              "relative overflow-hidden bg-[#225D5C] px-5 py-6 text-center text-[#FFD6A8] sm:px-8 lg:flex lg:items-center lg:justify-center lg:px-12",
-              isArabic ? "lg:order-2" : "lg:order -1"
+              "relative overflow-hidden rounded-b-[44px] bg-[#225D5C] px-5 pb-20 pt-8 text-center text-[#FFD6A8] sm:px-8 lg:rounded-none lg:px-12 lg:py-6 lg:text-start lg:flex lg:items-center lg:justify-center",
+              isArabic ? "lg:order-2" : "lg:order-1"
             )}
           >
             
@@ -109,17 +98,16 @@ const RegisterPage = () => {
               )}
               unoptimized
             />
-            <div className="mx-auto max-w-md py-4 lg:py-10 flex flex-col gap-20">
-              <h2 className="mb-2 text-lg font-bold tracking-tight lg:text-[28px]">{t("welcome_to_luzori")}</h2>
-              <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#FFD6A8] shadow-lg shadow-black/20 lg:h-24 lg:w-24">
+            <div className="mx-auto flex max-w-md flex-col items-center gap-3 py-9 md:py-1 lg:gap-6 lg:py-10">
+              <div className="mx-auto mb-1 flex h-20 w-20 items-center justify-center rounded-full bg-[#FFD6A8] shadow-lg shadow-black/20 lg:h-24 lg:w-24">
                 <Image src="/logo.svg" alt="Luzori" width={60} height={60} />
               </div>
-              
-              <p className="text-xs leading-6 text-[#FFEED9] sm:text-sm">
+              <h2 className="text-[38px] font-bold tracking-tight lg:text-[28px]">{t("welcome_to_luzori")}</h2>
+              <p className="max-w-[320px] text-sm leading-6 text-[#FFEED9] sm:text-sm">
                 <span className="hidden lg:inline">{t("hero_subtitle")}</span>
                 <span className="inline lg:hidden">{t("hero_subtitle_mobile")}</span>
               </p>
-              <div className="flex items-center gap-2 font-bold justify-center">
+              <div className="hidden items-center justify-center gap-2 font-bold lg:flex">
                 <span>{t("contact_us")}</span>
                 <span>|</span>
                 <span>{t("discover_more")}</span>
@@ -130,12 +118,12 @@ const RegisterPage = () => {
 
           <section
             className={cn(
-              "bg-white px-4 py-4 sm:px-6 lg:flex lg:items-center lg:px-10 lg:py-6",
+              "-mt-12 bg-transparent px-4 pb-6 sm:px-6 lg:mt-0 lg:flex lg:items-center lg:bg-white lg:px-10 lg:py-6",
               isArabic ? "lg:order-1" : "lg:order-2"
             )}
           >
-            <div className="w-full rounded-[24px] border border-[#E9E2D8] bg-[#FFFBF7] p-4  shadow-xl shadow-black/5 sm:p-6 lg:p-7">
-              <h1 className="mb-4 mt-4 text-center text-[34px] font-extrabold tracking-tight text-[#225D5C] lg:text-2xl">
+            <div className="relative z-20 w-full rounded-[24px] border border-[#E9E2D8] bg-[#F4F4F4] p-4 shadow-xl shadow-black/10 sm:p-6 lg:bg-[#FFFBF7] lg:p-7">
+              <h1 className="mb-4 mt-2 text-center text-[20px] font-extrabold tracking-tight text-[#225D5C] lg:mt-4 lg:text-2xl">
                 {t("create_your_account")}
               </h1>
 
@@ -148,7 +136,7 @@ const RegisterPage = () => {
                       <input
                         type="text"
                         placeholder={t("first_name")}
-                        className="h-10 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-9 pr-3 text-xs text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-11 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-9 pr-3 text-xs text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.first_name}
                         onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                       />
@@ -162,7 +150,7 @@ const RegisterPage = () => {
                       <input
                         type="text"
                         placeholder={t("last_name")}
-                        className="h-10 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-9 pr-3 text-xs text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-11 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-9 pr-3 text-xs text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.last_name}
                         onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
                       />
@@ -176,7 +164,7 @@ const RegisterPage = () => {
                       <input
                         type="email"
                         placeholder={t("email")}
-                        className="h-10 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-9 pr-3 text-xs text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-11 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-9 pr-3 text-xs text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       />
@@ -233,7 +221,7 @@ const RegisterPage = () => {
                       <input
                         type="tel"
                         placeholder={t("phone_number")}
-                        className="h-10 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-28 pr-3 text-xs font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-11 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-28 pr-3 text-xs font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       />
@@ -247,7 +235,7 @@ const RegisterPage = () => {
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder={t("password")}
-                        className="h-10 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-9 pr-9 text-xs text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-11 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-9 pr-9 text-xs text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.password}
                         onChange={(e) => {
                           const v = e.target.value;
@@ -281,7 +269,7 @@ const RegisterPage = () => {
                   </label>
                   <div className="flex items-center gap-2">
                     <input type="checkbox" className="w-4 h-4 text-[#225D5C] bg-gray-100 rounded border-gray-300 focus:ring-[#225D5C] dark:focus:ring-[#225D5C] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                    <div className="text-sm font-semibold text-[#225D5C]">
+                    <div className="text-xs font-semibold text-[#225D5C]">
                       <span className=" text-[#225D5C]/70">{t("i_agree_to_the")} </span>
                       <span className="text-[#225D5C]">{t("terms_of_service")}</span> 
                       <span className="text-[#225D5C]/70"> {t("and")}</span>
@@ -321,7 +309,7 @@ const RegisterPage = () => {
                   <div className="h-px flex-1 bg-[#E9E2D8]" />
                 </div>
 
-                <GoogleLoginButton text="Sign In with Google" className="h-10 rounded-full border-[#225D5C] bg-white text-sm text-[#225D5C] hover:bg-[#F8FAFA]" />
+                <GoogleLoginButton text={t("sign_in_with_google")} className="h-10 rounded-full border-[#225D5C] bg-white text-sm text-[#225D5C] hover:bg-[#F8FAFA]" />
               </form>
             </div>
           </section>

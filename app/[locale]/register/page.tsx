@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye, EyeOff, Camera, ChevronDown, User, Mail, Phone, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -45,6 +45,13 @@ const RegisterPage = () => {
 
   const selectedCountry = COUNTRIES.find((c) => c.code === formData.country_code) || COUNTRIES[0];
 
+  useEffect(() => {
+    document.body.setAttribute("data-register-page", "true");
+    return () => {
+      document.body.removeAttribute("data-register-page");
+    };
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -73,16 +80,16 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="h-[78dvh] md:h-[100dvh] overflow-hidden bg-[#FFF7ED]">
-      <Container className="h-full px-0 sm:px-3">
+    <div className=" h-[120dvh] md:h-[100dvh] overflow-y-auto bg-[#F2E8DC]">
+      <Container className="h-auto min-h-[calc(100dvh-4rem)] px-0 pt-14 sm:px-3 md:pt-0">
         <motion.div
           initial={{ opacity: 0, y: 12 }} 
           animate={{ opacity: 1, y: 0 }}
-          className="grid h-full grid-rows-[20dvh_1fr] grid-cols-1 lg:grid-cols-2 lg:grid-rows-1"
+          className="grid h-auto grid-cols-1 lg:h-full lg:grid-cols-2 lg:grid-rows-1"
         >
           <section
             className={cn(
-              "relative overflow-hidden rounded-b-[34px] bg-[#225D5C] px-5 pb-9 pt-4 max-md:pt-16 text-center text-[#FFD6A8] sm:px-8 lg:rounded-none lg:px-12 lg:py-6 lg:text-start lg:flex lg:items-center lg:justify-center",
+              "relative overflow-hidden rounded-b-[34px] bg-[#225D5C] px-5 pb-9 pt-4   text-center text-[#FFD6A8] sm:px-8 lg:rounded-none lg:px-12 lg:py-6 lg:text-start lg:flex lg:items-center lg:justify-center",
               isArabic ? "lg:order-2" : "lg:order-1"
             )}
           >
@@ -103,7 +110,7 @@ const RegisterPage = () => {
                 <Image src="/logo.svg" alt="Luzori" width={60} height={60} />
               </div>
               <h2 className="text-[20px] font-bold tracking-tight lg:text-[28px] hidden md:block">{t("welcome_to_luzori")}</h2>
-              <p className="max-w-[320px] text-xs leading-5 text-[#FFEED9] sm:text-sm">
+              <p className="max-w-[320px] text-xs leading-5 text-[#F2E8DC] sm:text-sm">
                 <span className="hidden lg:inline">{t("hero_subtitle")}</span>
                 <span className="inline lg:hidden">{t("hero_subtitle_mobile")}</span>
               </p>
@@ -118,7 +125,7 @@ const RegisterPage = () => {
 
           <section
             className={cn(
-              "-mt-8 flex h-full flex-col bg-transparent px-4 pb-4 sm:px-6 lg:mt-0 lg:block lg:bg-white lg:px-10 lg:py-6",
+              "mt-8 flex h-full flex-col bg-transparent px-4 pb-4 sm:px-6 lg:mt-0 lg:block lg:bg-white lg:px-10 lg:py-6",
               isArabic ? "lg:order-1" : "lg:order-2"
             )}
           >
@@ -136,28 +143,14 @@ const RegisterPage = () => {
                       <input
                         type="text"
                         placeholder={t("full_name")}
-                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-8 pr-2 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.first_name}
                         onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                       />
                     </div>
                   </div>
 
-                  {/* <div className="space-y-1">
-                    <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("last_name")}
-                    <span className="text-[#225D5C]/70"> ({t("optional")})</span>
-                    </label>
-                    <div className="relative">
-                      <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
-                      <input
-                        type="text"
-                        placeholder={t("last_name")}
-                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-8 pr-2 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
-                        value={formData.last_name}
-                        onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                      />
-                    </div>
-                  </div> */}
+              
 
                   <div className="space-y-1 md:col-span-2">
                     <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("email")}</label>
@@ -166,7 +159,7 @@ const RegisterPage = () => {
                       <input
                         type="email"
                         placeholder={t("email")}
-                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-8 pr-2 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       />
@@ -205,8 +198,8 @@ const RegisterPage = () => {
                                       setIsCountryDropdownOpen(false);
                                     }}
                                     className={cn(
-                                      "flex w-full items-center gap-3 px-4 py-3 text-[13px] text-[#24504F] hover:bg-[#FFEED9]",
-                                      formData.country_code === c.code && "bg-[#FFEED9] text-[#225D5C]"
+                                      "flex w-full items-center gap-3 px-4 py-3 text-[13px] text-[#24504F] hover:bg-[#F2E8DC]",
+                                      formData.country_code === c.code && "bg-[#F2E8DC] text-[#225D5C]"
                                     )}
                                   >
                                     <Image src={c.flag} alt={c.name} width={20} height={14} className="rounded-sm object-cover" />
@@ -223,7 +216,7 @@ const RegisterPage = () => {
                       <input
                         type="tel"
                         placeholder={t("phone_number")}
-                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-24 pr-2 text-[11px] font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-24 pr-2 text-[11px] font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       />
@@ -237,7 +230,7 @@ const RegisterPage = () => {
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder={t("password")}
-                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#FFEED9] pl-8 pr-8 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-8 text-[11px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.password}
                         onChange={(e) => {
                           const v = e.target.value;
@@ -260,7 +253,7 @@ const RegisterPage = () => {
                 </span>
                 <div className="flex flex-col space-y-1.5 md:items-start">
                   <div className="flex justify-center">
-                    <label className="group relative flex h-16 w-16 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-[#E9E2D8] bg-[#FFEED9] shadow-md transition-all hover:border-[#225D5C]/50 md:h-24 md:w-24">
+                    <label className="group relative flex h-16 w-16 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-[#E9E2D8] bg-[#F2E8DC] shadow-md transition-all hover:border-[#225D5C]/50 md:h-24 md:w-24">
                     {logo ? (
                         <Image src={URL.createObjectURL(logo)} width={100} height={100} alt="Profile preview" className="absolute inset-0 h-full w-full object-cover" />
                       ) : (

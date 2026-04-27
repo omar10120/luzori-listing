@@ -7,15 +7,9 @@ import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 import "../globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
-import { Cairo } from "next/font/google";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  display: "swap",
-});
-const cairo = Cairo({
-  subsets: ["arabic", "latin"],
-  variable: "--font-cairo",
   display: "swap",
 });
 
@@ -57,12 +51,14 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={inter.variable} >
-      <body className="min-h-screen bg-white font-sans antialiased">
+      <body className="min-h-screen bg-white font-sans antialiased [&[data-register-page=true]_.site-footer]:hidden">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <PhoneRequirementProvider>
             <Navbar />
             <main id="main-content">{children}</main>
-            <Footer />
+            <div className="site-footer">
+              <Footer />
+            </div>
           </PhoneRequirementProvider>
         </NextIntlClientProvider>
       </body>

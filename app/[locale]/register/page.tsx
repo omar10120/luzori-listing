@@ -137,6 +137,7 @@ const RegisterPage = () => {
               <form onSubmit={handleSubmit} className="space-y-2.5">
                 <div className="grid grid-cols-1 gap-2.5 md:grid-cols-1">
                   <div className="space-y-1">
+                    <span className="text-[#FF0000]/70">*</span>
                     <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("full_name")}</label>
                     <div className="relative">
                       <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
@@ -153,6 +154,7 @@ const RegisterPage = () => {
               
 
                   <div className="space-y-1 md:col-span-2">
+                    <span className="text-[#FF0000]/70">*</span>
                     <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("email")}</label>
                     <div className="relative">
                       <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
@@ -167,6 +169,7 @@ const RegisterPage = () => {
                   </div>
 
                   <div className="space-y-1 md:col-span-2">
+                  <span className="text-[#FF0000]/70">*</span>
                     <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("phone_number")}</label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 z-20">
@@ -212,18 +215,21 @@ const RegisterPage = () => {
                           )}
                         </AnimatePresence>
                       </div>
-                      <Phone size={14} className="absolute left-[5.8rem] top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
-                      <input
-                        type="tel"
-                        placeholder={t("phone_number")}
-                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-24 pr-2 text-[11px] font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      />
+                          <div className="relative mx-2">
+                            {/* <Phone size={14} className="absolute left-[1.8rem]  top-1/2 -translate-y-1/2 text-[#225D5C]/70" /> */}
+                            <input
+                              type="tel"
+                              placeholder={t("phone_number")}
+                              className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-24 pr-2 text-[11px] font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                              value={formData.phone}
+                              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            />
+                          </div>
                     </div>
                   </div>
 
                   <div className="space-y-1 md:col-span-2">
+                  <span className="text-[#FF0000]/70">*</span>
                     <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("password")}</label>
                     <div className="relative">
                       <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
@@ -258,9 +264,16 @@ const RegisterPage = () => {
                         <Image src={URL.createObjectURL(logo)} width={100} height={100} alt="Profile preview" className="absolute inset-0 h-full w-full object-cover" />
                       ) : (
                         <div className="flex flex-col items-center">
-                          <Camera className="mb-1 text-[#225D5C]/70 group-hover:text-[#225D5C]" size={14} />
-                          <span className="text-[10px] font-semibold uppercase tracking-wide text-[#225D5C]/80">{t("select")}</span>
+                          {/* <Camera className="mb-1 text-[#225D5C]/70 group-hover:text-[#225D5C]" size={14} /> */}
+                          
+                          <div className="flex items-center gap-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                          <Image src="/camera.svg" alt="Camera" width={24} height={24} />
+                              {/* <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mt-2 ml-1">
 
+                                <Image src="/plus-circle 2.svg" alt="plus" width={20} height={20} />
+                              </div>
+                             */}
+                          </div>
                         </div>
                       )}
                       <input type="file" className="hidden" accept="image/*" onChange={(e) => e.target.files?.[0] && setLogo(e.target.files[0])} />

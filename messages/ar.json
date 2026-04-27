@@ -281,6 +281,7 @@
     "package_step": "خطوة الباقة",
     "package_purchase": "تم الشراء",
     "package_time_info": "معلومات الوقت",
+    "welcome_to_luzori": "مرحبا بك في ",
     "step": "خطوة",
     "package_total": "مجموع البكجات",
     "total_services": "مجموع الخدمات",
@@ -293,5 +294,16 @@
     "activity_package_type": "النوع",
     "activity_package_status": "الحالة",
     "activity_package_used_services": "الخدمات المستخدمة",
-    "activity_package_service_used": "مستخدمة"
+    "activity_package_service_used": "مستخدمة",
+    "or": "أو",
+    "phone_number": "رقم الجوال",
+    "password": "كلمة المرور",
+    "connecting": "جاري التوصيل...",
+    "profile_picture": "صورة الملف الشخصي",
+    "create_your_account": "إنشاء حساب",
+    "hero_subtitle_mobile" : "نظام إدارة واحد للمصالح والصالونات",
+    "i_agree_to_the": "أوافق على ال",
+    "select": "اختيار",
+    "and": "و"
+
 }

@@ -160,6 +160,7 @@
     "work": "Work",
     "add": "Add",
     "about_center": "Welcome",
+    "welcome_to_luzori": "Welcome to",
     "about_center_description": "We offer a wide range of professional treatments including hair styling, skincare, body treatments, nail care, and exclusive bridal packages. Our team of certified professionals is dedicated to providing you with an exceptional experience in a luxurious and relaxing environment.",
     "center_team_role_senior_stylist": "Senior Stylist",
     "center_team_role_colorist": "Colorist",
@@ -293,5 +294,16 @@
     "activity_package_type": "Type",
     "activity_package_status": "Status",
     "activity_package_used_services": "Used services",
-    "activity_package_service_used": "Used"
+    "activity_package_service_used": "Used",
+    "or": "or",
+    "phone_number": "Phone number",
+    "password": "Password",
+    "connecting": "Connecting...",
+    "profile_picture": "Profile picture",
+    "create_your_account": "Create your account",
+    "hero_subtitle_mobile" : "All-in one salon & spa management system",
+    "i_agree_to_the": "I agree to the",
+    "and": "and ",
+    "select": "Select"
+   
 }

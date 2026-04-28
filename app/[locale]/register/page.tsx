@@ -84,7 +84,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-[calc(120dvh-4rem)] md:min-h-[calc(100dvh-4rem)] overflow-y-auto bg-[#F2E8DC] lg:mt-16 lg:h-[calc(100dvh-4rem)] lg:overflow-hidden">
+    <div className="min-h-[calc(120dvh-4rem)] md:min-h-[calc(100dvh-4rem)] overflow-y-auto bg-[#F2E8DC] lg:mt-16 lg:h-[calc(100dvh-4rem)] lg:overflow-hidden font-['cairo']">
       <Container className="h-auto px-0 pt-14 sm:px-3 lg:h-full lg:pt-0">
         <motion.div
           initial={{ opacity: 0, y: 12 }} 

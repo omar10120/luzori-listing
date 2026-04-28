@@ -17,9 +17,15 @@
 body {
   background: linear-gradient(to bottom, var(--background), var(--background-end));
   color: var(--foreground);
-  font-family: cairo;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: "Cairo", sans-serif;
+  font-optical-sizing: auto;
+
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0;
 }
 
 /* ─── Scrollbar hide utility ─── */
@@ -47,3 +53,4 @@ textarea::placeholder {
 input[type="checkbox"] {
   accent-color: #225D5C;
 }
+

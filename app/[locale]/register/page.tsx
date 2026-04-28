@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 import { useLocale, useTranslations } from "next-intl";
+import { style } from "framer-motion/client";
 const COUNTRIES = [
   { name: "UAE", code: "971", flag: "https://flagcdn.com/ae.svg" },
   { name: "Saudi Arabia", code: "966", flag: "https://flagcdn.com/sa.svg" },
@@ -181,7 +182,7 @@ const RegisterPage = () => {
                         type="email"
                         required
                         placeholder={t("email")}
-                        className={cn("h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[12px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30", isArabic ? "pr-8 pl-2 text-right" : "pl-8 pr-2 text-left")}
+                        className={cn("h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30", isArabic ? "pr-8 pl-2 text-right" : "pl-8 pr-2 text-left")}
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       />
@@ -435,3 +436,4 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
+

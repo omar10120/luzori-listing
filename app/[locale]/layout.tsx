@@ -51,9 +51,11 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} className={inter.variable} >
-      <link rel="preconnect" href="https://fonts.googleapis.com"></link>
-      
-      
+      <head>
+          <link rel="preconnect" href="https://fonts.googleapis.com"></link>
+          <link rel="preconnect" href="https://fonts.gstatic.com" ></link>
+          <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet"></link>
+      </head>
       <body className="min-h-screen bg-white font-sans antialiased [&[data-register-page=true]_.site-footer]:hidden">
         <NextIntlClientProvider locale={locale} messages={messages}>
           <PhoneRequirementProvider>

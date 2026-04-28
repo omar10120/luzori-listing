@@ -135,21 +135,36 @@ const RegisterPage = () => {
 
               <form onSubmit={handleSubmit} className="space-y-2.5">
                 <div className="grid grid-cols-1 gap-2.5 md:grid-cols-1">
-                  <div className="space-y-1">
-                    <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("full_name")}</label>
-                    <span className="text-[#FF0000]/70"> *</span>
-                    <div className="relative">
-                      <User size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
-                      <input
-                        type="text"
-                        placeholder={t("full_name")}
-                        required
-                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[12px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
-                        value={formData.first_name}
-                        onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                      />
+                <div className="space-y-1">
+                <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">
+                  {t("full_name")}
+                </label>
+                <span className="text-[#FF0000]/70"> *</span>
+
+                      <div className="relative">
+                        <User
+                          size={14}
+                          className={cn(
+                            "absolute top-1/2 -translate-y-1/2 text-[#225D5C]/70",
+                            isArabic ? "right-3" : "left-3"
+                          )}
+                        />
+
+                        <input
+                          type="text"
+                          placeholder={t("full_name")}
+                          required
+                          className={cn(
+                            "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
+                            isArabic ? "pr-8 pl-2 text-right" : "pl-8 pr-2 text-left"
+                          )}
+                          value={formData.first_name}
+                          onChange={(e) =>
+                            setFormData({ ...formData, first_name: e.target.value })
+                          }
+                        />
+                      </div>
                     </div>
-                  </div>
 
               
 
@@ -157,12 +172,12 @@ const RegisterPage = () => {
                     <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("email")}</label>
                     <span className="text-[#FF0000]/70"> *</span>
                     <div className="relative">
-                      <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
-                      <input
+                      <Mail size={14} className={cn("absolute top-1/2 -translate-y-1/2 text-[#225D5C]/70", isArabic ? "right-3 " : "left-3")} />
+                      <input  
                         type="email"
                         required
                         placeholder={t("email")}
-                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[12px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className={cn("h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[12px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30", isArabic ? "pr-8 pl-2 text-right" : "pl-8 pr-2 text-left")}
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       />
@@ -170,99 +185,177 @@ const RegisterPage = () => {
                   </div>
 
                   <div className="space-y-1 md:col-span-2">
-                    <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("phone_number")}</label>
-                  <span className="text-[#FF0000]/70"> *</span>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 z-20">
-                        <button
-                          type="button"
-                          onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
-                          className="flex h-full items-center gap-2 rounded-l-xl border-r border-[#D8A7A0]/50 px-3 hover:bg-[#D8A7A0]/15"
-                        >
-                          <Image src={selectedCountry.flag} alt={selectedCountry.name} width={20} height={14} className="rounded-sm object-cover" />
-                          <span className="text-[11px] font-semibold text-[#225D5C]">+{selectedCountry.code}</span>
-                          <ChevronDown className={cn("text-[#225D5C]/70 transition-transform", isCountryDropdownOpen && "rotate-180")} size={12} />
-                        </button>
-                        <AnimatePresence>
-                          {isCountryDropdownOpen && (
-                            <>
-                              <div className="fixed inset-0 z-10" onClick={() => setIsCountryDropdownOpen(false)} />
-                              <motion.div
-                                initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                                className="absolute left-0 top-full z-20 mt-2 w-56 rounded-xl border border-[#E9E2D8] bg-white py-2 shadow-2xl"
-                              >
-                                {COUNTRIES.map((c) => (
-                                  <button
-                                    key={c.code}
-                                    type="button"
-                                    onClick={() => {
-                                      setFormData({ ...formData, country_code: c.code });
-                                      setIsCountryDropdownOpen(false);
-                                    }}
-                                    className={cn(
-                                      "flex w-full items-center gap-3 px-4 py-3 text-[13px] text-[#24504F] hover:bg-[#F2E8DC]",
-                                      formData.country_code === c.code && "bg-[#F2E8DC] text-[#225D5C]"
-                                    )}
-                                  >
-                                    <Image src={c.flag} alt={c.name} width={20} height={14} className="rounded-sm object-cover" />
-                                    <span className="flex-1 text-left font-medium">{c.name}</span>
-                                    <span className="text-xs opacity-60">+{c.code}</span>
-                                  </button>
-                                ))}
-                              </motion.div>
-                            </>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                          <div className="relative mx-2">
-                            {/* <Phone size={14} className="absolute left-[1.8rem]  top-1/2 -translate-y-1/2 text-[#225D5C]/70" /> */}
-                            <input
-                              type="tel"
-                              maxLength={9}
-                              minLength={10}
-                              required
-                              placeholder={t("phone_number")}
-                              className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-24 pr-2 text-[12px] font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
-                              value={formData.phone}
-                              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                            />
-                          </div>
-                    </div>
-                  </div>
+  <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">
+    {t("phone_number")}
+  </label>
+  <span className="text-[#FF0000]/70"> *</span>
 
-                  <div className="space-y-1 md:col-span-2">
-                    <label className="ml-1 text-[11px] font-semibold text-[#225D5C]">{t("password")}</label>
-                  <span className="text-[#FF0000]/70"> *</span>
-                    <div className="relative">
-                      <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70" />
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        placeholder={t("password")}
-                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-8 text-[12px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
-                        value={formData.password}
-                        required
-                        onChange={(e) => {
-                          const v = e.target.value;
-                          setFormData({ ...formData, password: v, password_confirmation: v });
-                        }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70 hover:text-[#225D5C]"
-                      >
-                        {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
-                      </button>
-                    </div>
-                  </div>
+  <div className="relative overflow-visible">
+
+    {/* Country selector */}
+    <div
+      className={cn(
+        "absolute inset-y-0 z-30",
+        isArabic ? "right-0" : "left-0"
+      )}
+    >
+      <button
+        type="button"
+        onClick={() => setIsCountryDropdownOpen(!isCountryDropdownOpen)}
+        className={cn(
+          "flex h-full items-center gap-2 px-3 bg-transparent hover:bg-[#D8A7A0]/15",
+          isArabic
+            ? "rounded-r-xl border-l border-[#D8A7A0]/50"
+            : "rounded-l-xl border-r border-[#D8A7A0]/50"
+        )}
+      >
+        <Image src={selectedCountry.flag} alt={selectedCountry.name} width={20} height={14} />
+        <span className="text-[12px] font-semibold text-[#225D5C]">
+          +{selectedCountry.code}
+        </span>
+        <ChevronDown
+          className={cn(
+            "text-[#225D5C]/70 transition-transform",
+            isCountryDropdownOpen && "rotate-180"
+          )}
+          size={12}
+        />
+      </button>
+    </div>
+
+              {/* Dropdown */}
+              <AnimatePresence>
+                {isCountryDropdownOpen && (
+                  <>
+                    {/* Click outside */}
+                    <div
+                      className="fixed inset-0 z-20"
+                      onClick={() => setIsCountryDropdownOpen(false)}
+                    />
+
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                      className={cn(
+                        "absolute top-full mt-2 w-56 rounded-xl border border-[#E9E2D8] bg-white py-2 shadow-2xl z-40",
+                        isArabic ? "right-0" : "left-0"
+                      )}
+                    >
+                      {COUNTRIES.map((c) => (
+                        <button
+                          key={c.code}
+                          type="button"
+                          onClick={() => {
+                            setFormData({ ...formData, country_code: c.code });
+                            setIsCountryDropdownOpen(false);
+                          }}
+                          className={cn(
+                            "flex w-full items-center gap-3 px-4 py-3 text-[13px] text-[#24504F] hover:bg-[#F2E8DC]",
+                            formData.country_code === c.code &&
+                              "bg-[#F2E8DC] text-[#225D5C]"
+                          )}
+                        >
+                          <Image src={c.flag} alt={c.name} width={20} height={14} />
+
+                          <span
+                            className={cn(
+                              "flex-1 font-medium",
+                              isArabic ? "text-right" : "text-left"
+                            )}
+                          >
+                            {c.name}
+                          </span>
+
+                          <span className="text-xs opacity-60">+{c.code}</span>
+                        </button>
+                      ))}
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
+
+              {/* Input */}
+              <input
+                type="tel"
+                required
+                placeholder={t("phone_number")}
+                className={cn(
+                  "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[16px] font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
+                  isArabic
+                    ? "pr-28 pl-2 text-right"
+                    : "pl-28 pr-2 text-left"
+                )}
+                value={formData.phone}
+                onChange={(e) =>
+                  setFormData({ ...formData, phone: e.target.value })
+                }
+              />
+            </div>
+          </div>
+
+                <div className="space-y-1 md:col-span-2">
+  <label
+    className={cn(
+      "ml-1 text-[11px] font-semibold text-[#225D5C]",
+      isArabic ? "text-right" : "text-left"
+    )}
+  >
+    {t("password")}
+  </label>
+  <span className="text-[#FF0000]/70"> *</span>
+
+  <div className="relative">
+    
+    {/* Lock icon */}
+    <Lock
+      size={14}
+      className={cn(
+        "absolute top-1/2 -translate-y-1/2 text-[#225D5C]/70",
+        isArabic ? "right-3" : "left-3"
+      )}
+    />
+
+    {/* Input */}
+    <input
+      type={showPassword ? "text" : "password"}
+      placeholder={t("password")}
+      className={cn(
+        "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
+        isArabic
+          ? "pr-8 pl-8 text-right"
+          : "pl-8 pr-8 text-left"
+      )}
+      value={formData.password}
+      onChange={(e) => {
+        const v = e.target.value;
+        setFormData({
+          ...formData,
+          password: v,
+          password_confirmation: v,
+        });
+      }}
+    />
+
+    {/* Eye icon */}
+    <button
+      type="button"
+      onClick={() => setShowPassword(!showPassword)}
+      className={cn(
+        "absolute top-1/2 -translate-y-1/2 text-[#225D5C]/70 hover:text-[#225D5C]",
+        isArabic ? "left-3" : "right-3"
+      )}
+    >
+      {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
+    </button>
+  </div>
+</div>
                 </div>
 
                 <span className="text-[11px] font-semibold text-[#225D5C] md:ml-1">{t("profile_picture")} 
                   <span className="text-[#225D5C]/70"> ({t("optional")})</span>
                 </span>
-                <div className="flex flex-col space-y-1.5 md:items-start">
+                <div className={cn("flex flex-col space-y-1.5 md:items-start", isArabic ? "items-end" : "items-start")}>
                   <div className="flex justify-center">
                     <label className="group relative flex h-16 w-16 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-[#E9E2D8] bg-[#F2E8DC] shadow-md transition-all hover:border-[#225D5C]/50 md:h-16 md:w-16">
                     {logo ? (
@@ -296,12 +389,13 @@ const RegisterPage = () => {
 
                 {statusMessage && (
                   <motion.div
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={cn(
-                      "rounded-xl border p-2.5 text-center text-[11px] font-medium",
-                      statusMessage.type === "success" ? "border-green-200 bg-green-50 text-green-700" : "border-red-200 bg-red-50 text-red-700"
-                    )}
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                  className={cn(
+                    "absolute top-full z-20 mt-2 w-56 rounded-xl border border-[#E9E2D8] bg-white py-2 shadow-2xl",
+                    isArabic ? "right-0" : "left-0"
+                  )}
                   >
                     {statusMessage.text}
                   </motion.div>

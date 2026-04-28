@@ -9,7 +9,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans:  "Inter", system-ui, -apple-system, sans-serif, cairo;
+  --font-sans:  cairo,"Inter", system-ui, -apple-system, sans-serif;
 
 }
 
@@ -17,7 +17,7 @@
 body {
   background: linear-gradient(to bottom, var(--background), var(--background-end));
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: cairo;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

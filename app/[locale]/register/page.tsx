@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 import { useLocale, useTranslations } from "next-intl";
-import { style } from "framer-motion/client";
+
 const COUNTRIES = [
   { name: "UAE", code: "971", flag: "https://flagcdn.com/ae.svg" },
   { name: "Saudi Arabia", code: "966", flag: "https://flagcdn.com/sa.svg" },
@@ -92,7 +92,7 @@ const RegisterPage = () => {
 
           className="relative grid h-auto grid-cols-1 lg:h-full lg:grid-cols-2 lg:grid-rows-1"
         >
-          <Image
+          {/* <Image
             src={isArabic ? "/fogright.png" : "/fogleft.png"}
             alt="Decorative side"
             width={50}
@@ -102,7 +102,7 @@ const RegisterPage = () => {
               "pointer-events-none absolute top-0 z-0 hidden h-full w-[140px] object-cover lg:block z-1000",
               isArabic ? "right-0" : "left-0"
             )}
-          />
+          /> */}
           <section
             className={cn(
               "relative overflow-hidden rounded-b-[34px] bg-[#225D5C] px-5 pb-9 pt-4   text-center text-[#FFD6A8] sm:px-8 lg:rounded-none lg:px-12 lg:py-6 lg:text-start lg:flex lg:items-center lg:justify-center",
@@ -114,7 +114,7 @@ const RegisterPage = () => {
                 <Image src="/logo.svg" alt="Luzori" width={60} height={60} />
               </div>
               <h2 className="text-[20px] font-bold tracking-tight lg:text-[28px] hidden md:block">{t("welcome_to_luzori")}</h2>
-              <p className="max-w-[320px] text-xs leading-5 text-[#F2E8DC] sm:text-sm">
+              <p className="max-w-320px] text-xs leading-5 text-[#F2E8DC] sm:text-sm bg-red">
                 <span className="hidden lg:inline">{t("hero_subtitle")}</span>
                 <span className="inline lg:hidden">{t("hero_subtitle_mobile")}</span>
               </p>
@@ -134,7 +134,7 @@ const RegisterPage = () => {
             )}
           >
             <div className={cn("-mt-13 md:mt-0   relative z-20 w-full rounded-[24px] border md:border-none border-[#E9E2D8] bg-[#F4F4F4] md:bg-white p-3 shadow-xl shadow-black/10 sm:p-6 lg:bg-[#FFFBF7] lg:p-7  ", isArabic ? "md:mr-9" : "md:ml-9")}>
-              <h1 className="mb-3 mt-1 text-center text-[20px] font-extrabold tracking-tight text-[#225D5C] lg:mt-4 lg:text-2xl">
+              <h1 className="mb-3 mt-1 text-center text-[20px] font-extrabold tracking-tight text-[#225D5C] lg:mt-4 lg:text-2xl ">
                 {t("create_your_account")}
               </h1>
 
@@ -357,7 +357,7 @@ const RegisterPage = () => {
     </button>
   </div>
 </div>
-                </div>
+              </div>
 
                 <span className="text-[11px] font-semibold text-[#225D5C] md:ml-1">{t("profile_picture")} 
                   <span className="text-[#225D5C]/70"> ({t("optional")})</span>
@@ -427,7 +427,7 @@ const RegisterPage = () => {
                   <div className="h-px flex-1 bg-[#E9E2D8]" />
                 </div>
 
-                <GoogleLoginButton text={t("sign_in_with_google")} className="h-10 rounded-full border-[#225D5C] bg-white text-sm text-[#225D5C] hover:bg-[#F8FAFA]" />
+                <GoogleLoginButton text={t("sign_in_with_google")} className="h-10  rounded-full border-[#225D5C] bg-white text-[#225D5C] hover:bg-[#F8FAFA] text-xs" />
               </form>
             </div>
           </section>

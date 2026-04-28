@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Eye, EyeOff, Camera, ChevronDown, User, Mail, Phone, Lock } from "lucide-react";
+import { Eye, EyeOff, ChevronDown, User, Mail, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Container from "@/components/ui/Container";
 import { registerUser } from "@/lib/api";
@@ -80,31 +80,27 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className=" h-[120dvh] md:h-[100dvh] overflow-y-auto bg-[#F2E8DC]">
-      <Container className="h-auto min-h-[calc(100dvh-4rem)] px-0 pt-14 sm:px-3 md:pt-0">
+    <div className="min-h-[calc(120dvh-4rem)] md:min-h-[calc(100dvh-4rem)] overflow-y-auto bg-[#F2E8DC] lg:mt-16 lg:h-[calc(100dvh-4rem)] lg:overflow-hidden">
+      <Container className="h-auto px-0 pt-14 sm:px-3 lg:h-full lg:pt-0">
         <motion.div
           initial={{ opacity: 0, y: 12 }} 
           animate={{ opacity: 1, y: 0 }}
-          className="grid h-auto grid-cols-1 lg:h-full lg:grid-cols-2 lg:grid-rows-1"
+          className="relative grid h-auto grid-cols-1 lg:h-full lg:grid-cols-2 lg:grid-rows-1"
         >
+          <Image
+            src={isArabic ? "/fogright.png" : "/fogleft.png"}
+            alt="Decorative side"
+            width={130}
+            height={900}
+            className="pointer-events-none absolute left-[calc(50%-60px)] top-0 z-20 hidden h-full w-[120px] object-cover lg:block"
+            unoptimized
+          />
           <section
             className={cn(
               "relative overflow-hidden rounded-b-[34px] bg-[#225D5C] px-5 pb-9 pt-4   text-center text-[#FFD6A8] sm:px-8 lg:rounded-none lg:px-12 lg:py-6 lg:text-start lg:flex lg:items-center lg:justify-center",
               isArabic ? "lg:order-2" : "lg:order-1"
             )}
           >
-            
-            <Image
-              src={isArabic ? "/fogright.png" : "/fogleft.png"}
-              alt="Decorative side"
-              width={130}
-              height={900}
-              className={cn(
-                "pointer-events-none absolute top-0 hidden h-full w-[120px] object-cover lg:block z-10",
-                isArabic ? "-left-10" : "-right-10"
-              )}
-              unoptimized
-            />
             <div className="mx-auto flex max-w-md flex-col items-center gap-1 py-1 md:py-1 lg:gap-18 lg:py-10 ">
               <div className="mx-auto mb-1 flex h-16 w-16 items-center justify-center rounded-full bg-[#FFD6A8] shadow-lg shadow-black/20 lg:h-24 lg:w-24">
                 <Image src="/logo.svg" alt="Luzori" width={60} height={60} />
@@ -125,11 +121,12 @@ const RegisterPage = () => {
 
           <section
             className={cn(
-              "mt-8 flex h-full flex-col bg-transparent px-4 pb-4 sm:px-6 lg:mt-0 lg:block lg:bg-white lg:px-10 lg:py-6",
+              "mt-8 flex h-full flex-col bg-transparent sm:px-6 lg:mt-0 lg:block lg:bg-white lg:px-10  ",
               isArabic ? "lg:order-1" : "lg:order-2"
             )}
           >
-            <div className="-mt-12 relative z-20 w-full rounded-[24px] border border-[#E9E2D8] bg-[#F4F4F4] p-3 shadow-xl shadow-black/10 sm:p-6 lg:bg-[#FFFBF7] lg:p-7">
+            <div className="-mt-13 md:mt-0   relative z-20 w-full rounded-[24px] border md:border-none border-[#E9E2D8] bg-[#F4F4F4]
+             md:bg-white p-3 shadow-xl shadow-black/10 sm:p-6 lg:bg-[#FFFBF7] lg:p-7 md:m-9 ">
               <h1 className="mb-3 mt-1 text-center text-[20px] font-extrabold tracking-tight text-[#225D5C] lg:mt-4 lg:text-2xl">
                 {t("create_your_account")}
               </h1>
@@ -221,7 +218,7 @@ const RegisterPage = () => {
                             {/* <Phone size={14} className="absolute left-[1.8rem]  top-1/2 -translate-y-1/2 text-[#225D5C]/70" /> */}
                             <input
                               type="tel"
-                              minLength={8}
+                              maxLength={8}
                               required
                               placeholder={t("phone_number")}
                               className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-24 pr-2 text-[11px] font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
@@ -253,7 +250,7 @@ const RegisterPage = () => {
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-[#225D5C]/70 hover:text-[#225D5C]"
                       >
-                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        {showPassword ? <Eye size={16} /> : <EyeOff size={16} />}
                       </button>
                     </div>
                   </div>
@@ -264,7 +261,7 @@ const RegisterPage = () => {
                 </span>
                 <div className="flex flex-col space-y-1.5 md:items-start">
                   <div className="flex justify-center">
-                    <label className="group relative flex h-16 w-16 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-[#E9E2D8] bg-[#F2E8DC] shadow-md transition-all hover:border-[#225D5C]/50 md:h-24 md:w-24">
+                    <label className="group relative flex h-16 w-16 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-[#E9E2D8] bg-[#F2E8DC] shadow-md transition-all hover:border-[#225D5C]/50 md:h-16 md:w-16">
                     {logo ? (
                         <Image src={URL.createObjectURL(logo)} width={100} height={100} alt="Profile preview" className="absolute inset-0 h-full w-full object-cover" />
                       ) : (

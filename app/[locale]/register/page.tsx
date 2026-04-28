@@ -129,7 +129,7 @@ const RegisterPage = () => {
 
           <section
             className={cn(
-              "mt-8 flex h-full flex-col bg-transparent sm:px-6 lg:mt-0 lg:block lg:bg-white lg:px-10  ",
+              "mt-8 flex h-full flex-col bg-transparent sm:px-6 lg:mt-0 lg:block lg:px-10  ",
               isArabic ? "lg:order-2" : "lg:order-1"
             )}
           >

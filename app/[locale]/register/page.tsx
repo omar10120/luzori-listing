@@ -160,7 +160,7 @@ const RegisterPage = () => {
                           placeholder={t("full_name")}
                           required
                           className={cn(
-                            "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
+                            "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[14px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
                             isArabic ? "pr-8 pl-2 text-right" : "pl-8 pr-2 text-left"
                           )}
                           value={formData.first_name}
@@ -184,7 +184,7 @@ const RegisterPage = () => {
                       placeholder={t("email")}
                       inputMode="email"
                       className={cn(
-                        "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
+                        "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[14px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
                         isArabic ? "pr-8 pl-2 text-right" : "pl-8 pr-2 text-left"
                       )}
                       value={formData.email}
@@ -297,7 +297,7 @@ const RegisterPage = () => {
                 required
                 placeholder={t("phone_number")}
                 className={cn(
-                  "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[16px]  text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
+                  "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[14px]  text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
                   isArabic
                     ? "pr-28 pl-2 text-right"
                     : "pl-28 pr-2 text-left"
@@ -339,7 +339,7 @@ const RegisterPage = () => {
       minLength={9}
       maxLength={10}
       className={cn(
-        "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
+        "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[14px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
         isArabic
           ? "pr-8 pl-8 text-right"
           : "pl-8 pr-8 text-left"
@@ -396,7 +396,7 @@ const RegisterPage = () => {
                     </label>
                   </div>
                   <div className="flex  gap-1.5">
-                    <input type="checkbox" className="w-4 h-4 text-[#225D5C] bg-[#225D5C] text-[16px] rounded border-gray-300 focus:ring-[#225D5C] dark:focus:ring-[#225D5C] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <input type="checkbox" className="w-4 h-4 text-[#225D5C] bg-[#225D5C] text-[14px] rounded border-gray-300 focus:ring-[#225D5C] dark:focus:ring-[#225D5C] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                     <div className="text-[10px] font-semibold text-[#225D5C]">
                       <span className=" text-[#225D5C]/70">{t("i_agree_to_the")} </span>
                       <span className="text-[#225D5C]">{t("terms_of_service")}</span> 

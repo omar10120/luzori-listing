@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 :root {
   --background: #f8e7d1;
   --background-end: #d4c4b8;
@@ -18,15 +17,10 @@
 body {
   background: linear-gradient(to bottom, var(--background), var(--background-end));
   color: var(--foreground);
-
+  font-family:  var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: "Cairo", sans-serif;
-  font-optical-sizing: auto;
-
-  font-style: normal;
-  font-variation-settings:
-    "slnt" 0;
+  
 }
 
 /* ─── Scrollbar hide utility ─── */

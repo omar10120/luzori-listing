@@ -286,7 +286,7 @@ const RegisterPage = () => {
                 required
                 placeholder={t("phone_number")}
                 className={cn(
-                  "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[16px] font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
+                  "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[16px]  text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
                   isArabic
                     ? "pr-28 pl-2 text-right"
                     : "pl-28 pr-2 text-left"

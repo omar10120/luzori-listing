@@ -307,6 +307,9 @@
     "select": "Select",
     "sign_in_with_google": "Sign in with Google",
     "optional": "optional",
-    "full_name" : "Full name"
+    "full_name" : "Full name",
+    "login_to_your_account" : "Login to your account",
+    "dont_have_account" : "Don't have an account?",
+    "register_now" : "Register now"
    
 }

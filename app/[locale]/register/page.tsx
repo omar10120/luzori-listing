@@ -84,7 +84,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-[calc(120dvh-4rem)] md:min-h-[calc(100dvh-4rem)] overflow-y-auto bg-[#F2E8DC] lg:mt-16 lg:h-[calc(100dvh-4rem)] lg:overflow-hidden ">
+    <div className="min-h-[calc(120dvh-4rem)] md:min-h-[calc(100dvh-4rem)] overflow-y-auto  lg:mt-16 lg:h-[calc(100dvh-4rem)] lg:overflow-hidden ">
       <Container className="h-auto px-0 pt-14 sm:px-3 lg:h-full lg:pt-0">
         <motion.div
           initial={{ opacity: 0, y: 12 }} 
@@ -92,7 +92,7 @@ const RegisterPage = () => {
 
           className="relative grid h-auto grid-cols-1 lg:h-full lg:grid-cols-2 lg:grid-rows-1"
         >
-          {/* <Image
+          <Image
             src={isArabic ? "/fogright.png" : "/fogleft.png"}
             alt="Decorative side"
             width={50}
@@ -102,7 +102,7 @@ const RegisterPage = () => {
               "pointer-events-none absolute top-0 z-0 hidden h-full w-[140px] object-cover lg:block z-1000",
               isArabic ? "right-0" : "left-0"
             )}
-          /> */}
+          />
           <section
             className={cn(
               "relative overflow-hidden rounded-b-[34px] bg-[#225D5C] px-5 pb-9 pt-4   text-center text-[#FFD6A8] sm:px-8 lg:rounded-none lg:px-12 lg:py-6 lg:text-start lg:flex lg:items-center lg:justify-center",
@@ -129,7 +129,7 @@ const RegisterPage = () => {
 
           <section
             className={cn(
-              "mt-8 flex h-full flex-col bg-transparent sm:px-6 lg:mt-0 lg:block lg:px-10  ",
+              "mt-8 flex h-full flex-col bg-transparent sm:px-6 lg:mt-0 lg:block   ",
               isArabic ? "lg:order-2" : "lg:order-1"
             )}
           >

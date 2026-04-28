@@ -307,6 +307,10 @@
     "and": "و",
     "sign_in_with_google": "تسجيل الدخول بحساب غوغل",
     "optional": "اختياري",
-    "full_name" : "الاسم الكامل"
+    "full_name" : "الاسم الكامل",
+    "login_to_your_account" : "تسجيل الدخول إلى حسابك",
+    "dont_have_account" : "ليس لديك حساب؟",
+    "register_now" : "إنشاء حساب الآن"
+
 
 }

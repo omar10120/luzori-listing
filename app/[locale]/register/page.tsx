@@ -63,6 +63,9 @@ const RegisterPage = () => {
       else data.append(key, value ?? "");
     });
     if (logo) data.append("image", logo);
+    if (formData.phone.length == 10 && formData.phone.startsWith("05")) {
+      data.append("phone", `+${formData.country_code}${formData.phone}`);
+    } 
 
     try {
       const result = await registerUser(data);
@@ -122,11 +125,10 @@ const RegisterPage = () => {
           <section
             className={cn(
               "mt-8 flex h-full flex-col bg-transparent sm:px-6 lg:mt-0 lg:block lg:bg-white lg:px-10  ",
-              isArabic ? "lg:order-1" : "lg:order-2"
+              isArabic ? "lg:order-2" : "lg:order-1"
             )}
           >
-            <div className="-mt-13 md:mt-0   relative z-20 w-full rounded-[24px] border md:border-none border-[#E9E2D8] bg-[#F4F4F4]
-             md:bg-white p-3 shadow-xl shadow-black/10 sm:p-6 lg:bg-[#FFFBF7] lg:p-7 md:m-9 ">
+            <div className={cn("-mt-13 md:mt-0   relative z-20 w-full rounded-[24px] border md:border-none border-[#E9E2D8] bg-[#F4F4F4] md:bg-white p-3 shadow-xl shadow-black/10 sm:p-6 lg:bg-[#FFFBF7] lg:p-7  ", isArabic ? "md:mr-9" : "md:ml-9")}>
               <h1 className="mb-3 mt-1 text-center text-[20px] font-extrabold tracking-tight text-[#225D5C] lg:mt-4 lg:text-2xl">
                 {t("create_your_account")}
               </h1>
@@ -218,7 +220,8 @@ const RegisterPage = () => {
                             {/* <Phone size={14} className="absolute left-[1.8rem]  top-1/2 -translate-y-1/2 text-[#225D5C]/70" /> */}
                             <input
                               type="tel"
-                              maxLength={8}
+                              maxLength={9}
+                              minLength={10}
                               required
                               placeholder={t("phone_number")}
                               className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-24 pr-2 text-[12px] font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"

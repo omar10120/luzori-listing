@@ -142,7 +142,7 @@ const RegisterPage = () => {
                         type="text"
                         placeholder={t("full_name")}
                         required
-                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[12px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.first_name}
                         onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                       />
@@ -160,7 +160,7 @@ const RegisterPage = () => {
                         type="email"
                         required
                         placeholder={t("email")}
-                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[12px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       />
@@ -221,7 +221,7 @@ const RegisterPage = () => {
                               maxLength={8}
                               required
                               placeholder={t("phone_number")}
-                              className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-24 pr-2 text-[16px] font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                              className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-24 pr-2 text-[12px] font-semibold text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                               value={formData.phone}
                               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                             />
@@ -237,7 +237,7 @@ const RegisterPage = () => {
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder={t("password")}
-                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-8 text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
+                        className="h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-8 text-[12px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30"
                         value={formData.password}
                         required
                         onChange={(e) => {
@@ -282,7 +282,7 @@ const RegisterPage = () => {
                     </label>
                   </div>
                   <div className="flex  gap-1.5">
-                    <input type="checkbox" className="w-4 h-4 text-[#225D5C] bg-gray-100 rounded border-gray-300 focus:ring-[#225D5C] dark:focus:ring-[#225D5C] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <input type="checkbox" className="w-4 h-4 text-[#225D5C] bg-gray-100 text-[16px] rounded border-gray-300 focus:ring-[#225D5C] dark:focus:ring-[#225D5C] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                     <div className="text-[10px] font-semibold text-[#225D5C]">
                       <span className=" text-[#225D5C]/70">{t("i_agree_to_the")} </span>
                       <span className="text-[#225D5C]">{t("terms_of_service")}</span> 

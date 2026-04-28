@@ -79,15 +79,25 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="mt-16 min-h-[calc(110dvh-4rem)] md:min-h-[calc(100dvh-4rem)] bg-[#F2E8DC] lg:h-[calc(100dvh-4rem)] lg:overflow-hidden">
+    <div className="mt-16 min-h-[calc(125dvh-4rem)] md:min-h-[calc(100dvh-4rem)] bg-[#F2E8DC] lg:h-[calc(100dvh-4rem)] lg:overflow-hidden ">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="grid min-h-[calc(100dvh-4rem)] grid-cols-1 lg:h-full lg:grid-cols-2"
+        className="grid min-h-[calc(80dvh-4rem)] grid-cols-1 lg:h-full lg:grid-cols-2"
       >
-        <section className={cn("relative hidden lg:flex lg:items-center lg:justify-center", isArabic && "lg:order-2")}>
+        <section className="relative overflow-hidden rounded-b-[34px] bg-[#225D5C] px-5 pb-2 pt-2 text-center text-[#FFD6A8] sm:px-8 lg:hidden ">
+          <div className="mx-auto flex max-w-md flex-col items-center gap-2 py-2">
+            <div className="mx-auto mb-1 flex h-16 w-16 items-center justify-center rounded-full bg-[#FFD6A8] shadow-lg shadow-black/20">
+              <Image src="/logo.svg" alt="Luzori" width={52} height={52} />
+            </div>
+            <h2 className="text-xl font-bold tracking-tight">{t("welcome_to_luzori")}</h2>
+            <p className="text-xs leading-5 text-[#F2E8DC]">{t("hero_subtitle_mobile")}</p>
+          </div>
+        </section>
+
+        <section className={cn("relative hidden lg:flex lg:items-center lg:justify-center", isArabic && "lg:order-1")}>
           <Image
-            src={isArabic ? "/fogleft.png" : "/fogleft.png"}
+            src={isArabic ? "/fogright.png" : "/fogleft.png"}
             alt="Welcome background"
             fill
             priority
@@ -107,8 +117,8 @@ const RegisterPage = () => {
           </div>
         </section>
 
-        <section className={cn("bg-[F7F7F7] px-4 py-6 sm:px-6 lg:h-full lg:overflow-y-hidden lg:px-12 lg:py-12", isArabic && "lg:order-1")}>
-          <div className="mx-auto w-full max-w-2xl rounded-3xl md:rounded-none border md:border-none border-[#E9E2D8] bg-[#FFFBF7] md:bg-[#F2E8DC] p-5 shadow-xl md:shadow-none lg:min-h-full lg:p-8">
+        <section className={cn(" px-4 py-6 sm:px-6 lg:h-full lg:overflow-y-hidden lg:px-12 lg:py-2", isArabic && "lg:order-1")}>
+          <div className="-mt-8 md:mt-0 mx-auto w-full max-w-2xl rounded-3xl md:rounded-none border md:border-none border-[#E9E2D8] bg-[#FFFBF7] md:bg-[#F2E8DC] p-5 shadow-xl md:shadow-none lg:min-h-full lg:p-8 relative z-10">
             <h1 className="mb-6 text-center text-3xl font-extrabold text-[#225D5C]">{t("create_your_account")}</h1>
 
             <form onSubmit={handleSubmit} className="space-y-3">

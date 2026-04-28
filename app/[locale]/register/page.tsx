@@ -88,15 +88,19 @@ const RegisterPage = () => {
         <motion.div
           initial={{ opacity: 0, y: 12 }} 
           animate={{ opacity: 1, y: 0 }}
+
           className="relative grid h-auto grid-cols-1 lg:h-full lg:grid-cols-2 lg:grid-rows-1"
         >
           <Image
             src={isArabic ? "/fogright.png" : "/fogleft.png"}
             alt="Decorative side"
-            width={130}
-            height={900}
-            className="pointer-events-none absolute left-[calc(50%-60px)] top-0 z-20 hidden h-full w-[120px] object-cover lg:block"
+            width={50}
+            height={50}
             unoptimized
+            className={cn(
+              "pointer-events-none absolute top-0 z-0 hidden h-full w-[140px] object-cover lg:block z-1000",
+              isArabic ? "right-0" : "left-0"
+            )}
           />
           <section
             className={cn(
@@ -355,7 +359,7 @@ const RegisterPage = () => {
                 <span className="text-[11px] font-semibold text-[#225D5C] md:ml-1">{t("profile_picture")} 
                   <span className="text-[#225D5C]/70"> ({t("optional")})</span>
                 </span>
-                <div className={cn("flex flex-col space-y-1.5 md:items-start", isArabic ? "items-end" : "items-start")}>
+                <div className={cn("flex flex-col space-y-1.5 md:items-start")}>
                   <div className="flex justify-center">
                     <label className="group relative flex h-16 w-16 cursor-pointer items-center justify-center overflow-hidden rounded-full border-2 border-[#E9E2D8] bg-[#F2E8DC] shadow-md transition-all hover:border-[#225D5C]/50 md:h-16 md:w-16">
                     {logo ? (
@@ -378,7 +382,7 @@ const RegisterPage = () => {
                     </label>
                   </div>
                   <div className="flex  gap-1.5">
-                    <input type="checkbox" className="w-4 h-4 text-[#225D5C] bg-gray-100 text-[16px] rounded border-gray-300 focus:ring-[#225D5C] dark:focus:ring-[#225D5C] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    <input type="checkbox" className="w-4 h-4 text-[#225D5C] bg-[#225D5C] text-[16px] rounded border-gray-300 focus:ring-[#225D5C] dark:focus:ring-[#225D5C] dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                     <div className="text-[10px] font-semibold text-[#225D5C]">
                       <span className=" text-[#225D5C]/70">{t("i_agree_to_the")} </span>
                       <span className="text-[#225D5C]">{t("terms_of_service")}</span> 

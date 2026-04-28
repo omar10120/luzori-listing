@@ -178,14 +178,25 @@ const RegisterPage = () => {
                     <span className="text-[#FF0000]/70"> *</span>
                     <div className="relative">
                       <Mail size={14} className={cn("absolute top-1/2 -translate-y-1/2 text-[#225D5C]/70", isArabic ? "right-3 " : "left-3")} />
-                      <input  
-                        type="email"
-                        required
-                        placeholder={t("email")}
-                        className={cn("h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] pl-8 pr-2 text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30", isArabic ? "pr-8 pl-2 text-right" : "pl-8 pr-2 text-left")}
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      />
+                      <input
+                      type="email"
+                      required
+                      placeholder={t("email")}
+                      inputMode="email"
+                      className={cn(
+                        "h-9 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30",
+                        isArabic ? "pr-8 pl-2 text-right" : "pl-8 pr-2 text-left"
+                      )}
+                      value={formData.email}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        // remove Arabic + any invalid chars
+                        const filtered = value.replace(/[^a-zA-Z0-9@._+-]/g, "");
+
+                        setFormData({ ...formData, email: filtered });
+                      }}
+                    />
                     </div>
                   </div>
 

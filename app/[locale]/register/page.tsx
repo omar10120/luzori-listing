@@ -79,7 +79,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="mt-16 min-h-[calc(125dvh-4rem)] md:min-h-[calc(100dvh-4rem)] bg-[#F2E8DC] lg:h-[calc(100dvh-4rem)] lg:overflow-hidden ">
+    <div className="mt-16 min-h-[calc(125dvh-4rem)] md:min-h-[calc(100dvh-4rem)] bg-[#F2E8DC] md:bg-white lg:h-[calc(100dvh-4rem)] lg:overflow-hidden ">
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -118,7 +118,7 @@ const RegisterPage = () => {
         </section>
 
         <section className={cn(" px-4 py-6 sm:px-6 lg:h-full lg:overflow-y-hidden lg:px-12 lg:py-2", isArabic && "lg:order-1")}>
-          <div className="-mt-8 md:mt-0 mx-auto w-full max-w-2xl rounded-3xl md:rounded-none border md:border-none border-[#E9E2D8] bg-[#FFFBF7] md:bg-[#F2E8DC] p-5 shadow-xl md:shadow-none lg:min-h-full lg:p-8 relative z-10">
+          <div className="-mt-8 md:mt-0 mx-auto w-full max-w-2xl rounded-3xl md:rounded-none border md:border-none border-[#E9E2D8] bg-[#FFFBF7]  md:bg-white p-5 shadow-xl md:shadow-none lg:min-h-full lg:p-8 relative z-10">
             <h1 className="mb-6 text-center text-3xl font-extrabold text-[#225D5C]">{t("create_your_account")}</h1>
 
             <form onSubmit={handleSubmit} className="space-y-3">
@@ -274,16 +274,18 @@ const RegisterPage = () => {
                 </motion.div>
               )}
 
-              <button
+            <div className="flex justify-center items-center gap-2">
+            <button
                 type="submit"
                 disabled={isSubmitting}
                 className={cn(
-                  "h-10 w-full rounded-full bg-[#225D5C] text-sm font-bold text-[#FFD6A8] shadow-lg transition-all disabled:cursor-not-allowed disabled:opacity-70",
+                  "h-10 w-full md:w-1/2 rounded-full bg-[#225D5C] text-sm font-bold text-[#FFD6A8] shadow-lg transition-all  disabled:cursor-not-allowed disabled:opacity-70",
                   !isSubmitting && "hover:bg-[#1D4E4D]"
                 )}
               >
                 {isSubmitting ? t("connecting") : t("register")}
               </button>
+            </div>
 
               <div className="flex items-center gap-3">
                 <div className="h-px flex-1 bg-[#E9E2D8]" />
@@ -291,7 +293,7 @@ const RegisterPage = () => {
                 <div className="h-px flex-1 bg-[#E9E2D8]" />
               </div>
 
-              <GoogleLoginButton text={t("sign_in_with_google")} className="h-10 rounded-full border-none shadow-none bg-[#F2E8DC] text-xs text-[#225D5C] hover:bg-[#F8FAFA]" />
+              <GoogleLoginButton text={t("sign_in_with_google")} className="h-10 rounded-full border-none shadow-none bg-[#F2E8DC] md:bg-white text-xs cursor-pointer text-[#225D5C] hover:bg-[#F8FAFA]" />
             </form>
           </div>
         </section>

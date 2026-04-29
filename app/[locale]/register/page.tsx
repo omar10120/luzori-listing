@@ -252,7 +252,7 @@ const RegisterPage = () => {
               </div>
 
               <div className="flex items-start gap-2">
-                <input type="checkbox" className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#225D5C] focus:ring-[#225D5C]" />
+                <input type="checkbox" required className="mt-0.5 h-4 w-4 rounded border-gray-300 text-[#225D5C] focus:ring-[#225D5C]" />
                 <p className="text-[11px] font-semibold text-[#225D5C]">
                   <span className="text-[#225D5C]/70">{t("i_agree_to_the")} </span>
                   <span>{t("terms_of_service")}</span>

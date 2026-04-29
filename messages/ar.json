@@ -310,7 +310,11 @@
     "full_name" : "الاسم الكامل",
     "login_to_your_account" : "تسجيل الدخول إلى حسابك",
     "dont_have_account" : "ليس لديك حساب؟",
-    "register_now" : "إنشاء حساب الآن"
+    "welcome_back": "مرحبا بعودتك",
+    "login_subtitle": "تسجيل الدخول للوصول إلى حسابك",
+    "login_subtitle_mobile": "تسجيل الدخول للمتابعة",
+    "forgot_password": "هل نسيت كلمة المرور؟",
+    "connection_error": "خطأ في الاتصال. يرجى المحاولة مرة أخرى."
 
 
 }

@@ -87,12 +87,13 @@ const LoginPage = () => {
             priority
             className="object-cover object-right"
           />
-          <div className="relative z-10 mx-auto max-w-xl px-12 text-center text-[#FFD6A8]">
+          <div className="relative z-10 mx-auto max-w-xl px-20 text-center text-[#FFD6A8]">
             <h2 className="mb-8 text-5xl font-bold">{t("welcome_back") || "Welcome Back"}</h2>
             <div className="mx-auto mb-8 flex h-28 w-28 items-center justify-center rounded-full bg-[#FFD6A8] shadow-lg">
               <Image src="/logo.svg" alt="Luzori" width={72} height={72} />
             </div>
-            <p className="text-[14px] leading-8 text-[#FFEED9]">{t("login_subtitle") || "Sign in to access your account"}</p>
+            <p className="text-[14px] leading-8 text-[#FFEED9]">{t("hero_subtitle") || "Sign in to access your account"}</p>
+            
             <div className="mt-16 flex items-center justify-center gap-2 text-lg font-bold">
               <span>{t("contact_us")}</span>
               <span>|</span>

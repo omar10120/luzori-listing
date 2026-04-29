@@ -103,7 +103,7 @@ const LoginPage = () => {
 
         {/* Login Form Section */}
         <section className={cn("px-4 py-6 sm:px-6 lg:h-full lg:overflow-y-hidden lg:px-12 lg:py-2", isArabic && "lg:order-1")}>
-          <div className="-mt-8 mx-auto w-full max-w-2xl rounded-3xl border border-[#E9E2D8] bg-[#FFFBF7] p-5 shadow-xl md:mt-0 md:rounded-none md:border-none md:bg-white md:shadow-none lg:min-h-full lg:p-8">
+          <div className="-mt-8 mx-auto w-full max-w-2xl rounded-3xl border border-[#E9E2D8] bg-[#FFFBF7] p-5 shadow-xl md:mt-0 md:rounded-none md:border-none md:bg-white md:shadow-none lg:min-h-full lg:p-8 relative z-10">
             <h1 className="mb-6 text-center text-3xl font-extrabold text-[#225D5C]">{t("login_to_your_account") || "Login to Your Account"}</h1>
 
             <form onSubmit={handleSubmit} className="space-y-4">

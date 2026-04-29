@@ -74,7 +74,7 @@ const LoginPage = () => {
               <Image src="/logo.svg" alt="Luzori" width={52} height={52} />
             </div>
             <h2 className="text-xl font-bold tracking-tight">{t("welcome_back") || "Welcome Back"}</h2>
-            <p className="text-xs leading-5 text-[#F2E8DC]">{t("login_subtitle_mobile") || "Sign in to your account"}</p>
+            {/* <p className="text-xs leading-5 text-[#F2E8DC]">{t("login_subtitle_mobile") || "Sign in to your account"}</p> */}
           </div>
         </section>
 
@@ -237,12 +237,12 @@ const LoginPage = () => {
               />
 
               {/* Register Link */}
-              <div className="text-center text-xs font-semibold text-[#225D5C]/70">
+              {/* <div className="text-center text-xs font-semibold text-[#225D5C]/70">
                 {t("dont_have_account") || "Don't have an account?"}{" "}
                 <Link href="/register" className="text-[#225D5C] transition-colors hover:underline">
                   {t("register_now") || "Register now"}
                 </Link>
-              </div>
+              </div> */}
             </form>
           </div>
         </section>

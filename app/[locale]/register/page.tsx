@@ -130,7 +130,7 @@ const RegisterPage = () => {
                     type="text"
                     required
                     placeholder={t("full_name")}
-                    className={cn("h-10 w-full rounded-xl border border-[#E9E2D8]  bg-[#F2E8DC] md:bg-[#FFD6A8]/30 text-sm text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30", isArabic ? "pr-9 pl-3 text-right" : "pl-9 pr-3 text-left")}
+                    className={cn("h-10 w-full rounded-xl border border-[#E9E2D8]  bg-[#F2E8DC] md:bg-[#FFD6A8]/30 text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30", isArabic ? "pr-9 pl-3 text-right" : "pl-9 pr-3 text-left")}
                     value={formData.first_name}
                     onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
                   />
@@ -145,7 +145,7 @@ const RegisterPage = () => {
                     type="email"
                     required
                     placeholder={t("email")}
-                    className={cn("h-10 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] md:bg-[#FFD6A8]/30 text-sm text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30", isArabic ? "pr-9 pl-3 text-right" : "pl-9 pr-3 text-left")}
+                    className={cn("h-10 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] md:bg-[#FFD6A8]/30 text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30", isArabic ? "pr-9 pl-3 text-right" : "pl-9 pr-3 text-left")}
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value.replace(/[^a-zA-Z0-9@._+-]/g, "") })}
                   />
@@ -203,7 +203,7 @@ const RegisterPage = () => {
                     placeholder={t("phone_number")}
                     minLength={9}
                     maxLength={10}
-                    className={cn("h-10 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] md:bg-[#FFD6A8]/30 text-sm text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30", isArabic ? "pr-28 pl-3 text-right" : "pl-28 pr-3 text-left")}
+                    className={cn("h-10 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] md:bg-[#FFD6A8]/30 text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30", isArabic ? "pr-28 pl-3 text-right" : "pl-28 pr-3 text-left")}
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   />
@@ -218,7 +218,7 @@ const RegisterPage = () => {
                     type={showPassword ? "text" : "password"}
                     placeholder={t("password")}
                    
-                    className={cn("h-10 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] md:bg-[#FFD6A8]/30 text-sm text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30", isArabic ? "pr-9 pl-9 text-right" : "pl-9 pr-9 text-left")}
+                    className={cn("h-10 w-full rounded-xl border border-[#E9E2D8] bg-[#F2E8DC] md:bg-[#FFD6A8]/30 text-[16px] text-[#22403F] placeholder:text-[#8B9A9A] focus:outline-none focus:ring-2 focus:ring-[#225D5C]/30", isArabic ? "pr-9 pl-9 text-right" : "pl-9 pr-9 text-left")}
                     value={formData.password}
                     onChange={(e) => {
                       const v = e.target.value;

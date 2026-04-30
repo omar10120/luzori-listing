@@ -314,7 +314,8 @@
     "login_subtitle": "تسجيل الدخول للوصول إلى حسابك",
     "login_subtitle_mobile": "تسجيل الدخول للمتابعة",
     "forgot_password": "هل نسيت كلمة المرور؟",
-    "connection_error": "خطأ في الاتصال. يرجى المحاولة مرة أخرى."
+    "connection_error": "خطأ في الاتصال. يرجى المحاولة مرة أخرى.",
+    "register_now" : "تسجيل الان"
 
 
 }

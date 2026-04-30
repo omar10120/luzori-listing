@@ -238,12 +238,12 @@ const LoginPage = () => {
               />
 
               {/* Register Link */}
-              {/* <div className="text-center text-xs font-semibold text-[#225D5C]/70">
+              <div className="text-center text-xs font-semibold text-[#225D5C]/70">
                 {t("dont_have_account") || "Don't have an account?"}{" "}
                 <Link href="/register" className="text-[#225D5C] transition-colors hover:underline">
                   {t("register_now") || "Register now"}
                 </Link>
-              </div> */}
+              </div>
             </form>
           </div>
         </section>

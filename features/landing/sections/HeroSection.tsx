@@ -2,9 +2,9 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Search, MapPin, Clock, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Container from "@/components/ui/Container";
-import Button from "@/components/ui/Button";
+import LandingSearchBar from "@/components/search/LandingSearchBar";
 import { useTranslations } from "next-intl";
 
 
@@ -44,53 +44,9 @@ const HeroSection: React.FC = () => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.3 }}
-                    className="mx-auto mt-8 flex max-w-2xl flex-col items-stretch gap-3 rounded-2xl bg-white p-2 shadow-lg ring-1 ring-gray-100 sm:flex-row sm:items-center sm:gap-0 sm:rounded-full sm:p-1.5"
+                    className="mx-auto mt-8 max-w-4xl"
                 >
-                    {/* Treatment */}
-                    <div className="flex flex-1 items-center gap-2 px-4 py-2">
-                        <Search size={18} className="shrink-0 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder={t('treatment_placeholder')}
-                            aria-label="Treatment or venue"
-                            className="w-full bg-transparent text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none"
-                        />
-                    </div>
-
-                    <div className="hidden h-8 w-px bg-gray-200 sm:block" />
-
-                    {/* Location */}
-                    <div className="flex flex-1 items-center gap-2 px-4 py-2">
-                        <MapPin size={18} className="shrink-0 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder={t('treatment_placeholder')}
-                            aria-label="Location"
-                            className="w-full bg-transparent text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none"
-                        />
-                    </div>
-
-                    <div className="hidden h-8 w-px bg-gray-200 sm:block" />
-
-                    {/* Time */}
-                    <div className="flex flex-1 items-center gap-2 px-4 py-2">
-                        <Clock size={18} className="shrink-0 text-gray-400" />
-                        <input
-                            type="text"
-                            placeholder={t('treatment_placeholder')}
-                            aria-label="Preferred time"
-                            className="w-full bg-transparent text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none"
-                        />
-                    </div>
-
-                    {/* Search button */}
-                    <Button
-                        size="lg"
-                        className="shrink-0 rounded-full sm:ml-1"
-                        aria-label={t('treatment_placeholder')}
-                    >
-                        {t('search')}
-                    </Button>
+                    <LandingSearchBar variant="hero" />
                 </motion.div>
 
                 {/* Stats + CTA */}

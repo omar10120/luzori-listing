@@ -1,7 +1,8 @@
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+export const API_BASE_URL ="http://127.0.0.1:8000";
 
 export const API_ENDPOINTS = {
     CENTERS: `${API_BASE_URL}/center_api/centers`,
+    GLOBAL_CATEGORIES: `${API_BASE_URL}/center_api/global-categories`,
     CENTER_BY_ID: (id: string | number) => `${API_BASE_URL}/center_api/centers/${id}`,
     REGISTER: `${API_BASE_URL}/center_api/auth/register`,
     LOGIN: `${API_BASE_URL}/center_api/auth/login`,
@@ -152,6 +153,18 @@ export interface Category {
     services: Service[];
 }
 
+/** Global category (treatments) from center API. */
+export interface GlobalCategory {
+    id: number;
+    name: string;
+    slug: string;
+}
+
+export interface GlobalCategoriesResponse {
+    message: string;
+    data: GlobalCategory[];
+}
+
 export interface CenterDetailData {
     id: number;
     name: string;
@@ -165,6 +178,7 @@ export interface CenterDetailData {
     categories: Category[];
     services: Service[]; // Root level services if any
     packages?: CenterPackage[];
+    global_categories?: GlobalCategory[];
 }
 
 export interface CenterDetailResponse {

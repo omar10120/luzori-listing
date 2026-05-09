@@ -2,6 +2,16 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin();
 const nextConfig: NextConfig = {
+  async rewrites() {
+    const backend = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").replace(
+      /\/$/,
+      ""
+    );
+    return [
+      { source: "/center_api/:path*", destination: `${backend}/center_api/:path*` },
+      { source: "/app_api/:path*", destination: `${backend}/app_api/:path*` },
+    ];
+  },
   images: {
     remotePatterns: [
       {

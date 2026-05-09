@@ -7,6 +7,7 @@ import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 import "../globals.css";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
+import MuiProvider from "@/components/providers/MuiProvider";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -58,6 +59,7 @@ export default async function RootLayout({
       </head>
       <body className="max-h-screen bg-white font-sans antialiased [&[data-register-page=true]_.site-footer]:hidden [&[data-login-page=true]_.site-footer]:hidden">
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <MuiProvider>
           <PhoneRequirementProvider>
             <Navbar />
             <main id="main-content">{children}</main>
@@ -65,6 +67,7 @@ export default async function RootLayout({
               <Footer />
             </div>
           </PhoneRequirementProvider>
+          </MuiProvider>
         </NextIntlClientProvider>
       </body>
     </html >

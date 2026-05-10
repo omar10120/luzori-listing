@@ -17,8 +17,10 @@ import ListItemText from "@mui/material/ListItemText";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
+
 import Box from "@mui/material/Box";
 import { Search, MapPin, Clock, X, ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 import UiButton from "@/components/ui/Button";
@@ -339,7 +341,13 @@ export default function LandingSearchBar({
             <List dense sx={{ maxHeight: 360, overflow: "auto" }}>
               {filteredCategories.map((category) => (
                 <ListItemButton key={category.id} onClick={() => selectCategory(category)}>
-                  <ListItemText primary={category.name} secondary={category.slug} />
+                  {category.image && (
+                    <img src={category.image} width={20} height={20} className="w-10 h-10 object-cover rounded-full mx-2" />
+                  )}
+                  {/* <ListItemText primary={category.name} secondary={category.slug} /> */}
+                  <ListItemText primary={locale === "ar" ? category.nameAr : category.name}  />
+                  
+                  
                 </ListItemButton>
               ))}
             </List>

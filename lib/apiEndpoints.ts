@@ -157,7 +157,9 @@ export interface Category {
 export interface GlobalCategory {
     id: number;
     name: string;
+    nameAr: string;
     slug: string;
+    image: string;
 }
 
 export interface GlobalCategoriesResponse {

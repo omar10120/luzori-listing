@@ -15,7 +15,8 @@
 
 /* ─── Base ─── */
 body {
-  background: linear-gradient(to bottom, var(--background), var(--background-end));
+  /* background: linear-gradient(to bottom, var(--background), var(--background-end)); */
+  background: linear-gradient(to bottom, var(--background));
   color: var(--foreground);
   font-family:  var(--font-sans);
   -webkit-font-smoothing: antialiased;

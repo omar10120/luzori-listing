@@ -18,10 +18,11 @@ const REVIEW_COUNT = 128;
 
 export interface SearchResultCardProps {
   center: CenterDetailData;
+  entityKey: string;
   locale: string;
   active?: boolean;
-  onHover?: (id: number | null) => void;
-  onSelect?: (id: number) => void;
+  onHover?: (key: string | null) => void;
+  onSelect?: (key: string) => void;
 }
 
 function collectServicesPreview(c: CenterDetailData, max = 3): Service[] {
@@ -43,6 +44,7 @@ function collectServicesPreview(c: CenterDetailData, max = 3): Service[] {
 
 export default function SearchResultCard({
   center,
+  entityKey,
   locale,
   active,
   onHover,
@@ -65,9 +67,9 @@ export default function SearchResultCard({
   return (
     <motion.article
       whileHover={{ y: -2 }}
-      onMouseEnter={() => onHover?.(center.id)}
+      onMouseEnter={() => onHover?.(entityKey)}
       onMouseLeave={() => onHover?.(null)}
-      onClick={() => onSelect?.(center.id)}
+      onClick={() => onSelect?.(entityKey)}
       className={cn(
         "group flex cursor-pointer flex-col overflow-hidden rounded-2xl bg-white ring-1 transition-all",
         active

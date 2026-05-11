@@ -4,27 +4,32 @@ import React, { useEffect, useMemo } from "react";
 import L from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import type { CenterDetailData, Branch } from "@/lib/apiEndpoints";
 
 export interface SearchMapMarker {
-  center: CenterDetailData;
-  branch: Branch;
+  /** Stable id used for hover/active highlighting and click matching. */
+  id: string;
   lat: number;
   lng: number;
   rating: number;
+  title: string;
+  subtitle?: string;
+  city?: string;
+  address?: string;
 }
 
 export interface SearchMapProps {
-  centers: CenterDetailData[];
-  hoveredCenterId: number | null;
-  activeCenterId: number | null;
-  focusBranch: { centerId: number; branchId: number; nonce: number } | null;
-  onMarkerClick: (centerId: number, branchId: number) => void;
+  markers: SearchMapMarker[];
+  hoveredId: string | null;
+  activeId: string | null;
+  focus: { id: string; nonce: number } | null;
+  onMarkerClick: (id: string) => void;
 }
 
 function buildPinHtml(rating: number, highlighted: boolean): string {
   const bg = highlighted ? "#225D5C" : "#111827";
-  const ring = highlighted ? "0 0 0 4px rgba(34,93,92,0.25)" : "0 4px 10px rgba(0,0,0,0.25)";
+  const ring = highlighted
+    ? "0 0 0 4px rgba(34,93,92,0.25)"
+    : "0 4px 10px rgba(0,0,0,0.25)";
   const scale = highlighted ? "scale(1.12)" : "scale(1)";
   return `
     <div style="
@@ -57,58 +62,45 @@ function FitBounds({ markers }: { markers: SearchMapMarker[] }) {
       map.setView([markers[0].lat, markers[0].lng], 13, { animate: true });
       return;
     }
-    const bounds = L.latLngBounds(markers.map((m) => [m.lat, m.lng] as [number, number]));
+    const bounds = L.latLngBounds(
+      markers.map((m) => [m.lat, m.lng] as [number, number])
+    );
     map.fitBounds(bounds, { padding: [48, 48], maxZoom: 14 });
   }, [markers, map]);
   return null;
 }
 
-function FlyToBranch({
+function FlyToFocus({
   markers,
-  focusBranch,
+  focus,
 }: {
   markers: SearchMapMarker[];
-  focusBranch: SearchMapProps["focusBranch"];
+  focus: SearchMapProps["focus"];
 }) {
   const map = useMap();
   useEffect(() => {
-    if (!focusBranch) return;
-    const m = markers.find(
-      (x) => x.center.id === focusBranch.centerId && x.branch.id === focusBranch.branchId
-    );
+    if (!focus) return;
+    const m = markers.find((x) => x.id === focus.id);
     if (m) {
       map.flyTo([m.lat, m.lng], Math.max(map.getZoom(), 14), { duration: 0.7 });
     }
-  }, [focusBranch, markers, map]);
+  }, [focus, markers, map]);
   return null;
 }
 
-const DEFAULT_CENTER: [number, number] = [25.2048, 55.2708]; // Dubai fallback
+const DEFAULT_CENTER: [number, number] = [25.2048, 55.2708];
 
 export default function SearchMap({
-  centers,
-  hoveredCenterId,
-  activeCenterId,
-  focusBranch,
+  markers,
+  hoveredId,
+  activeId,
+  focus,
   onMarkerClick,
 }: SearchMapProps) {
-  const markers = useMemo<SearchMapMarker[]>(() => {
-    const out: SearchMapMarker[] = [];
-    for (const c of centers) {
-      for (const b of c.branches || []) {
-        const lat = Number(b.latitude);
-        const lng = Number(b.longitude);
-        if (Number.isFinite(lat) && Number.isFinite(lng) && (lat !== 0 || lng !== 0)) {
-          out.push({ center: c, branch: b, lat, lng, rating: 4.8 });
-        }
-      }
-    }
-    return out;
-  }, [centers]);
-
-  const initialCenter: [number, number] = markers[0]
-    ? [markers[0].lat, markers[0].lng]
-    : DEFAULT_CENTER;
+  const initialCenter = useMemo<[number, number]>(
+    () => (markers[0] ? [markers[0].lat, markers[0].lng] : DEFAULT_CENTER),
+    [markers]
+  );
 
   return (
     <MapContainer
@@ -124,34 +116,37 @@ export default function SearchMap({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <FitBounds markers={markers} />
-      <FlyToBranch markers={markers} focusBranch={focusBranch} />
+      <FlyToFocus markers={markers} focus={focus} />
 
-      {markers.map((m) => {
-        const highlighted =
-          hoveredCenterId === m.center.id || activeCenterId === m.center.id;
+      {markers.map((m, idx) => {
+        const highlighted = hoveredId === m.id || activeId === m.id;
         return (
           <Marker
-            key={`${m.center.id}-${m.branch.id}`}
+            key={`${m.id}-${idx}`}
             position={[m.lat, m.lng]}
             icon={buildIcon(m.rating, highlighted)}
             zIndexOffset={highlighted ? 1000 : 0}
             eventHandlers={{
-              click: () => onMarkerClick(m.center.id, m.branch.id),
+              click: () => onMarkerClick(m.id),
             }}
           >
             <Popup>
               <div className="min-w-[180px] space-y-1">
                 <div className="text-sm font-semibold text-[#225D5C]">
-                  {m.center.name}
+                  {m.title}
                 </div>
-                <div className="text-xs font-medium text-gray-800">{m.branch.name}</div>
-                {m.branch.address && (
-                  <div className="text-[11px] leading-snug text-gray-600">
-                    {m.branch.address}
+                {m.subtitle && (
+                  <div className="text-xs font-medium text-gray-800">
+                    {m.subtitle}
                   </div>
                 )}
-                {m.branch.city && (
-                  <div className="text-[11px] text-gray-500">{m.branch.city}</div>
+                {m.address && (
+                  <div className="text-[11px] leading-snug text-gray-600">
+                    {m.address}
+                  </div>
+                )}
+                {m.city && (
+                  <div className="text-[11px] text-gray-500">{m.city}</div>
                 )}
               </div>
             </Popup>

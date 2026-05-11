@@ -9,8 +9,17 @@ import { Map as MapIcon, List as ListIcon } from "lucide-react";
 import LandingSearchBar from "@/components/search/LandingSearchBar";
 import Container from "@/components/ui/Container";
 import SearchResultCard from "@/components/search/SearchResultCard";
+import ProfessionalCard from "@/components/search/ProfessionalCard";
 import { fetchCentersSearchClient } from "@/lib/centersPublicApi";
 import type { CenterDetailData } from "@/lib/apiEndpoints";
+import {
+  buildProfessionalMarkers,
+  buildProfessionals,
+  buildVenueMarkers,
+  venueKey,
+  type Professional,
+} from "@/lib/searchEntities";
+import type { SearchMapMarker } from "@/components/search/SearchMap";
 import { cn } from "@/lib/utils";
 
 const SearchMap = dynamic(() => import("@/components/search/SearchMap"), {
@@ -22,19 +31,8 @@ const SearchMap = dynamic(() => import("@/components/search/SearchMap"), {
   ),
 });
 
+type Tab = "venues" | "professionals";
 type MobileView = "list" | "map";
-
-function countMarkers(centers: CenterDetailData[]): number {
-  let n = 0;
-  for (const c of centers) {
-    for (const b of c.branches || []) {
-      const lat = Number(b.latitude);
-      const lng = Number(b.longitude);
-      if (Number.isFinite(lat) && Number.isFinite(lng) && (lat !== 0 || lng !== 0)) n++;
-    }
-  }
-  return n;
-}
 
 export default function SearchPageClient() {
   const t = useTranslations();
@@ -53,14 +51,13 @@ export default function SearchPageClient() {
   const [centers, setCenters] = useState<CenterDetailData[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const [hoveredCenterId, setHoveredCenterId] = useState<number | null>(null);
-  const [activeCenterId, setActiveCenterId] = useState<number | null>(null);
-  const [focusBranch, setFocusBranch] = useState<
-    { centerId: number; branchId: number; nonce: number } | null
-  >(null);
+  const [tab, setTab] = useState<Tab>("venues");
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [focus, setFocus] = useState<{ id: string; nonce: number } | null>(null);
   const [mobileView, setMobileView] = useState<MobileView>("list");
 
-  const cardRefs = useRef<Map<number, HTMLDivElement>>(new Map());
+  const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   const queryArgs = useMemo(() => {
     const p: { global_category_slug?: string; global_category_id?: string } = {};
@@ -87,39 +84,46 @@ export default function SearchPageClient() {
     };
   }, [queryArgs]);
 
-  const totalMarkers = useMemo(() => countMarkers(centers), [centers]);
+  const [lastTab, setLastTab] = useState(tab);
+  if (lastTab !== tab) {
+    setLastTab(tab);
+    setActiveId(null);
+    setHoveredId(null);
+    setFocus(null);
+  }
 
-  const centersRef = useRef<CenterDetailData[]>(centers);
-  useEffect(() => {
-    centersRef.current = centers;
-  }, [centers]);
+  const professionals = useMemo<Professional[]>(
+    () => buildProfessionals(centers),
+    [centers]
+  );
 
-  const handleCardSelect = useCallback((centerId: number) => {
-    setActiveCenterId(centerId);
-    const center = centersRef.current.find((c) => c.id === centerId);
-    const branch = center?.branches?.find((b) => {
-      const lat = Number(b.latitude);
-      const lng = Number(b.longitude);
-      return Number.isFinite(lat) && Number.isFinite(lng) && (lat !== 0 || lng !== 0);
-    });
-    if (branch) {
-      setFocusBranch({ centerId, branchId: branch.id, nonce: Date.now() });
-    }
+  const venueMarkers = useMemo<SearchMapMarker[]>(
+    () => buildVenueMarkers(centers),
+    [centers]
+  );
+  const professionalMarkers = useMemo<SearchMapMarker[]>(
+    () => buildProfessionalMarkers(professionals),
+    [professionals]
+  );
+
+  const markers = tab === "venues" ? venueMarkers : professionalMarkers;
+  const listCount = tab === "venues" ? centers.length : professionals.length;
+
+  const handleSelect = useCallback((key: string) => {
+    setActiveId(key);
+    setFocus({ id: key, nonce: Date.now() });
   }, []);
 
-  const handleMarkerClick = useCallback((centerId: number, _branchId: number) => {
-    void _branchId;
-    setActiveCenterId(centerId);
-    const el = cardRefs.current.get(centerId);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
+  const handleMarkerClick = useCallback((key: string) => {
+    setActiveId(key);
+    const el = cardRefs.current.get(key);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
   }, []);
 
   const setCardRef = useCallback(
-    (centerId: number) => (el: HTMLDivElement | null) => {
-      if (el) cardRefs.current.set(centerId, el);
-      else cardRefs.current.delete(centerId);
+    (key: string) => (el: HTMLDivElement | null) => {
+      if (el) cardRefs.current.set(key, el);
+      else cardRefs.current.delete(key);
     },
     []
   );
@@ -142,16 +146,34 @@ export default function SearchPageClient() {
         </Container>
       </header>
 
-      <div className="mx-auto w-full max-w-[1600px] px-3 pt-6 sm:px-4 lg:px-6">
-        {/* <div className="mb-4 flex flex-wrap items-center justify-between gap-3 ">
-          <div>
-            <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
-              {t("search_results_title")}
-            </h1>
+      <div className="mx-auto w-full max-w-[1600px] px-3 pt-16 sm:px-4 lg:px-6">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div
+              role="tablist"
+              aria-label={t("search_results_title")}
+              className="inline-flex items-center rounded-full bg-white p-1 ring-1 ring-gray-200"
+            >
+              <TabButton
+                active={tab === "venues"}
+                onClick={() => setTab("venues")}
+              >
+                {t("tab_venues")}
+              </TabButton>
+              <TabButton
+                active={tab === "professionals"}
+                onClick={() => setTab("professionals")}
+              >
+                {t("tab_professionals")}
+              </TabButton>
+            </div>
             {!loading && (
-              <p className="mt-1 text-sm text-gray-500">
-                {t("search_summary", { venues: centers.length, markers: totalMarkers })}
-              </p>
+              <span className="hidden text-sm text-gray-500 sm:inline">
+                {t("search_summary", {
+                  venues: listCount,
+                  markers: markers.length,
+                })}
+              </span>
             )}
           </div>
           <div className="flex items-center gap-2 lg:hidden">
@@ -173,96 +195,47 @@ export default function SearchPageClient() {
               )}
             </button>
           </div>
-        </div> */}
+        </div>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,45%)_minmax(0,55%)] lg:gap-6 py-12">
-          {/* LEFT: Results */}
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,45%)_minmax(0,55%)] lg:gap-6">
           <section
-            className={cn(
-              "min-w-0",
-              mobileView === "map" && "hidden lg:block"
-            )}
+            className={cn("min-w-0", mobileView === "map" && "hidden lg:block")}
           >
             {loading ? (
-              <div className="flex justify-center py-20">
-                <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#225D5C] border-t-transparent" />
-              </div>
-            ) : centers.length === 0 ? (
-
-
-
-              <div className="rounded-2xl bg-white p-12 text-center ring-1 ring-gray-100">
-
-                
-                <p className="text-gray-500">{t("search_no_results")}</p>
-              </div>
+              <LoadingState />
+            ) : tab === "venues" ? (
+              <VenuesList
+                centers={centers}
+                locale={locale}
+                activeId={activeId}
+                onHover={setHoveredId}
+                onSelect={handleSelect}
+                setCardRef={setCardRef}
+                emptyLabel={t("search_no_results")}
+              />
             ) : (
-              <>
-                 {/* details and mobile view toggle */}
-                  <div className="w-full flex items-center justify-between py-2 pb-4 ">
-                    <div>
-                      <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
-                        {t("search_results_title")}
-                      </h1>
-                      {!loading && (
-                        <p className="mt-1 text-sm text-gray-500">
-                          {t("search_summary", { venues: centers.length, markers: totalMarkers })}
-                        </p>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 lg:hidden">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setMobileView((v) => (v === "list" ? "map" : "list"))
-                        }
-                        className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50"
-                      >
-                        {mobileView === "list" ? (
-                          <>
-                            <MapIcon size={16} /> {t("show_map")}
-                          </>
-                        ) : (
-                          <>
-                            <ListIcon size={16} /> {t("show_list")}
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 ">
-              
-
-                  {centers.map((c) => (
-                    <div key={c.id} ref={setCardRef(c.id)} className="min-w-0">
-                      <SearchResultCard
-                        center={c}
-                        locale={locale}
-                        active={activeCenterId === c.id}
-                        onHover={setHoveredCenterId}
-                        onSelect={handleCardSelect}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </>
+              <ProfessionalsList
+                professionals={professionals}
+                locale={locale}
+                activeId={activeId}
+                onHover={setHoveredId}
+                onSelect={handleSelect}
+                setCardRef={setCardRef}
+                emptyLabel={t("search_no_professionals")}
+              />
             )}
           </section>
 
-          {/* RIGHT: Sticky map */}
           <aside
-            className={cn(
-              "min-w-0",
-              mobileView === "list" && "hidden lg:block"
-            )}
+            className={cn("min-w-0", mobileView === "list" && "hidden lg:block")}
           >
             <div className="lg:sticky lg:top-44">
               <div className="h-[60vh] w-full overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-200 lg:h-[calc(100vh-12rem)]">
                 <SearchMap
-                  centers={centers}
-                  hoveredCenterId={hoveredCenterId}
-                  activeCenterId={activeCenterId}
-                  focusBranch={focusBranch}
+                  markers={markers}
+                  hoveredId={hoveredId}
+                  activeId={activeId}
+                  focus={focus}
                   onMarkerClick={handleMarkerClick}
                 />
               </div>
@@ -270,6 +243,127 @@ export default function SearchPageClient() {
           </aside>
         </div>
       </div>
+    </div>
+  );
+}
+
+function TabButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={active}
+      onClick={onClick}
+      className={cn(
+        "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+        active
+          ? "bg-gray-900 text-white shadow-sm"
+          : "text-gray-700 hover:text-gray-900"
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+function LoadingState() {
+  return (
+    <div className="flex justify-center py-20">
+      <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#225D5C] border-t-transparent" />
+    </div>
+  );
+}
+
+function EmptyState({ label }: { label: string }) {
+  return (
+    <div className="rounded-2xl bg-white p-12 text-center ring-1 ring-gray-100">
+      <p className="text-gray-500">{label}</p>
+    </div>
+  );
+}
+
+interface VenuesListProps {
+  centers: CenterDetailData[];
+  locale: string;
+  activeId: string | null;
+  onHover: (key: string | null) => void;
+  onSelect: (key: string) => void;
+  setCardRef: (key: string) => (el: HTMLDivElement | null) => void;
+  emptyLabel: string;
+}
+
+function VenuesList({
+  centers,
+  locale,
+  activeId,
+  onHover,
+  onSelect,
+  setCardRef,
+  emptyLabel,
+}: VenuesListProps) {
+  if (!centers.length) return <EmptyState label={emptyLabel} />;
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {centers.map((c) => {
+        const key = venueKey(c.id);
+        return (
+          <div key={key} ref={setCardRef(key)} className="min-w-0">
+            <SearchResultCard
+              center={c}
+              entityKey={key}
+              locale={locale}
+              active={activeId === key}
+              onHover={onHover}
+              onSelect={onSelect}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+interface ProfessionalsListProps {
+  professionals: Professional[];
+  locale: string;
+  activeId: string | null;
+  onHover: (key: string | null) => void;
+  onSelect: (key: string) => void;
+  setCardRef: (key: string) => (el: HTMLDivElement | null) => void;
+  emptyLabel: string;
+}
+
+function ProfessionalsList({
+  professionals,
+  locale,
+  activeId,
+  onHover,
+  onSelect,
+  setCardRef,
+  emptyLabel,
+}: ProfessionalsListProps) {
+  if (!professionals.length) return <EmptyState label={emptyLabel} />;
+  return (
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {professionals.map((p) => (
+        <div key={p.key} ref={setCardRef(p.key)} className="min-w-0">
+          <ProfessionalCard
+            professional={p}
+            locale={locale}
+            active={activeId === p.key}
+            onHover={onHover}
+            onSelect={onSelect}
+          />
+        </div>
+      ))}
     </div>
   );
 }

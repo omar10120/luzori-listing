@@ -143,7 +143,7 @@ export default function SearchPageClient() {
       </header>
 
       <div className="mx-auto w-full max-w-[1600px] px-3 pt-6 sm:px-4 lg:px-6">
-        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        {/* <div className="mb-4 flex flex-wrap items-center justify-between gap-3 ">
           <div>
             <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
               {t("search_results_title")}
@@ -173,9 +173,9 @@ export default function SearchPageClient() {
               )}
             </button>
           </div>
-        </div>
+        </div> */}
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,45%)_minmax(0,55%)] lg:gap-6">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,45%)_minmax(0,55%)] lg:gap-6 py-12">
           {/* LEFT: Results */}
           <section
             className={cn(
@@ -188,23 +188,64 @@ export default function SearchPageClient() {
                 <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#225D5C] border-t-transparent" />
               </div>
             ) : centers.length === 0 ? (
+
+
+
               <div className="rounded-2xl bg-white p-12 text-center ring-1 ring-gray-100">
+
+                
                 <p className="text-gray-500">{t("search_no_results")}</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {centers.map((c) => (
-                  <div key={c.id} ref={setCardRef(c.id)} className="min-w-0">
-                    <SearchResultCard
-                      center={c}
-                      locale={locale}
-                      active={activeCenterId === c.id}
-                      onHover={setHoveredCenterId}
-                      onSelect={handleCardSelect}
-                    />
+              <>
+                 {/* details and mobile view toggle */}
+                  <div className="w-full flex items-center justify-between py-2 pb-4 ">
+                    <div>
+                      <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
+                        {t("search_results_title")}
+                      </h1>
+                      {!loading && (
+                        <p className="mt-1 text-sm text-gray-500">
+                          {t("search_summary", { venues: centers.length, markers: totalMarkers })}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 lg:hidden">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setMobileView((v) => (v === "list" ? "map" : "list"))
+                        }
+                        className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm hover:bg-gray-50"
+                      >
+                        {mobileView === "list" ? (
+                          <>
+                            <MapIcon size={16} /> {t("show_map")}
+                          </>
+                        ) : (
+                          <>
+                            <ListIcon size={16} /> {t("show_list")}
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
-                ))}
-              </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 ">
+              
+
+                  {centers.map((c) => (
+                    <div key={c.id} ref={setCardRef(c.id)} className="min-w-0">
+                      <SearchResultCard
+                        center={c}
+                        locale={locale}
+                        active={activeCenterId === c.id}
+                        onHover={setHoveredCenterId}
+                        onSelect={handleCardSelect}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </>
             )}
           </section>
 

@@ -68,13 +68,19 @@ export interface Professional {
   workerId: number;
   centerId: number;
   centerName: string;
+
   centerLogo?: string | null;
   centerSlug?: string | null;
   centerCategoryName?: string | null;
   centerGlobalCategoryName?: string | null;
+
   name: string;
   image: string;
+  email?: string | null;
+  phone?: string | null;
+  countryCode?: string | null;
   branch: Branch | null;
+  branchName?: string | null;
   hasCommission: boolean;
   services: ProfessionalService[];
 }
@@ -83,7 +89,17 @@ interface MutableProfessional extends Professional {
   _seenServiceIds: Set<number>;
 }
 
-/** Flatten workers across categories+services into unique professionals per center. */
+/** Backend may return 0/1, true/false, or string flags — normalize. */
+function isProfessionalWorker(value: unknown): boolean {
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value === 1;
+  if (typeof value === "string") return value === "1" || value.toLowerCase() === "true";
+  return false;
+}
+
+/** Flatten workers across categories+services into unique professionals per center.
+ *  Only workers with `is_professional` truthy are returned.
+ */
 export function buildProfessionals(centers: CenterDetailData[]): Professional[] {
   const map = new Map<string, MutableProfessional>();
 
@@ -110,6 +126,8 @@ export function buildProfessionals(centers: CenterDetailData[]): Professional[] 
     for (const cat of c.categories || []) {
       for (const s of cat.services || []) {
         for (const w of s.workers || []) {
+          if (!isProfessionalWorker(w.is_professional)) continue;
+
           const key = professionalKey(c.id, w.id);
           let pro = map.get(key);
           if (!pro) {
@@ -124,7 +142,11 @@ export function buildProfessionals(centers: CenterDetailData[]): Professional[] 
               centerGlobalCategoryName: c.global_categories?.[0]?.name ?? null,
               name: w.name,
               image: w.image,
+              email: w.email ?? null,
+              phone: w.phone ?? null,
+              countryCode: w.country_code ?? null,
               branch: branchById.get(w.branch_id) ?? null,
+              branchName: w.branch_name ?? branchById.get(w.branch_id)?.name ?? null,
               hasCommission: Boolean(w.has_commission),
               services: [],
               _seenServiceIds: new Set<number>(),

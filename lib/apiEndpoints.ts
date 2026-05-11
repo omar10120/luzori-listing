@@ -83,7 +83,13 @@ export interface Worker {
     name: string;
     image: string;
     has_commission: number;
+    /** Backend sends 0/1 — treat falsy as "regular employee". */
+    is_professional: number | boolean;
+    email?: string | null;
+    phone?: string | null;
+    country_code?: string | null;
     branch_id: number;
+    branch_name?: string | null;
     vacations?: WorkerVacation[];
 }
 

@@ -348,7 +348,7 @@ export default function LandingSearchBar({
               {filteredCategories.map((category) => (
                 <ListItemButton key={category.id} onClick={() => selectCategory(category)}>
                   {category.image && (
-                    <img src={category.image} width={20} height={20} className="w-10 h-10 object-cover rounded-full mx-2" />
+                    <img src={category.image} width={15} height={15} className="w-8 h-8 object-cover rounded-full mx-2" />
                   )}
                   {/* <ListItemText primary={category.name} secondary={category.slug} /> */}
                   <ListItemText primary={locale === "ar" ? category.nameAr : category.name}  />

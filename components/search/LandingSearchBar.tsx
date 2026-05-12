@@ -243,16 +243,22 @@ export default function LandingSearchBar({
             startIcon={<Search size={18} className="text-gray-400" />}
             endIcon={
               selectedCategory ? (
-                <IconButton
-                  size="small"
-                  aria-label={t("close")}
+                <Box
+                  component="span"
                   onClick={(e) => {
                     e.stopPropagation();
                     clearCategory();
                   }}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  }}
+                  aria-label={t("close")}
                 >
                   <X size={16} />
-                </IconButton>
+                </Box>
               ) : undefined
             }
             sx={outlinedSx}

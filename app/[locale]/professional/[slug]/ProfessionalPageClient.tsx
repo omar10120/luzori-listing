@@ -54,38 +54,37 @@ export default function ProfessionalPageClient({ slug }: Props) {
   const locale = useLocale();
   const router = useRouter();
 
-  const [profile, setProfile] = useState<ProfessionalProfile | null>(null);
-  const [loading, setLoading] = useState(true);
+  const ids = useMemo(() => extractProfessionalIdsFromSlug(slug), [slug]);
 
-  
-  
-  const [notFound, setNotFound] = useState(false);
+  const [profile, setProfile] = useState<ProfessionalProfile | null>(null);
+  const [loading, setLoading] = useState<boolean>(() => Boolean(ids));
   const [activeTab, setActiveTab] = useState<TabKey>("services");
   const [showAllServices, setShowAllServices] = useState(false);
   const [bookOpen, setBookOpen] = useState(false);
 
+  // Reset fetch state synchronously when the slug changes (handles route navigation
+  // between professional pages, including transitions to a malformed slug).
+  const [lastIds, setLastIds] = useState<typeof ids>(ids);
+  if (lastIds !== ids) {
+    setLastIds(ids);
+    setProfile(null);
+    setLoading(Boolean(ids));
+  }
+
   useEffect(() => {
+    if (!ids) return;
     let cancelled = false;
-    const ids = extractProfessionalIdsFromSlug(slug);
-    if (!ids) {
-      setLoading(false);
-      setNotFound(true);
-      return;
-    }
     void fetchCentersSearchClient({}).then((centers) => {
       if (cancelled) return;
-      const p = findProfessionalProfile(centers, ids.centerId, ids.workerId);
-      if (!p) {
-        setNotFound(true);
-      } else {
-        setProfile(p);
-      }
+      setProfile(findProfessionalProfile(centers, ids.centerId, ids.workerId));
       setLoading(false);
     });
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [ids]);
+
+  const notFound = !loading && !profile;
 
   const allServices = useMemo(
     () => (profile ? flattenProfessionalServices(profile) : []),

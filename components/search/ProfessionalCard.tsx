@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Star, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { generateCenterSlug } from "@/lib/slugify";
+import { generateProfessionalSlug } from "@/lib/slugify";
 import type { Professional } from "@/lib/searchEntities";
 
 const RATING = 4.9;
@@ -16,7 +16,6 @@ export interface ProfessionalCardProps {
   locale: string;
   active?: boolean;
   onHover?: (key: string | null) => void;
-  onSelect?: (key: string) => void;
 }
 
 function initials(name: string): string {
@@ -50,12 +49,17 @@ export default function ProfessionalCard({
   locale,
   active,
   onHover,
-  onSelect,
 }: ProfessionalCardProps) {
   const t = useTranslations();
-  const slug = useMemo(
-    () => generateCenterSlug(professional.centerName, professional.centerId),
-    [professional.centerName, professional.centerId]
+
+  const profileHref = useMemo(
+    () =>
+      `/${locale}/professional/${generateProfessionalSlug(
+        professional.name,
+        professional.centerId,
+        professional.workerId
+      )}`,
+    [locale, professional.name, professional.centerId, professional.workerId]
   );
 
   const preview = professional.services.slice(0, 2);
@@ -72,87 +76,79 @@ export default function ProfessionalCard({
     : null;
 
   return (
-    <motion.article
-      whileHover={{ y: -2 }}
+    <Link
+      href={profileHref}
       onMouseEnter={() => onHover?.(professional.key)}
       onMouseLeave={() => onHover?.(null)}
-      onClick={() => onSelect?.(professional.key)}
-      className={cn(
-        "flex cursor-pointer flex-col gap-3 rounded-2xl bg-white p-4 ring-1 transition-all",
-        active
-          ? "ring-2 ring-[#225D5C] shadow-lg"
-          : "ring-gray-100 hover:shadow-md hover:ring-gray-200"
-      )}
+      className="block"
     >
-      <div className="flex items-start gap-3">
-        <Link
-          href={`/${locale}/center/${slug}`}
-          className="relative shrink-0"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="relative h-20 w-20 overflow-hidden rounded-full ring-2 ring-white shadow-sm sm:h-24 sm:w-24">
-            <Avatar src={professional.image} name={professional.name} />
+      <motion.article
+        whileHover={{ y: -2 }}
+        className={cn(
+          "flex cursor-pointer flex-col gap-3 rounded-2xl bg-white p-4 ring-1 transition-all",
+          active
+            ? "ring-2 ring-[#225D5C] shadow-lg"
+            : "ring-gray-100 hover:shadow-md hover:ring-gray-200"
+        )}
+      >
+        <div className="flex items-start gap-3">
+          <div className="relative shrink-0">
+            <div className="relative h-20 w-20 overflow-hidden rounded-full ring-2 ring-white shadow-sm sm:h-24 sm:w-24">
+              <Avatar src={professional.image} name={professional.name} />
+            </div>
+            <span className="absolute -bottom-1 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-gray-900 shadow-sm ring-1 ring-gray-100">
+              <Star size={11} className="fill-amber-400 text-amber-400" />
+              {RATING.toFixed(1)}
+            </span>
           </div>
-          <span className="absolute -bottom-1 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-gray-900 shadow-sm ring-1 ring-gray-100">
-            <Star size={11} className="fill-amber-400 text-amber-400" />
-            {RATING.toFixed(1)}
-          </span>
-        </Link>
 
-        <div className="min-w-0 flex-1 pt-1">
-          <Link
-            href={`/${locale}/center/${slug}`}
-            onClick={(e) => e.stopPropagation()}
-            className="block"
-          >
+          <div className="min-w-0 flex-1 pt-1">
             <h3 className="line-clamp-1 text-base font-bold text-gray-900">
               {professional.name}
             </h3>
-          </Link>
-          <p className="line-clamp-1 text-sm text-gray-500">{role}</p>
-          {locationLine && (
-            <div className="mt-1 flex items-center gap-1 text-xs text-gray-500">
-              <MapPin size={12} className="shrink-0" />
-              <span className="truncate">{locationLine}</span>
-            </div>
-          )}
+            <p className="line-clamp-1 text-sm text-gray-500">{role}</p>
+            {locationLine && (
+              <div className="mt-1 flex items-center gap-1 text-xs text-gray-500">
+                <MapPin size={12} className="shrink-0" />
+                <span className="truncate">{locationLine}</span>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      {preview.length > 0 && (
-        <ul className="divide-y divide-gray-100 overflow-hidden rounded-xl bg-gray-50/70">
-          {preview.map((s) => (
-            <li
-              key={s.id}
-              className="flex items-center justify-between gap-3 px-3 py-2"
-            >
-              <div className="min-w-0 flex-1">
-                <div className="truncate text-sm font-medium text-gray-900">
-                  {s.name}
+        {preview.length > 0 && (
+          <ul className="divide-y divide-gray-100 overflow-hidden rounded-xl bg-gray-50/70">
+            {preview.map((s) => (
+              <li
+                key={s.id}
+                className="flex items-center justify-between gap-3 px-3 py-2"
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="truncate text-sm font-medium text-gray-900">
+                    {s.name}
+                  </div>
+                  {s.maxTime && (
+                    <div className="text-[11px] text-gray-500">{s.maxTime}</div>
+                  )}
                 </div>
-                {s.maxTime && (
-                  <div className="text-[11px] text-gray-500">{s.maxTime}</div>
-                )}
-              </div>
-              <div className="shrink-0 text-sm font-semibold text-gray-900">
-                {typeof s.price === "number"
-                  ? s.price.toLocaleString()
-                  : s.price}
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+                <div className="shrink-0 text-sm font-semibold text-gray-900">
+                  {typeof s.price === "number"
+                    ? s.price.toLocaleString()
+                    : s.price}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
 
-      {remaining > 0 && (
-        <Link
-          href={`/${locale}/center/${slug}`}
-          onClick={(e) => e.stopPropagation()}
-          className="text-sm font-medium text-[#225D5C] hover:underline"
-        >
-          {t("view_matching_services", { count: professional.services.length })}
-        </Link>
-      )}
-    </motion.article>
+        {remaining > 0 && (
+          <span className="text-sm font-medium text-[#225D5C] hover:underline">
+            {t("view_matching_services", {
+              count: professional.services.length,
+            })}
+          </span>
+        )}
+      </motion.article>
+    </Link>
   );
 }

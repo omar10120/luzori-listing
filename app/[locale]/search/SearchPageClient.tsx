@@ -219,7 +219,6 @@ export default function SearchPageClient() {
                 locale={locale}
                 activeId={activeId}
                 onHover={setHoveredId}
-                onSelect={handleSelect}
                 setCardRef={setCardRef}
                 emptyLabel={t("search_no_professionals")}
               />
@@ -336,7 +335,6 @@ interface ProfessionalsListProps {
   locale: string;
   activeId: string | null;
   onHover: (key: string | null) => void;
-  onSelect: (key: string) => void;
   setCardRef: (key: string) => (el: HTMLDivElement | null) => void;
   emptyLabel: string;
 }
@@ -346,7 +344,6 @@ function ProfessionalsList({
   locale,
   activeId,
   onHover,
-  onSelect,
   setCardRef,
   emptyLabel,
 }: ProfessionalsListProps) {
@@ -360,7 +357,6 @@ function ProfessionalsList({
             locale={locale}
             active={activeId === p.key}
             onHover={onHover}
-            onSelect={onSelect}
           />
         </div>
       ))}

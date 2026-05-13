@@ -42,6 +42,8 @@
     "search_filter_categories": "Filter categories…",
     "search_treatments": "Treatments",
     "search_no_categories": "No categories match",
+    "search_panel_placeholder": "Search treatments, venues or professionals…",
+    "search_panel_hint": "Search across treatments, venues and professionals.",
     "search_today": "Today",
     "search_tomorrow": "Tomorrow",
     "search_select_time": "Select time",

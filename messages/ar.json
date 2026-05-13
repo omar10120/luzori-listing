@@ -42,6 +42,8 @@
     "search_filter_categories": "تصفية الفئات…",
     "search_treatments": "العلاجات",
     "search_no_categories": "لا توجد فئات مطابقة",
+    "search_panel_placeholder": "ابحث عن علاج أو مركز أو مختص…",
+    "search_panel_hint": "البحث في العلاجات والمراكز والمختصين.",
     "search_today": "اليوم",
     "search_tomorrow": "غدًا",
     "search_select_time": "اختر الوقت",

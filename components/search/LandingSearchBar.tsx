@@ -19,14 +19,15 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 
 import Box from "@mui/material/Box";
-import { Search, MapPin, Clock, X, ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
+import { Search, MapPin, Clock, X, ChevronLeft, ChevronRight, Building2, User as UserIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import UiButton from "@/components/ui/Button";
 
-import type { GlobalCategory } from "@/lib/apiEndpoints";
-import { fetchGlobalCategoriesClient } from "@/lib/centersPublicApi";
+import type { CenterDetailData, GlobalCategory } from "@/lib/apiEndpoints";
+import { fetchCentersSearchClient, fetchGlobalCategoriesClient } from "@/lib/centersPublicApi";
+import { buildProfessionals, type Professional } from "@/lib/searchEntities";
+import { generateCenterSlug, generateProfessionalSlug } from "@/lib/slugify";
 
 export type LandingSearchBarVariant = "hero" | "header";
 
@@ -63,6 +64,8 @@ function parseYmd(value: string): Date | null {
 
 const WEEK_DAYS = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 
+type EntityFilter = "all" | "treatments" | "venues" | "professionals";
+
 export default function LandingSearchBar({
   variant = "hero",
   className,
@@ -78,6 +81,10 @@ export default function LandingSearchBar({
 
   const [categories, setCategories] = useState<GlobalCategory[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [centers, setCenters] = useState<CenterDetailData[]>([]);
+  const [centersLoading, setCentersLoading] = useState(false);
+  const [centersLoaded, setCentersLoaded] = useState(false);
+  const [entityFilter, setEntityFilter] = useState<EntityFilter>("all");
   const [treatmentOpen, setTreatmentOpen] = useState(false);
   const [timeOpen, setTimeOpen] = useState(false);
   const [treatmentFilter, setTreatmentFilter] = useState("");
@@ -101,16 +108,33 @@ export default function LandingSearchBar({
     setCategoriesLoading(true);
     try {
       const rows = await fetchGlobalCategoriesClient();
-      
       setCategories(rows);
     } finally {
       setCategoriesLoading(false);
     }
   }, []);
 
+  const loadCenters = useCallback(async () => {
+    setCentersLoading(true);
+    try {
+      const rows = await fetchCentersSearchClient({});
+      setCenters(rows);
+      setCentersLoaded(true);
+    } finally {
+      setCentersLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     void loadCategories();
   }, [loadCategories]);
+
+  // Lazy-load centers (used for Venues + Professionals search) only when dialog opens.
+  useEffect(() => {
+    if (treatmentOpen && !centersLoaded && !centersLoading) {
+      void loadCenters();
+    }
+  }, [treatmentOpen, centersLoaded, centersLoading, loadCenters]);
 
   const initialResolvedCategory = useMemo(() => {
     if (!categories.length) return null;
@@ -135,6 +159,57 @@ export default function LandingSearchBar({
       (c) => c.name.toLowerCase().includes(q) || c.slug.toLowerCase().includes(q)
     );
   }, [categories, treatmentFilter]);
+
+  const allProfessionals = useMemo<Professional[]>(
+    () => buildProfessionals(centers),
+    [centers]
+  );
+
+  const filteredVenues = useMemo(() => {
+    const q = treatmentFilter.trim().toLowerCase();
+    if (!q) return centers;
+    return centers.filter((c) => {
+      if (c.name.toLowerCase().includes(q)) return true;
+      if (c.domain?.toLowerCase().includes(q)) return true;
+      return (c.branches || []).some(
+        (b) =>
+          b.name?.toLowerCase().includes(q) ||
+          b.city?.toLowerCase().includes(q) ||
+          b.address?.toLowerCase().includes(q)
+      );
+    });
+  }, [centers, treatmentFilter]);
+
+  const filteredProfessionals = useMemo(() => {
+    const q = treatmentFilter.trim().toLowerCase();
+    if (!q) return allProfessionals;
+    return allProfessionals.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.centerName.toLowerCase().includes(q) ||
+        (p.centerCategoryName?.toLowerCase().includes(q) ?? false)
+    );
+  }, [allProfessionals, treatmentFilter]);
+
+  const resultCounts = useMemo(
+    () => ({
+      treatments: filteredCategories.length,
+      venues: filteredVenues.length,
+      professionals: filteredProfessionals.length,
+    }),
+    [filteredCategories.length, filteredVenues.length, filteredProfessionals.length]
+  );
+
+  const isSearchLoading = categoriesLoading || centersLoading;
+  const showTreatments = entityFilter === "all" || entityFilter === "treatments";
+  const showVenues = entityFilter === "all" || entityFilter === "venues";
+  const showProfessionals =
+    entityFilter === "all" || entityFilter === "professionals";
+
+  const hasAnyResults =
+    (showTreatments && resultCounts.treatments > 0) ||
+    (showVenues && resultCounts.venues > 0) ||
+    (showProfessionals && resultCounts.professionals > 0);
 
   const timeSummary = useMemo(() => {
     if (!selectedDate && timePreset === "any") return t("any_time");
@@ -189,6 +264,32 @@ export default function LandingSearchBar({
     setTreatmentFilter("");
     setTreatmentOpen(false);
   }, []);
+
+  const selectVenue = useCallback(
+    (center: CenterDetailData) => {
+      setTreatmentOpen(false);
+      setTreatmentFilter("");
+      router.push(
+        `/${locale}/center/${generateCenterSlug(center.name, center.id)}`
+      );
+    },
+    [locale, router]
+  );
+
+  const selectProfessional = useCallback(
+    (pro: Professional) => {
+      setTreatmentOpen(false);
+      setTreatmentFilter("");
+      router.push(
+        `/${locale}/professional/${generateProfessionalSlug(
+          pro.name,
+          pro.centerId,
+          pro.workerId
+        )}`
+      );
+    },
+    [locale, router]
+  );
 
   const clearCategory = useCallback(() => {
     setManualSelectedCategory(null);
@@ -324,39 +425,177 @@ export default function LandingSearchBar({
         <DialogTitle id="landing-treatment-dialog-title">{t("search_treatments")}</DialogTitle>
         <DialogContent dividers>
           <Typography id="landing-treatment-dialog-desc" variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            {t("treatment_placeholder")}
+            {t("search_panel_hint")}
           </Typography>
           <TextField
             autoFocus
             fullWidth
             size="small"
-            placeholder={t("search_filter_categories")}
+            placeholder={t("search_panel_placeholder")}
             value={treatmentFilter}
             onChange={(e) => setTreatmentFilter(e.target.value)}
             sx={{ mb: 2 }}
           />
-          {categoriesLoading ? (
+
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
+            <FilterPill
+              active={entityFilter === "all"}
+              onClick={() => setEntityFilter("all")}
+            >
+              {t("all")}
+            </FilterPill>
+            <FilterPill
+              active={entityFilter === "treatments"}
+              count={resultCounts.treatments}
+              onClick={() => setEntityFilter("treatments")}
+            >
+              {t("search_treatments")}
+            </FilterPill>
+            <FilterPill
+              active={entityFilter === "venues"}
+              count={resultCounts.venues}
+              onClick={() => setEntityFilter("venues")}
+            >
+              {t("tab_venues")}
+            </FilterPill>
+            <FilterPill
+              active={entityFilter === "professionals"}
+              count={resultCounts.professionals}
+              onClick={() => setEntityFilter("professionals")}
+            >
+              {t("tab_professionals")}
+            </FilterPill>
+          </Box>
+
+          {isSearchLoading ? (
             <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
               <CircularProgress color="primary" />
             </Box>
-          ) : filteredCategories.length === 0 ? (
+          ) : !hasAnyResults ? (
             <Typography color="text.secondary" align="center" sx={{ py: 3 }}>
-              {t("search_no_categories")}
+              {t("search_no_results")}
             </Typography>
           ) : (
-            <List dense sx={{ maxHeight: 360, overflow: "auto" }}>
-              {filteredCategories.map((category) => (
-                <ListItemButton key={category.id} onClick={() => selectCategory(category)}>
-                  {category.image && (
-                    <img src={category.image} width={15} height={15} className="w-8 h-8 object-cover rounded-full mx-2" />
-                  )}
-                  {/* <ListItemText primary={category.name} secondary={category.slug} /> */}
-                  <ListItemText primary={locale === "ar" ? category.nameAr : category.name}  />
-                  
-                  
-                </ListItemButton>
-              ))}
-            </List>
+            <Box sx={{ maxHeight: 420, overflow: "auto" }}>
+              {showTreatments && filteredCategories.length > 0 && (
+                <SearchSection title={t("search_treatments")}>
+                  {filteredCategories.map((category) => (
+                    <ListItemButton
+                      key={`cat-${category.id}`}
+                      onClick={() => selectCategory(category)}
+                    >
+                      {category.image ? (
+                        <img
+                          src={category.image}
+                          alt=""
+                          className="w-8 h-8 object-cover rounded-full mx-2"
+                        />
+                      ) : (
+                        <Box
+                          sx={{
+                            width: 32,
+                            height: 32,
+                            mx: 1,
+                            borderRadius: "50%",
+                            bgcolor: "primary.50",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Search size={14} className="text-[#225D5C]" />
+                        </Box>
+                      )}
+                      <ListItemText
+                        primary={locale === "ar" ? category.nameAr || category.name : category.name}
+                      />
+                    </ListItemButton>
+                  ))}
+                </SearchSection>
+              )}
+
+              {showVenues && filteredVenues.length > 0 && (
+                <SearchSection title={t("tab_venues")}>
+                  {filteredVenues.map((center) => {
+                    const branch = center.branches?.[0];
+                    const subtitle = branch
+                      ? [branch.city, branch.address].filter(Boolean).join(" · ")
+                      : center.domain;
+                    return (
+                      <ListItemButton
+                        key={`v-${center.id}`}
+                        onClick={() => selectVenue(center)}
+                      >
+                        {center.logo ? (
+                          <img
+                            src={center.logo}
+                            alt=""
+                            className="w-8 h-8 object-cover rounded-md mx-2"
+                          />
+                        ) : (
+                          <Box
+                            sx={{
+                              width: 32,
+                              height: 32,
+                              mx: 1,
+                              borderRadius: 1,
+                              bgcolor: "grey.100",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <Building2 size={14} className="text-gray-600" />
+                          </Box>
+                        )}
+                        <ListItemText primary={center.name} secondary={subtitle} />
+                      </ListItemButton>
+                    );
+                  })}
+                </SearchSection>
+              )}
+
+              {showProfessionals && filteredProfessionals.length > 0 && (
+                <SearchSection title={t("tab_professionals")}>
+                  {filteredProfessionals.map((pro) => {
+                    const subtitle =
+                      pro.centerCategoryName ||
+                      pro.centerGlobalCategoryName ||
+                      pro.centerName;
+                    return (
+                      <ListItemButton
+                        key={`p-${pro.key}`}
+                        onClick={() => selectProfessional(pro)}
+                      >
+                        {pro.image ? (
+                          <img
+                            src={pro.image}
+                            alt=""
+                            className="w-8 h-8 object-cover rounded-full mx-2"
+                          />
+                        ) : (
+                          <Box
+                            sx={{
+                              width: 32,
+                              height: 32,
+                              mx: 1,
+                              borderRadius: "50%",
+                              bgcolor: "grey.200",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <UserIcon size={14} className="text-gray-700" />
+                          </Box>
+                        )}
+                        <ListItemText primary={pro.name} secondary={subtitle} />
+                      </ListItemButton>
+                    );
+                  })}
+                </SearchSection>
+              )}
+            </Box>
           )}
         </DialogContent>
         <DialogActions>
@@ -483,5 +722,73 @@ export default function LandingSearchBar({
         </DialogActions>
       </Dialog>
     </div>
+  );
+}
+
+function FilterPill({
+  active,
+  count,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  count?: number;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium transition-colors",
+        active
+          ? "bg-gray-900 text-white"
+          : "bg-white text-gray-800 ring-1 ring-gray-200 hover:bg-gray-50"
+      )}
+    >
+      <span>{children}</span>
+      {count != null && count > 0 && (
+        <span
+          className={cn(
+            "inline-flex h-4 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-semibold",
+            active ? "bg-white/15 text-white" : "bg-gray-100 text-gray-700"
+          )}
+        >
+          {count > 99 ? "99+" : count}
+        </span>
+      )}
+    </button>
+  );
+}
+
+function SearchSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Box sx={{ mb: 1.5 }}>
+      <Typography
+        variant="caption"
+        sx={{
+          px: 2,
+          py: 0.5,
+          color: "text.secondary",
+          fontWeight: 600,
+          letterSpacing: 0.4,
+          textTransform: "uppercase",
+          display: "block",
+        }}
+      >
+        {title}
+      </Typography>
+      <List dense disablePadding>
+        {children}
+      </List>
+    </Box>
   );
 }

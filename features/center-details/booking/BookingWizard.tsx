@@ -103,7 +103,25 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
             centerId: center.id,
             path: window.location.pathname,
             currentStep: step,
-            selectedServices,
+            selectedServices: selectedServices.map((svc) => ({
+                id: svc.id,
+                name: svc.name,
+                price: svc.price,
+                duration: svc.duration,
+                categoryName: svc.categoryName,
+        
+                selectedWorkerId: svc.selectedWorkerId,
+                date: svc.date,
+                fromTime: svc.fromTime,
+                toTime: svc.toTime,
+                userPackageIds: svc.userPackageIds,
+        
+                // only keep plain data
+                workers: svc.workers?.map((w) => ({
+                    id: w.id,
+                    name: w.name,
+                })),
+            })),
             professionalType,
             selectedBranchId,
             paymentType,

@@ -87,7 +87,7 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
             {selectedServices.length > 0 && (
                 <div className="flex flex-col gap-4 border-t border-gray-100 pt-4">
                     {selectedServices.map(svc => (
-                        <div key={svc.id} className="flex justify-between items-start gap-4">
+                        <div key={svc.id || 0} className="flex justify-between items-start gap-4">
                             <div className="flex-1">
                                 <p className="text-sm font-bold text-gray-900 leading-snug">{svc.name}</p>
                                 <p className="text-xs text-gray-500 mt-1">

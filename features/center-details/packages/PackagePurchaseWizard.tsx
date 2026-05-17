@@ -4,7 +4,6 @@ import React, { useMemo, useState, useEffect } from "react";
 import type { CenterDetailData, CenterPackage } from "@/lib/apiEndpoints";
 import {
   ArrowLeft,
-  ChevronRight,
   CheckCircle2,
   Wallet,
   CreditCard,
@@ -13,11 +12,15 @@ import {
   User,
   Award,
   Loader2,
-  Sparkles
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Button from "@/components/ui/Button";
-import { fetchUserProfile, storePackages } from "@/lib/api";
+import { fetchUserProfile } from "@/lib/api";
+import {
+  isPackagePaymentType,
+  purchasePackagesWithPayment,
+  type PackagePaymentType,
+} from "@/lib/packagePayment";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
 
@@ -41,6 +44,7 @@ export default function PackagePurchaseWizard({
   onSuccess,
 }: PackagePurchaseWizardProps) {
   const t = useTranslations();
+  const locale = useLocale();
   const [step, setStep] = useState<PackageStep>("services");
   const [paymentType, setPaymentType] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -97,7 +101,7 @@ export default function PackagePurchaseWizard({
       setStep(steps[steps.indexOf(step) + 1]);
       return;
     }
-    if (!paymentType || selectedPackages.length === 0) return;
+    if (!isPackagePaymentType(paymentType) || selectedPackages.length === 0) return;
 
     const token = localStorage.getItem("authToken");
     if (!token) {
@@ -108,21 +112,46 @@ export default function PackagePurchaseWizard({
     }
 
     setSubmitting(true);
-    const result = await storePackages(token, center.id, selectedPackages.map((p) => p.id), paymentType);
-    setSubmitting(false);
+    try {
+      const outcome = await purchasePackagesWithPayment({
+        token,
+        centerId: center.id,
+        centerName: center.name,
+        packageIds: selectedPackages.map((p) => p.id),
+        packages: selectedPackages,
+        paymentType,
+        locale,
+      });
 
-    if (result.success) {
-      toast.success(result.message || t("package_purchase_success"));
-      onSuccess(result.message || t("package_purchase_success"));
-      return;
+      if (!outcome.ok) {
+        const msg =
+          outcome.code === "insufficient_balance"
+            ? t("insufficient_balance")
+            : outcome.code === "profile_incomplete"
+              ? t("payment_profile_incomplete")
+              : outcome.message.startsWith("package_") ||
+                  outcome.message.startsWith("payment_")
+                ? t(outcome.message)
+                : outcome.message;
+        toast.error(msg);
+        return;
+      }
+
+      if (outcome.redirected) return;
+
+      toast.success(outcome.message || t("package_purchase_success"));
+      onSuccess(outcome.message || t("package_purchase_success"));
+    } catch {
+      toast.error(t("package_purchase_failed"));
+    } finally {
+      setSubmitting(false);
     }
-    toast.error(result.message || t("package_purchase_failed"));
   };
 
   const isDisabled =
     submitting ||
     selectedPackages.length === 0 ||
-    (step === "confirm" && !["wallet", "cash", "service_cash"].includes(paymentType)) ||
+    (step === "confirm" && !isPackagePaymentType(paymentType)) ||
     (step === "confirm" && paymentType === "wallet" && isWalletDisabled);
 
   // Progress percent for stepper bar
@@ -280,6 +309,7 @@ export default function PackagePurchaseWizard({
 
             {/* Payment methods */}
             <div>
+              
               <h3 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-gray-500">
                 <CreditCard size={14} />
                 {t("payment_method")}
@@ -287,7 +317,7 @@ export default function PackagePurchaseWizard({
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {[
                   {
-                    id: "wallet",
+                    id: "wallet" as PackagePaymentType,
                     label: t("wallet"),
                     icon: Wallet,
                     description: loadingWallet ? t("loading_balance") : `${t("current_balance")}: ${formatPrice(userWallet ?? 0)}`,
@@ -295,10 +325,10 @@ export default function PackagePurchaseWizard({
                     highlight: !loadingWallet && isWalletSufficient,
                   },
                   {
-                    id: "service_cash",
+                    id: "service_cash" as PackagePaymentType,
                     label: t("cash"),
                     icon: CreditCard,
-                    description: t("package_pay_at_center"),
+                    description: t("booking_secure_online_payment"),
                     disabled: false,
                     highlight: false,
                   },

@@ -122,3 +122,14 @@ export function buildBookingInvoiceItems(
     UnitPrice: Number(s.price) || 0,
   }));
 }
+
+export function buildPackageInvoiceItems(
+  centerName: string,
+  packages: Array<{ name: string; price: number | string }>
+): MyFatoorahInvoiceItem[] {
+  return packages.map((pkg) => ({
+    ItemName: `${pkg.name} — ${centerName}`,
+    Quantity: 1,
+    UnitPrice: Number(pkg.price) || 0,
+  }));
+}

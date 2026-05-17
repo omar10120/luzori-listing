@@ -27,8 +27,27 @@ export default function Step4Confirm({
     const isWalletDisabled = userWallet < totalPrice;
 
     const paymentOptions = [
-        { id: "wallet", label: t('wallet') || "Wallet", icon: Wallet, description: `${t('current_balance') || 'Balance'}: ${t("activity_currency_aed")} ${userWallet}`, disabled: isWalletDisabled },
-        { id: "service_cash", label: t('cash') || "Service Cash", icon: CreditCard, description: "Pay at the center" },
+        // {
+        //     id: "online",
+        //     label: t("booking_online_payment") || "Pay online",
+        //     icon: CreditCard,
+        //     description: t("booking_secure_online_payment"),
+        //     disabled: false,
+        // },
+        {
+            id: "wallet",
+            label: t("wallet") || "Wallet",
+            icon: Wallet,
+            description: `${t("current_balance") || "Balance"}: ${t("activity_currency_aed")} ${userWallet}`,
+            disabled: isWalletDisabled,
+        },
+        {
+            id: "service_cash",
+            label: t("cash") || "Service Cash",
+            icon: CreditCard,
+            description: "Pay at the center",
+            disabled: false,
+        },
     ];
 
     const allServicesCoveredByPackages = selectedServices.length > 0 && selectedServices.every(svc => svc.userPackageIds && svc.userPackageIds.length > 0);

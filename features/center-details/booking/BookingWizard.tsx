@@ -4,7 +4,11 @@ import React, { useState, useEffect } from "react";
 import Container from "@/components/ui/Container";
 import type { CenterDetailData, Service, UserPurchasedPackage } from "@/lib/apiEndpoints";
 import { ChevronRight, ArrowLeft, X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import {
+    buildBookingInvoiceItems,
+    initiateMyFatoorahPayment,
+} from "@/lib/myfatoorah";
 
 import Image from "next/image";
 import Step1Services from "./Step1Services";
@@ -45,6 +49,7 @@ export interface SelectedService extends Service {
 
 export default function BookingWizard({ center, onCancel, initialSelectedServices = [], purchasedPackages = [] }: BookingWizardProps) {
     const t = useTranslations();
+    const locale = useLocale();
 
     // -- Wizard State --
     // Always start on step 1 — pre-selected service will appear checked
@@ -188,13 +193,69 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
 
             const res = await storeBooking(token, payload);
 
-            if (res.success) {
-                // Extract the sale ID as the booking reference number
-                setSuccessData({ id: res.data?.sale?.id ?? res.data?.id ?? "—" });
-                clearResumeState();
-            } else {
+            if (!res.success) {
                 alert(res.message || t("booking_failed_create"));
+                return;
             }
+
+            const bookingRef = String(res.data?.sale?.id ?? res.data?.id ?? "");
+
+            if (paymentType === "service_cash") {
+                const profile = await fetchUserProfile(token);
+                const customerName =
+                    profile?.name ||
+                    profile?.full_name ||
+                    `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim() ||
+                    "Customer";
+                const customerEmail = profile?.email?.trim();
+                const customerMobile = String(profile?.phone ?? "").replace(/\D/g, "");
+                const countryCode = String(profile?.country_code ?? "+971").replace(
+                    /\D/g,
+                    ""
+                );
+
+                if (!customerEmail || customerMobile.length < 8) {
+                    alert(t("payment_profile_incomplete"));
+                    return;
+                }
+
+                const totalPrice = selectedServices.reduce(
+                    (sum, s) => sum + Number(s.price),
+                    0
+                );
+                const origin =
+                    typeof window !== "undefined" ? window.location.origin : "";
+                const returnPath =
+                    typeof window !== "undefined" ? window.location.pathname : "";
+                const callbackQuery = bookingRef
+                    ? `?payment=success&booking=${encodeURIComponent(bookingRef)}`
+                    : "?payment=success";
+
+                const payment = await initiateMyFatoorahPayment({
+                    customerName,
+                    customerEmail,
+                    mobileCountryCode: countryCode || "971",
+                    customerMobile,
+                    invoiceValue: totalPrice,
+                    customerReference: bookingRef || undefined,
+                    invoiceItems: buildBookingInvoiceItems(center.name, selectedServices),
+                    callBackUrl: `${origin}${returnPath}${callbackQuery}`,
+                    errorUrl: `${origin}${returnPath}?payment=error`,
+                    language: locale === "ar" ? "ar" : "en",
+                });
+
+                if (payment.IsSuccess && payment.Data?.InvoiceURL) {
+                    clearResumeState();
+                    window.location.href = payment.Data.InvoiceURL;
+                    return;
+                }
+
+                alert(payment.Message || t("payment_failed"));
+                return;
+            }
+
+            setSuccessData({ id: bookingRef || "—" });
+            clearResumeState();
         } catch (err) {
             console.error(err);
             alert(t("booking_error_during_booking"));

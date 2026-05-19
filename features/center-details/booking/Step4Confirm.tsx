@@ -4,7 +4,7 @@ import { SelectedService } from "./BookingWizard";
 import { CheckCircle2, User, Clock, MapPin, Wallet, CreditCard } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-
+import Image from "next/image";
 interface Step4ConfirmProps {
     center: CenterDetailData;
     selectedServices: SelectedService[];
@@ -27,17 +27,12 @@ export default function Step4Confirm({
     const isWalletDisabled = userWallet < totalPrice;
 
     const paymentOptions = [
-        // {
-        //     id: "online",
-        //     label: t("booking_online_payment") || "Pay online",
-        //     icon: CreditCard,
-        //     description: t("booking_secure_online_payment"),
-        //     disabled: false,
-        // },
+        
         {
             id: "wallet",
             label: t("wallet") || "Wallet",
             icon: Wallet,
+            src: "/visa.svg",
             description: `${t("current_balance") || "Balance"}: ${t("activity_currency_aed")} ${userWallet}`,
             disabled: isWalletDisabled,
         },
@@ -45,6 +40,7 @@ export default function Step4Confirm({
             id: "service_cash",
             label: t("cash") || "Service Cash",
             icon: CreditCard,
+            src: "/visa.svg",
             description: "Pay at the center",
             disabled: false,
         },
@@ -142,7 +138,8 @@ export default function Step4Confirm({
                                             opt.disabled && "opacity-50 cursor-not-allowed grayscale"
                                         )}
                                     >
-                                        <Icon className={cn("w-6 h-6", isSelected ? "text-[#225D5C]" : "text-gray-400")} />
+                                        {/* <Icon className={cn("w-6 h-6", isSelected ? "text-[#225D5C]" : "text-gray-400")} /> */}
+                                        <Image src={opt.src} alt={opt.label} width={12} height={12} />
                                         <div>
                                             <p className="font-bold text-gray-900 text-sm">{opt.label}</p>
                                             <p className="text-[10px] text-gray-500 mt-0.5 leading-tight">{opt.description}</p>

@@ -368,6 +368,7 @@
     "login_subtitle": "Sign in to access your account",
     "login_subtitle_mobile": "Sign in to continue",
     "forgot_password": "Forgot password?",
-    "connection_error": "Connection error. Please try again."
+    "connection_error": "Connection error. Please try again.",
+    "loading_balance" : "loading balance"
    
 }

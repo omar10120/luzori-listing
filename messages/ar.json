@@ -368,7 +368,8 @@
     "login_subtitle_mobile": "تسجيل الدخول للمتابعة",
     "forgot_password": "هل نسيت كلمة المرور؟",
     "connection_error": "خطأ في الاتصال. يرجى المحاولة مرة أخرى.",
-    "register_now" : "تسجيل الان"
+    "register_now" : "تسجيل الان",
+    "loading_balance" : "تحميل القيمة"
 
 
 }

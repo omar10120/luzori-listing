@@ -4,13 +4,10 @@ import React, { useState, useEffect } from "react";
 import Container from "@/components/ui/Container";
 import type { CenterDetailData, Service, UserPurchasedPackage } from "@/lib/apiEndpoints";
 import { ChevronRight, ArrowLeft, X } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-import {
-    buildBookingInvoiceItems,
-    initiateMyFatoorahPayment,
-} from "@/lib/myfatoorah";
-
+import { useTranslations } from "next-intl";
 import Image from "next/image";
+import MyFatoorahEmbeddedPayment from "@/components/payment/MyFatoorahEmbeddedPayment";
+import toast from "react-hot-toast";
 import Step1Services from "./Step1Services";
 import Step2Professional from "./Step2Professional";
 import Step3Time from "./Step3Time";
@@ -49,7 +46,6 @@ export interface SelectedService extends Service {
 
 export default function BookingWizard({ center, onCancel, initialSelectedServices = [], purchasedPackages = [] }: BookingWizardProps) {
     const t = useTranslations();
-    const locale = useLocale();
 
     // -- Wizard State --
     // Always start on step 1 — pre-selected service will appear checked
@@ -91,6 +87,10 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successData, setSuccessData] = useState<{ id: string | number } | null>(null);
     const [didRestoreFromSession, setDidRestoreFromSession] = useState(false);
+    const [embeddedPayment, setEmbeddedPayment] = useState<{
+        amount: number;
+        reference: string;
+    } | null>(null);
 
     const clearResumeState = () => {
         if (typeof window === "undefined") return;
@@ -219,56 +219,14 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
             const bookingRef = String(res.data?.sale?.id ?? res.data?.id ?? "");
 
             if (paymentType === "service_cash") {
-                const profile = await fetchUserProfile(token);
-                const customerName =
-                    profile?.name ||
-                    profile?.full_name ||
-                    `${profile?.first_name ?? ""} ${profile?.last_name ?? ""}`.trim() ||
-                    "Customer";
-                const customerEmail = profile?.email?.trim();
-                const customerMobile = String(profile?.phone ?? "").replace(/\D/g, "");
-                const countryCode = String(profile?.country_code ?? "+971").replace(
-                    /\D/g,
-                    ""
-                );
-
-                if (!customerEmail || customerMobile.length < 8) {
-                    alert(t("payment_profile_incomplete"));
-                    return;
-                }
-
                 const totalPrice = selectedServices.reduce(
                     (sum, s) => sum + Number(s.price),
                     0
                 );
-                const origin =
-                    typeof window !== "undefined" ? window.location.origin : "";
-                const returnPath =
-                    typeof window !== "undefined" ? window.location.pathname : "";
-                const callbackQuery = bookingRef
-                    ? `?payment=success&booking=${encodeURIComponent(bookingRef)}`
-                    : "?payment=success";
-
-                const payment = await initiateMyFatoorahPayment({
-                    customerName,
-                    customerEmail,
-                    mobileCountryCode: countryCode || "971",
-                    customerMobile,
-                    invoiceValue: totalPrice,
-                    customerReference: bookingRef || undefined,
-                    invoiceItems: buildBookingInvoiceItems(center.name, selectedServices),
-                    callBackUrl: `${origin}${returnPath}${callbackQuery}`,
-                    errorUrl: `${origin}${returnPath}?payment=error`,
-                    language: locale === "ar" ? "ar" : "en",
+                setEmbeddedPayment({
+                    amount: totalPrice,
+                    reference: bookingRef || `booking-${center.id}`,
                 });
-
-                if (payment.IsSuccess && payment.Data?.InvoiceURL) {
-                    clearResumeState();
-                    window.location.href = payment.Data.InvoiceURL;
-                    return;
-                }
-
-                alert(payment.Message || t("payment_failed"));
                 return;
             }
 
@@ -435,6 +393,29 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
                     </div>
                 </div>
             </Container>
+
+            {embeddedPayment && (
+                <MyFatoorahEmbeddedPayment
+                    modal
+                    open
+                    active
+                    amount={embeddedPayment.amount}
+                    currency="AED"
+                    customerReference={embeddedPayment.reference}
+                    centerId={center.id}
+                    title={t("booking_online_payment")}
+                    subtitle={t("booking_secure_online_payment")}
+                    onClose={() => setEmbeddedPayment(null)}
+                    onPaymentComplete={() => {
+                        const ref = embeddedPayment.reference;
+                        setEmbeddedPayment(null);
+                        clearResumeState();
+                        setSuccessData({ id: ref });
+                        toast.success(t("payment_success"));
+                    }}
+                    onPaymentFailed={(msg) => toast.error(msg)}
+                />
+            )}
 
             {/* Success Modal Overlay */}
             {successData && (

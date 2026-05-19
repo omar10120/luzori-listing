@@ -445,6 +445,68 @@ export const fetchUserPackages = async (token: string): Promise<UserPurchasedPac
     }
 };
 
+/**
+ * Creates a fresh MyFatoorah embedded session (single-use SessionId).
+ * Laravel proxies POST /center_api/payment/create-session.
+ */
+export const createPaymentSession = async (
+    token: string,
+    input: import("./myfatoorah").CreatePaymentSessionInput
+): Promise<{
+    success: boolean;
+    sessionId?: string;
+    sessionData?: import("./myfatoorah").MyFatoorahSessionData;
+    message?: string;
+}> => {
+    try {
+           
+        const response = await fetch(API_ENDPOINTS.CREATE_PAYMENT_SESSION, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+            },
+            body: JSON.stringify({
+                amount: input.amount,
+                currency: input.currency ?? "AED",
+                customer_reference: input.customer_reference,
+                center_id: input.center_id,
+                ...input.metadata,
+            }),
+        });
+
+        const json = (await response.json()) as import("./myfatoorah").CreatePaymentSessionApiResponse;
+
+        if (!response.ok) {
+            return {
+                success: false,
+                message: json.message || "Failed to create payment session",
+            };
+        }
+
+        const inner = json.data;
+        if (!inner?.IsSuccess || !inner.Data?.SessionId) {
+            return {
+                success: false,
+                message: inner?.Message || json.message || "Failed to create payment session",
+            };
+        }
+
+        return {
+            success: true,
+            sessionId: inner.Data.SessionId,
+            sessionData: inner.Data,
+        };
+    } catch (error) {
+        console.error("Create Payment Session Error:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred while starting payment",
+        };
+    }
+};
+
 export const fetchInfo = async (): Promise<import("./apiEndpoints").InfoData | null> => {
     try {
         const response = await fetch(API_ENDPOINTS.INFO, {

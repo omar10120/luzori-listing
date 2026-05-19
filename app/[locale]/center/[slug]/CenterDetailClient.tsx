@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Container from "@/components/ui/Container";
 import type { CenterDetailData, CenterPackage, Service, UserPurchasedPackage } from "@/lib/apiEndpoints";
 import type { SelectedService } from '@/features/center-details/booking/BookingWizard';
@@ -109,6 +109,25 @@ export default function CenterDetailClient({ center }: Props) {
             date: t("center_review_3_date"),
         },
     ];
+
+    useEffect(() => {
+        if (typeof window === "undefined") return;
+        const params = new URLSearchParams(window.location.search);
+        const paymentStatus = params.get("payment");
+        if (!paymentStatus) return;
+
+        if (paymentStatus === "success") {
+            toast.success(t("payment_success"));
+        } else if (paymentStatus === "error") {
+            toast.error(t("payment_failed"));
+        }
+
+        const url = new URL(window.location.href);
+        url.searchParams.delete("payment");
+        url.searchParams.delete("booking");
+        url.searchParams.delete("package");
+        window.history.replaceState({}, "", url.pathname + url.search);
+    }, [t]);
 
     React.useEffect(() => {
         if (typeof window === "undefined") return;

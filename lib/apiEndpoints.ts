@@ -17,6 +17,8 @@ export const API_ENDPOINTS = {
     USER_PACKAGES: (centerId: string | number) => `${API_BASE_URL}/app_api/packages/${centerId}`,
     BOOKING_LIST: `${API_BASE_URL}/app_api/booking/list`,
     INFO: `${API_BASE_URL}/app_api/info`,
+    /** MyFatoorah Embedded V3 — Laravel creates a fresh single-use session */
+    CREATE_PAYMENT_SESSION: `${API_BASE_URL}/app_api/payment/create-session`,
 };
 
 /** Single line item on a user booking (from booking list API). */

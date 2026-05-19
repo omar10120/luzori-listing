@@ -13,7 +13,7 @@ import {
   Award,
   Loader2,
 } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import Button from "@/components/ui/Button";
 import { fetchUserProfile } from "@/lib/api";
 import {
@@ -23,6 +23,7 @@ import {
 } from "@/lib/packagePayment";
 import { cn } from "@/lib/utils";
 import toast from "react-hot-toast";
+import MyFatoorahEmbeddedPayment from "@/components/payment/MyFatoorahEmbeddedPayment";
 
 type PackageStep = "services" | "professional" | "time" | "confirm";
 
@@ -44,12 +45,15 @@ export default function PackagePurchaseWizard({
   onSuccess,
 }: PackagePurchaseWizardProps) {
   const t = useTranslations();
-  const locale = useLocale();
   const [step, setStep] = useState<PackageStep>("services");
   const [paymentType, setPaymentType] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [userWallet, setUserWallet] = useState<number | null>(null);
   const [loadingWallet, setLoadingWallet] = useState(true);
+  const [embeddedPayment, setEmbeddedPayment] = useState<{
+    amount: number;
+    reference: string;
+  } | null>(null);
 
   const steps: PackageStep[] = ["services", "professional", "time", "confirm"];
   const totalPrice = useMemo(
@@ -120,7 +124,6 @@ export default function PackagePurchaseWizard({
         packageIds: selectedPackages.map((p) => p.id),
         packages: selectedPackages,
         paymentType,
-        locale,
       });
 
       if (!outcome.ok) {
@@ -137,7 +140,13 @@ export default function PackagePurchaseWizard({
         return;
       }
 
-      if (outcome.redirected) return;
+      if ("needsEmbeddedPayment" in outcome && outcome.needsEmbeddedPayment) {
+        setEmbeddedPayment({
+          amount: outcome.amount,
+          reference: outcome.customerReference,
+        });
+        return;
+      }
 
       toast.success(outcome.message || t("package_purchase_success"));
       onSuccess(outcome.message || t("package_purchase_success"));
@@ -158,6 +167,7 @@ export default function PackagePurchaseWizard({
   const progressPercent = ((steps.indexOf(step) + 1) / steps.length) * 100;
 
   return (
+    <>
     <div className="rounded-2xl border border-gray-100 bg-white shadow-xl shadow-gray-200/30 transition-all">
       {/* Header with progress bar */}
       <div className="border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white p-5">
@@ -409,6 +419,28 @@ export default function PackagePurchaseWizard({
         </div>
       </div>
     </div>
+
+    {embeddedPayment && (
+      <MyFatoorahEmbeddedPayment
+        modal
+        open
+        active
+        amount={embeddedPayment.amount}
+        currency="AED"
+        customerReference={embeddedPayment.reference}
+        centerId={center.id}
+        title={t("package_purchase")}
+        subtitle={t("booking_secure_online_payment")}
+        onClose={() => setEmbeddedPayment(null)}
+        onPaymentComplete={() => {
+          setEmbeddedPayment(null);
+          toast.success(t("payment_success"));
+          onSuccess(t("package_purchase_success"));
+        }}
+        onPaymentFailed={(msg) => toast.error(msg)}
+      />
+    )}
+    </>
   );
 }
 

@@ -8,7 +8,7 @@ import StatsSection from "@/features/landing/sections/StatsSection";
 import BusinessSection from "@/features/landing/sections/BusinessSection";
 import BrowseCitySection from "@/features/landing/sections/BrowseCitySection";
 import SectionWrapper from "@/components/ui/SectionWrapper";
-import Payment from "@/features/landing/sections/Payment";
+
 
 
 
@@ -16,9 +16,7 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-        <Payment />
-      {/* <SectionWrapper> */}
-      {/* </SectionWrapper> */}
+
       <SectionWrapper>
         <RecommendedSection />
       </SectionWrapper>

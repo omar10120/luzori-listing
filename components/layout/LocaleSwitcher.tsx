@@ -14,8 +14,7 @@ export default function LocaleSwitcher() {
 
     function onLocaleChange() {
         const nextLocale = locale === "en" ? "ar" : "en";
-        console.log(locale);
-        console.log(nextLocale);
+
 
         const segments = pathname.split("/");
         segments[1] = nextLocale; // replace locale

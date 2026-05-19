@@ -49,7 +49,10 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
     const getButtonText = () => {
         if (isSubmitting) return t("booking_processing");
         if (currentStep === "time" && !isLoading && !isAuthenticated) return t("login");
-        if (currentStep === "confirm" ) return t("booking_confirm_booking");
+        if (currentStep === "confirm") {
+            if (paymentType === "service_cash") return t("booking_online_payment");
+            return t("booking_confirm_booking");
+        }
         return t("save_and_continue");
     };
 

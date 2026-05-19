@@ -104,6 +104,18 @@
     "profile": "الملف الشخصي",
     "activity": "النشاط",
     "wallet": "المحفظة",
+    "wallet_balance_label": "رصيد المحفظة",
+    "wallet_add_gift_card": "إضافة بطاقة هدية",
+    "wallet_gift_card_coming_soon": "قريباً",
+    "wallet_cards": "البطاقات",
+    "wallet_add_debit_credit": "إضافة بطاقة خصم/ائتمان",
+    "wallet_add_funds": "إضافة رصيد للمحفظة",
+    "wallet_add_funds_hint": "أدخل المبلغ الذي تريد إضافته، ثم ادفع بأمان باستخدام بطاقتك.",
+    "wallet_amount_label": "المبلغ",
+    "wallet_enter_valid_amount": "يرجى إدخال مبلغ صحيح.",
+    "wallet_topup_success": "تم تحديث رصيد المحفظة بنجاح.",
+    "wallet_topup_failed": "تعذر تحديث رصيد المحفظة. حاول مرة أخرى.",
+    "wallet_crediting": "جاري تحديث رصيد المحفظة…",
     "favorites": "المفضلة",
     "forms": "النماذج",
     "product_orders": "طلبات المنتجات",
@@ -369,7 +381,9 @@
     "forgot_password": "هل نسيت كلمة المرور؟",
     "connection_error": "خطأ في الاتصال. يرجى المحاولة مرة أخرى.",
     "register_now" : "تسجيل الان",
-    "loading_balance" : "تحميل القيمة"
+    "loading_balance" : "تحميل القيمة",
+    "cancel" : "إلغاء",
+    "continue" : "متابعة"
 
 
 }

@@ -32,9 +32,7 @@ const mapCenterToBusiness = (item: CenterResponse["data"][number]): Business => 
 export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
 
     try {
-        console.log(rate);
-        console.log(API_ENDPOINTS.CENTERS);
-        console.log(`${API_ENDPOINTS.CENTERS}?rate=${rate}`);
+     
 
         const response = await fetch(`${API_ENDPOINTS.CENTERS}?rate=${rate}`, {
             method: "GET",
@@ -43,7 +41,7 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
             },
 
         });
-        console.log(response);
+      
         if (!response.ok) {
             throw new Error(`Failed to fetch centers: ${response.statusText}`);
         }
@@ -66,7 +64,6 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
 
 export const registerCenter = async (formData: FormData): Promise<{ success: boolean; message: string }> => {
     try {
-        console.log(API_ENDPOINTS.REGISTER)
         const response = await fetch(`${API_ENDPOINTS.REGISTER}`, {
             method: "POST",
             body: formData,
@@ -75,7 +72,7 @@ export const registerCenter = async (formData: FormData): Promise<{ success: boo
         });
 
         const json = await response.json();
-        console.log("this is response : " + response);
+     
         if (!response.ok) {
             return {
                 success: false,
@@ -152,6 +149,44 @@ export const loginUser = async (credentials: any): Promise<{ success: boolean; m
         return {
             success: false,
             message: "An unexpected error occurred during login",
+        };
+    }
+};
+
+export const buyWalletTopUp = async (
+    token: string,
+    amount: number
+): Promise<{ success: boolean; message?: string; data?: unknown }> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.WALLET_BUY, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+                Accept: "application/json",
+            },
+            body: JSON.stringify({ amount }),
+        });
+
+        const json = await response.json();
+
+        if (!response.ok) {
+            return {
+                success: false,
+                message: json.message || "Failed to update wallet balance",
+            };
+        }
+
+        return {
+            success: true,
+            message: json.message,
+            data: json.data,
+        };
+    } catch (error) {
+        console.error("Wallet buy error:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred while updating your wallet",
         };
     }
 };

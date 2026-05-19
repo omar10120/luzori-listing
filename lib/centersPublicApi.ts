@@ -40,7 +40,7 @@ export async function fetchGlobalCategoriesClient(): Promise<GlobalCategory[]> {
       },
       cache: "no-store",
     });
-    console.log(res);
+ 
     if (!res.ok) {
       const errBody = await res.text();
       console.warn("[global-categories] HTTP", res.status, errBody.slice(0, 200));

@@ -104,6 +104,18 @@
     "profile": "Profile",
     "activity": "Activity",
     "wallet": "Wallet",
+    "wallet_balance_label": "Wallet balance",
+    "wallet_add_gift_card": "Add a gift card",
+    "wallet_gift_card_coming_soon": "Coming soon",
+    "wallet_cards": "Cards",
+    "wallet_add_debit_credit": "Add debit/credit card",
+    "wallet_add_funds": "Add funds to wallet",
+    "wallet_add_funds_hint": "Enter the amount you want to add, then pay securely with your card.",
+    "wallet_amount_label": "Amount",
+    "wallet_enter_valid_amount": "Please enter a valid amount.",
+    "wallet_topup_success": "Wallet balance updated successfully.",
+    "wallet_topup_failed": "Could not update wallet balance. Please try again.",
+    "wallet_crediting": "Updating your wallet balance…",
     "favorites": "Favorites",
     "forms": "Forms",
     "product_orders": "Product orders",
@@ -369,6 +381,8 @@
     "login_subtitle_mobile": "Sign in to continue",
     "forgot_password": "Forgot password?",
     "connection_error": "Connection error. Please try again.",
-    "loading_balance" : "loading balance"
+    "loading_balance" : "loading balance",
+    "cancel": "cancel",
+    "continue" : "continue"
    
 }

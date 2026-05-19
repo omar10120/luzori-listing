@@ -66,8 +66,13 @@ export default function MyFatoorahEmbeddedPayment({
   onPaymentFailed,
 }: MyFatoorahEmbeddedPaymentProps) {
   const t = useTranslations();
-  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [scriptLoaded, setScriptLoaded] = useState(
+    () => typeof window !== "undefined" && typeof window.myfatoorah?.init === "function"
+  );
   const isActive = active && (!modal || open);
+  const scriptReady =
+    scriptLoaded ||
+    (typeof window !== "undefined" && typeof window.myfatoorah?.init === "function");
 
   const { containerId, status, errorMessage, retry } = useMyFatoorahEmbeddedPayment({
     active: isActive,
@@ -75,7 +80,7 @@ export default function MyFatoorahEmbeddedPayment({
     currency,
     customerReference,
     centerId,
-    scriptLoaded,
+    scriptLoaded: scriptReady,
     onComplete: (parsed) => {
       onPaymentComplete?.(parsed.raw);
     },

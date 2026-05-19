@@ -19,6 +19,7 @@ export const API_ENDPOINTS = {
     INFO: `${API_BASE_URL}/app_api/info`,
     /** MyFatoorah Embedded V3 — Laravel creates a fresh single-use session */
     CREATE_PAYMENT_SESSION: `${API_BASE_URL}/app_api/payment/create-session`,
+    WALLET_BUY: `${API_BASE_URL}/app_api/wallet/buy`,
 };
 
 /** Single line item on a user booking (from booking list API). */

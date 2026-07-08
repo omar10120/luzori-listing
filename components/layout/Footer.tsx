@@ -74,10 +74,10 @@ const Footer: React.FC = () => {
                         >
                             <SectionHeader heading={t('Luzori')} />
                         </Link>
-                        <div 
-                            className="mt-3 max-w-xs text-[9px] text-gray-900"
-                            dangerouslySetInnerHTML={{ 
-                                __html: info ? info.about_us[locale as 'ar' | 'en'] : t('hero_subtitle') 
+                        <div
+                            className="mt-3 max-w-xs  text-gray-900"
+                            dangerouslySetInnerHTML={{
+                                __html: info ? info.about_us[locale as 'ar' | 'en'] : t('hero_subtitle')
                             }}
                         />
                     </div>

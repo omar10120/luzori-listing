@@ -9,7 +9,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans:  cairo,"Inter", system-ui, -apple-system, sans-serif;
+  /* --font-sans: cairo, "Inter", system-ui, -apple-system, sans-serif; */
+  --font-sans: cairo;
 
 }
 
@@ -18,10 +19,22 @@ body {
   /* background: linear-gradient(to bottom, var(--background), var(--background-end)); */
   background: linear-gradient(to bottom, var(--background));
   color: var(--foreground);
-  font-family:  var(--font-sans);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
+
+}
+
+p,
+html,
+h1,
+h2,
+h3,
+h4,
+h5,
+div,
+h6 body {
+  font-family: var(--font-sans);
 }
 
 /* ─── Scrollbar hide utility ─── */
@@ -57,7 +70,7 @@ input[type="checkbox"] {
 }
 
 .leaflet-container {
-  font-family: var(--font-sans);
+  /* font-family: var(--font-sans); */
 }
 
 .leaflet-popup-content-wrapper {
@@ -73,5 +86,3 @@ input[type="checkbox"] {
   font-size: 10px !important;
   background: rgba(255, 255, 255, 0.7) !important;
 }
-
-

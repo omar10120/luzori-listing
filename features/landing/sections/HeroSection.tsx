@@ -27,7 +27,7 @@ const HeroSection: React.FC = () => {
                     className="mx-auto max-w-3xl text-xl font-bold tracking-tight text-gray-900 sm:text-xl lg:text-5xl"
                 >
                     {t('hero_heading')}
-                </motion.h1>    
+                </motion.h1>
 
                 {/* Subtitle */}
                 <motion.p

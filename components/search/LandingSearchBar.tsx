@@ -341,7 +341,8 @@ export default function LandingSearchBar({
           <Button
             variant="outlined"
             fullWidth
-            startIcon={<Search size={18} className="text-gray-400" />}
+            startIcon={<Search size={18} className={`text-gray-400 ${locale == "ar" ? "ml-4" : ""}`} />}
+
             endIcon={
               selectedCategory ? (
                 <Box
@@ -388,7 +389,7 @@ export default function LandingSearchBar({
           <Button
             variant="outlined"
             fullWidth
-            startIcon={<Clock size={18} className="text-gray-400" />}
+            startIcon={<Clock size={18} className={`text-gray-400 ${locale == "ar" ? "ml-4" : ""}`} />}
             sx={outlinedSx}
             onClick={() => {
               setTimeOpen(true);

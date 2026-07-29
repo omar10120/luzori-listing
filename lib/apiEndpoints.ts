@@ -191,6 +191,39 @@ export interface CenterDetailData {
     packages?: CenterPackage[];
     global_categories?: GlobalCategory[];
 }
+export interface CenterListItem {
+    id: number;
+    name: string;
+    domain: string;
+    status: string;
+    logo: string;
+    primary_images: string[];
+    rate: string | null;
+    created_at: string;
+    branches: Branch[];
+    categories: Category[];
+    services: Service[]; // Root level services if any
+    packages?: CenterPackage[];
+    global_categories?: GlobalCategory[];
+}
+export interface CenterListResponse {
+    message: string;
+    data: {
+        current_page: number;
+        data: CenterListItem[];   // <-- actual array is nested here
+        first_page_url: string;
+        from: number;
+        last_page: number;
+        last_page_url: string;
+        next_page_url: string | null;
+        path: string;
+        per_page: number;
+        prev_page_url: string | null;
+        to: number;
+        total: number;
+    };
+}
+
 
 export interface CenterDetailResponse {
     message: string;

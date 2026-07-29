@@ -7,8 +7,9 @@ import {
     BookingListResponse,
     BookingListItem,
     UserPurchasedPackage,
+    CenterListResponse
 } from "./apiEndpoints";
-import { Business, CenterRate } from "./types";
+import { Business, CenterRate, } from "./types";
 
 /**
  * Maps API center data to the application's Business interface.
@@ -30,35 +31,29 @@ const mapCenterToBusiness = (item: CenterResponse["data"][number]): Business => 
 };
 
 export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
-
     try {
-     
-
         const response = await fetch(`${API_ENDPOINTS.CENTERS}?rate=${rate}`, {
             method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-
+            headers: { "Content-Type": "application/json" },
         });
-      
+
         if (!response.ok) {
             throw new Error(`Failed to fetch centers: ${response.statusText}`);
         }
 
-        const json: CenterResponse = await response.json();
+        const json: CenterListResponse = await response.json();
 
-        // Ensure data is an array before mapping
-        if (!Array.isArray(json.data)) {
-            console.error("API Error: data is not an array", json);
+        // ✅ Access the nested array
+        const centers = json.data?.data ?? [];
+        if (!Array.isArray(centers)) {
+            console.error("API Error: data.data is not an array", json);
             return [];
         }
 
-        return json.data.map(mapCenterToBusiness);
+        return centers.map(mapCenterToBusiness);
     } catch (error) {
-
         console.error("Fetch Centers Error:", error);
-        return []; // Return empty array on failure to prevent UI crash
+        return [];
     }
 };
 
@@ -67,12 +62,11 @@ export const registerCenter = async (formData: FormData): Promise<{ success: boo
         const response = await fetch(`${API_ENDPOINTS.REGISTER}`, {
             method: "POST",
             body: formData,
-            // When sending FormData, the browser automatically sets the Content-Type
-            // including the boundary, so we should NOT set it manually.
+
         });
 
         const json = await response.json();
-     
+
         if (!response.ok) {
             return {
                 success: false,
@@ -93,8 +87,18 @@ export const registerCenter = async (formData: FormData): Promise<{ success: boo
     }
 };
 
+const logFormData = (formData: FormData) => {
+    const obj: Record<string, any> = {};
+    formData.forEach((value, key) => {
+        obj[key] = value;
+    });
+    console.log("FormData contents:", obj);
+};
+
 export const registerUser = async (formData: FormData): Promise<{ success: boolean; message: string }> => {
     try {
+        console.log("payload " + logFormData(formData));
+
         const response = await fetch(`${API_ENDPOINTS.USER_REGISTER}`, {
             method: "POST",
             body: formData,
@@ -311,6 +315,7 @@ export const loginCenter = async (credentials: any): Promise<{ success: boolean;
             },
             body: JSON.stringify(credentials),
         });
+        console.log("login" + JSON.stringify(credentials));
 
         if (!response.ok) {
             const text = await response.text();
@@ -494,7 +499,7 @@ export const createPaymentSession = async (
     message?: string;
 }> => {
     try {
-           
+
         const response = await fetch(API_ENDPOINTS.CREATE_PAYMENT_SESSION, {
             method: "POST",
             headers: {

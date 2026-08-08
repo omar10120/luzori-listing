@@ -58,14 +58,14 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
 
     return (
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 flex flex-col gap-6 w-full">
-            
+
             {/* Center Info Header */}
             <div className="flex gap-4 items-start">
                 <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-gray-100 bg-gray-50 relative">
-                    <Image 
-                        src={center.logo || center.primary_images?.[0] || 'https://images.unsplash.com/photo-1560066984-138dadb4c035'} 
-                        alt={center.name} 
-                        fill 
+                    <Image
+                        src={center.logo || center.primary_images?.[0] || 'https://images.unsplash.com/photo-1560066984-138dadb4c035'}
+                        alt={center.name}
+                        fill
                         className="object-cover"
                     />
                 </div>
@@ -97,9 +97,9 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
                                     {svc.duration || t("booking_default_short_duration")} • {professionalType === 'any' ? t("booking_any_professional") : t("booking_selected_professional")}
                                 </p>
                                 {svc.date && svc.fromTime && (
-                                     <p className="text-xs font-medium text-[#225D5C] mt-1">
+                                    <p className="text-xs font-medium text-[#225D5C] mt-1">
                                         {svc.date} {t("booking_at")} {svc.fromTime}
-                                     </p>
+                                    </p>
                                 )}
                             </div>
                             <span className="text-sm font-bold text-gray-900 whitespace-nowrap">
@@ -116,7 +116,7 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
                 <span className="text-xl font-black text-gray-900">{t("activity_currency_aed")} {total}</span>
             </div>
 
-            <Button 
+            <Button
                 onClick={() => {
                     // `onNext` handles auth redirect + booking state persist.
                     onNext();

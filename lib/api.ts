@@ -366,6 +366,7 @@ export const fetchCenterById = async (id: string | number): Promise<CenterDetail
 
 export const storeBooking = async (token: string, bookingData: any): Promise<{ success: boolean; message: string; data?: any }> => {
     try {
+        console.log("Store Booking Payload:", JSON.stringify(bookingData));
         const response = await fetch(API_ENDPOINTS.STORE_BOOKING, {
             method: "POST",
             headers: {
@@ -377,6 +378,7 @@ export const storeBooking = async (token: string, bookingData: any): Promise<{ s
         });
 
         const json = await response.json();
+        console.log("Store Booking Response:", JSON.stringify(json));
         if (!response.ok) {
             return {
                 success: false,

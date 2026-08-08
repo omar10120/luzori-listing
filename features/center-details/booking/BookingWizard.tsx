@@ -177,7 +177,9 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
         setIsSubmitting(true);
 
         // Build Payload
-        const payload = {
+        const allServicesCoveredByPackages = selectedServices.length > 0 && selectedServices.every(svc => svc.userPackageIds && svc.userPackageIds.length > 0);
+        
+        const payload: any = {
             center_id: center.id,
             branch_id: selectedBranchId || (center.branches?.[0]?.id) || 1, // Use selectedBranchId
             services: selectedServices.map(svc => ({
@@ -188,8 +190,11 @@ export default function BookingWizard({ center, onCancel, initialSelectedService
                 to_time: svc.toTime,
                 user_package_ids: svc.userPackageIds || [],
             })),
-            payment_type: paymentType
         };
+
+        if (!allServicesCoveredByPackages && paymentType) {
+            payload.payment_type = paymentType;
+        }
 
         try {
             // we need to dynamically import storeBooking so we don't cause client module errors if not already imported

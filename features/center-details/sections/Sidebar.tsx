@@ -55,8 +55,8 @@ export default function Sidebar({ center, fallbackImage, onBookNow }: SidebarPro
                             <div>
                                 <p className="text-sm font-bold text-gray-900">{t('address')}</p>
                                 <p className="text-sm text-gray-500 mt-0.5">
-                                    {center.branches?.[0] 
-                                        ? `${center.branches[0].address}, ${center.branches[0].city}` 
+                                    {center.branches?.[0]
+                                        ? `${center.branches[0].address}, ${center.branches[0].city}`
                                         : center.domain}
                                 </p>
                             </div>

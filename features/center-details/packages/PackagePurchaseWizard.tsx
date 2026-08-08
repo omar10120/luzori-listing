@@ -336,7 +336,7 @@ export default function PackagePurchaseWizard({
                   },
                   {
                     id: "service_cash" as PackagePaymentType,
-                    label: t("cash"),
+                    label: t("service_visa"),
                     icon: CreditCard,
                     description: t("booking_secure_online_payment"),
                     disabled: false,

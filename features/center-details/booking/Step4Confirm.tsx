@@ -1,7 +1,7 @@
 import React from "react";
 import { CenterDetailData } from "@/lib/apiEndpoints";
 import { SelectedService } from "./BookingWizard";
-import { CheckCircle2, User, Clock, MapPin, Wallet, CreditCard } from "lucide-react";
+import { CheckCircle2, User, Clock, MapPin, Wallet, CreditCard, Banknote } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -27,23 +27,21 @@ export default function Step4Confirm({
     const isWalletDisabled = userWallet < totalPrice;
 
     const paymentOptions = [
-        
         {
             id: "wallet",
             label: t("wallet") || "Wallet",
             icon: Wallet,
-            src: "/visa.svg",
             description: `${t("current_balance") || "Balance"}: ${t("activity_currency_aed")} ${userWallet}`,
             disabled: isWalletDisabled,
         },
         {
             id: "service_cash",
-            label: t("cash") || "Service Cash",
+            label: t("service_visa") || "Service Visa",
             icon: CreditCard,
-            src: "/visa.svg",
-            description: "Pay at the center",
+            description: t("booking_secure_online_payment") || "Secure online payment",
             disabled: false,
-        },
+        }
+
     ];
 
     const allServicesCoveredByPackages = selectedServices.length > 0 && selectedServices.every(svc => svc.userPackageIds && svc.userPackageIds.length > 0);
@@ -138,8 +136,12 @@ export default function Step4Confirm({
                                             opt.disabled && "opacity-50 cursor-not-allowed grayscale"
                                         )}
                                     >
-                                        {/* <Icon className={cn("w-6 h-6", isSelected ? "text-[#225D5C]" : "text-gray-400")} /> */}
-                                        <Image src={opt.src} alt={opt.label} width={12} height={12} />
+                                        <div className={cn(
+                                            "flex h-12 w-12 items-center justify-center rounded-2xl transition-colors mb-1",
+                                            isSelected ? "bg-[#225D5C]/10 text-[#225D5C]" : "bg-gray-50 text-gray-500 hover:bg-gray-100"
+                                        )}>
+                                            <Icon className="w-6 h-6" />
+                                        </div>
                                         <div>
                                             <p className="font-bold text-gray-900 text-sm">{opt.label}</p>
                                             <p className="text-[10px] text-gray-500 mt-0.5 leading-tight">{opt.description}</p>

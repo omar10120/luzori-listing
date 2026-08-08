@@ -457,10 +457,11 @@ export const fetchUserPurchasedPackages = async (
                 "Accept": "application/json",
             },
         });
-
         if (!response.ok) return [];
         const json = await response.json();
-        return Array.isArray(json?.data) ? json.data : [];
+        // API returns paginated response: { data: { data: [...] } }
+        const items = json?.data?.data ?? json?.data;
+        return Array.isArray(items) ? items : [];
     } catch (error) {
         console.error("Fetch User Packages Error:", error);
         return [];
@@ -477,10 +478,11 @@ export const fetchUserPackages = async (token: string): Promise<UserPurchasedPac
                 "Accept": "application/json",
             },
         });
-
         if (!response.ok) return [];
         const json = await response.json();
-        return Array.isArray(json?.data) ? json.data : [];
+        // API returns paginated response: { data: { data: [...] } }
+        const items = json?.data?.data ?? json?.data;
+        return Array.isArray(items) ? items : [];
     } catch (error) {
         console.error("Fetch User Packages (all) Error:", error);
         return [];

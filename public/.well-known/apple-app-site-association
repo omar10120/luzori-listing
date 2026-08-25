@@ -1,0 +1,29 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "LV52R96Q6A.com.luzori.etechnocode",
+        "paths": [
+          "/center/*",
+          "/salonDetailsScreen*",
+          "/home",
+          "/explore",
+          "/login",
+          "/signUp",
+          "/activity",
+          "/profile",
+          "/categories",
+          "/centers",
+          "/search",
+          "/favorite",
+          "/wallet",
+          "/notification"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["LV52R96Q6A.com.luzori.etechnocode"]
+  }
+}

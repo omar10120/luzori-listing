@@ -39,6 +39,7 @@ const NewSection: React.FC = () => {
         <BusinessCardScroll
             heading={t('new_to_luzori')}
             businesses={businesses}
+            rate="new_to"
         />
     );
 };

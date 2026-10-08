@@ -38,6 +38,7 @@ const TrendingSection: React.FC = () => {
         <BusinessCardScroll
             heading={t('trending')}
             businesses={businesses}
+            rate="trending"
         />
     );
 };

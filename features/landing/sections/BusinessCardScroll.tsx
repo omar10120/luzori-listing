@@ -6,17 +6,22 @@ import Container from "@/components/ui/Container";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Card from "@/components/ui/Card";
 import type { Business } from "@/lib/types";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface BusinessCardScrollProps {
     heading: string;
     businesses: Business[];
+    rate?: string;
 }
 
 const BusinessCardScroll: React.FC<BusinessCardScrollProps> = ({
     heading,
     businesses,
+    rate,
 }) => {
     const scrollRef = useRef<HTMLDivElement>(null);
+    const t = useTranslations();
 
     const scroll = (direction: "left" | "right") => {
         if (!scrollRef.current) return;
@@ -31,7 +36,17 @@ const BusinessCardScroll: React.FC<BusinessCardScrollProps> = ({
         <section className="py-6 sm:py-4">
             <Container>
                 <div className="flex items-end justify-between">
-                    <SectionHeader heading={heading} className="mb-0 sm:mb-0 text-[#F5DBBA]" />
+                    <div className="flex items-center gap-4 flex-wrap">
+                        <SectionHeader heading={heading} className="mb-0 sm:mb-0 text-[#F5DBBA]" />
+                        {rate && (
+                            <Link
+                                href={`/centers?rate=${rate}`}
+                                className="text-sm font-medium text-[#00000] hover:text-white transition-colors mt-2"
+                            >
+                                {t("see_more") || "See More"}
+                            </Link>
+                        )}
+                    </div>
                     <div className="hidden gap-2 sm:flex">
                         <button
                             type="button"
@@ -50,6 +65,7 @@ const BusinessCardScroll: React.FC<BusinessCardScrollProps> = ({
                             <ChevronRight size={18} />
                         </button>
                     </div>
+
                 </div>
             </Container>
 
@@ -65,6 +81,7 @@ const BusinessCardScroll: React.FC<BusinessCardScrollProps> = ({
                     ))}
                 </div>
             </div>
+
         </section>
     );
 };

@@ -39,6 +39,7 @@ const RecommendedSection: React.FC = () => {
         <BusinessCardScroll
             heading={t('recommended')}
             businesses={businesses}
+            rate="recommended"
         />
     );
 };

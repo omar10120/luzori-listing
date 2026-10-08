@@ -47,6 +47,7 @@ export default function SearchPageClient() {
     | "afternoon"
     | "evening"
     | null;
+  const rate = searchParams.get("rate");
 
   const [centers, setCenters] = useState<CenterDetailData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,11 +61,12 @@ export default function SearchPageClient() {
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   const queryArgs = useMemo(() => {
-    const p: { global_category_slug?: string; global_category_id?: string } = {};
+    const p: { global_category_slug?: string; global_category_id?: string; rate?: string } = {};
     if (slug) p.global_category_slug = slug;
     else if (id) p.global_category_id = id;
+    if (rate) p.rate = rate;
     return p;
-  }, [slug, id]);
+  }, [slug, id, rate]);
 
   const [lastArgs, setLastArgs] = useState(queryArgs);
   if (lastArgs !== queryArgs) {

@@ -72,7 +72,7 @@ export default function BookingCart({ center, selectedServices, currentStep, onN
                 <div>
                     <h3 className="text-base font-bold text-gray-900 leading-tight mb-1">{center.name}</h3>
                     <div className="flex items-center gap-1 text-sm font-medium text-gray-900 mb-1">
-                        <span>4.8</span>
+                        <span>4</span>
                         <div className="flex gap-0.5">
                             <Star size={12} className="fill-[#FFB800] text-[#FFB800]" />
                             <Star size={12} className="fill-[#FFB800] text-[#FFB800]" />

@@ -5,8 +5,8 @@ export interface Business {
     name: string;
     location: string;
     category: string;
-    rating: number;
-    reviewCount: number;
+    rating: string | null;
+    reviewCount: number | null;
     image: string;
     isNew?: boolean;
     isTrending?: boolean;
@@ -16,7 +16,7 @@ export interface Review {
     id: string;
     title: string;
     content: string;
-    rating: number;
+    rating: string;
     author: {
         name: string;
         location: string;

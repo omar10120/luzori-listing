@@ -36,9 +36,9 @@ export default function Sidebar({ center, fallbackImage, onBookNow }: SidebarPro
                             <div className="flex items-center gap-1 mt-1">
                                 <Star size={14} className="fill-yellow-400 text-yellow-400" />
                                 <span className="text-sm font-bold text-gray-900">
-                                    {center.rate === 'recommended' ? '5.0' : '4.8'}
+                                    {center.avg_rating}
                                 </span>
-                                <span className="text-sm text-gray-500">(128)</span>
+                                <span className="text-sm text-gray-500">({center.rate})</span>
                             </div>
                         </div>
                     </div>
@@ -69,7 +69,7 @@ export default function Sidebar({ center, fallbackImage, onBookNow }: SidebarPro
                                     <p className="text-sm font-bold text-gray-900">{t('opening_hours')}</p>
                                     <span className="text-[10px] items-center uppercase font-black bg-green-50 text-green-600 px-2 py-0.5 rounded-full border border-green-100">{t('open_now')}</span>
                                 </div>
-                                <p className="text-sm text-gray-500 mt-0.5">{t('until')} 9:00 PM</p>
+                                <p className="text-sm text-gray-500 mt-0.5">{t('until')} {center.branches[0].open_time == null ? "9:00 AM" : center.branches[0].open_time}  </p>
                             </div>
                         </div>
                     </div>

@@ -44,7 +44,7 @@ export function buildVenueMarkers(centers: CenterDetailData[]): SearchMapMarker[
         id: venueKey(c.id),
         lat: coords.lat,
         lng: coords.lng,
-        rating: 4.8,
+        rating: 2,
         title: c.name,
         subtitle: b.name,
         city: b.city,

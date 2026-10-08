@@ -13,7 +13,7 @@ import type { CenterDetailData, Service } from "@/lib/apiEndpoints";
 const FALLBACK_IMG =
   "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=500&fit=crop";
 
-const RATING = 4.8;
+const RATING = 5;
 const REVIEW_COUNT = 128;
 
 export interface SearchResultCardProps {

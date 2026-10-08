@@ -3,7 +3,7 @@ import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface RatingStarsProps {
-    rating: number;
+    rating: string | null;
     maxStars?: number;
     size?: number;
     className?: string;
@@ -21,8 +21,8 @@ const RatingStars: React.FC<RatingStarsProps> = ({
             aria-label={`Rating: ${rating} out of ${maxStars} stars`}
         >
             {Array.from({ length: maxStars }, (_, i) => {
-                const filled = i < Math.floor(rating);
-                const halfFilled = !filled && i < rating;
+                const filled = i < Number(rating ?? 0);
+                const halfFilled = !filled && i < Number(rating ?? 0);
 
                 return (
                     <Star

@@ -73,6 +73,8 @@ export interface Branch {
     address: string;
     longitude: string;
     latitude: string;
+    open_time: string;
+    close_time: string;
 }
 
 export interface WorkerVacation {
@@ -184,6 +186,8 @@ export interface CenterDetailData {
     logo: string;
     primary_images: string[];
     rate: string | null;
+    avg_rating: string | null;
+    reviews_count: number | null;
     created_at: string;
     branches: Branch[];
     categories: Category[];
@@ -199,6 +203,8 @@ export interface CenterListItem {
     logo: string;
     primary_images: string[];
     rate: string | null;
+    avg_rating: string | null;
+    reviews_count: number | null;
     created_at: string;
     branches: Branch[];
     categories: Category[];

@@ -24,7 +24,7 @@ export default function Reviews({ reviews }: ReviewsProps) {
                 <h2 className="text-2xl font-bold text-gray-900">{t('reviews')}</h2>
                 <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
                     <Star size={18} className="fill-yellow-400 text-yellow-400" />
-                    <span className="text-xl font-black text-gray-900">4.8</span>
+                    <span className="text-xl font-black text-gray-900">3</span>
                     <span className="text-sm text-gray-500 font-medium">(128 {t('reviews')})</span>
                 </div>
             </div>

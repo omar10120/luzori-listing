@@ -34,7 +34,7 @@ export default function HeroBase({ center, isFav, onToggleFav }: HeroBaseProps) 
                     <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                         <div className="flex items-center gap-1">
                             <span className="font-bold text-gray-900">
-                                {center.rate === 'recommended' ? '5.0' : '4.8'}
+                                {center.avg_rating}
                             </span>
                             <div className="flex gap-0.5">
                                 {[1, 2, 3, 4, 5].map((i) => (

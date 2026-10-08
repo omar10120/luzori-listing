@@ -64,7 +64,7 @@ const Card: React.FC<CardProps> = ({ business, className }) => {
                             {rating}
                         </span>
                         <span className="text-xs text-gray-400">
-                            ({reviewCount.toLocaleString()})
+                            ({reviewCount ? reviewCount.toLocaleString() : ""})
                         </span>
                     </div>
                 </div>

@@ -22,8 +22,8 @@ const mapCenterToBusiness = (item: CenterResponse["data"][number]): Business => 
         name: item.name,
         location: item.domain || "Local Area", // Fallback for domain
         category: "Selfcare Service", // Default category since not in API
-        rating: 4.8, // Fallback rating
-        reviewCount: 120, // Fallback review count
+        rating: item.avg_rating, // Fallback rating
+        reviewCount: item.reviews_count, // Fallback review count
         image: (item.primary_images && item.primary_images.length > 0) ? item.primary_images[0] : item.logo || "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&h=400&fit=crop",
         isNew: item.rate === "new_to",
         isTrending: item.rate === "trending",
@@ -43,7 +43,7 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
 
         const json: CenterListResponse = await response.json();
 
-        // ✅ Access the nested array
+
         const centers = json.data?.data ?? [];
         if (!Array.isArray(centers)) {
             console.error("API Error: data.data is not an array", json);

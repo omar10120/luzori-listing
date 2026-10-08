@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Container from "@/components/ui/Container";
 import Image from "next/image";
 import { fetchUserProfile } from "@/lib/api";
-import { Home, Briefcase, Pencil, ArrowLeft, ChevronDown ,User} from "lucide-react";
+import { Home, Briefcase, Pencil, ArrowLeft, ChevronDown, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { updateUserProfile } from "@/lib/api";
@@ -96,6 +96,7 @@ const ProfilePage = () => {
             const body = new FormData();
             body.append("image", file);
             const result = await updateUserProfile(token, body);
+            console.log("body is : " + JSON.stringify(result));
             if (result.success) {
                 setStatusMsg({ type: "success", text: result.message });
                 await fetchUser();
@@ -112,8 +113,8 @@ const ProfilePage = () => {
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-        try{
-                e.preventDefault();
+        try {
+            e.preventDefault();
             setSubmitting(true);
             setStatusMsg({ type: "", text: "" });
 
@@ -138,8 +139,8 @@ const ProfilePage = () => {
                 setTimeout(() => setIsEditing(false), 1500);
             } else {
                 setStatusMsg({ type: "error", text: result.message });
-                }
-                setSubmitting(false);
+            }
+            setSubmitting(false);
         } catch (error) {
             console.error("Error updating profile:", error);
             setStatusMsg({ type: "error", text: "An error occurred while updating your profile. Please try again." });
@@ -313,21 +314,21 @@ const ProfilePage = () => {
                                 >
                                     {t("edit")}
                                 </button>
-                                
+
                                 <div className="flex flex-col items-center mb-8">
                                     <div className="relative w-32 h-32 rounded-full bg-[#5d4037] flex items-center justify-center text-white text-2xl font-bold overflow-hidden mb-4">
                                         {user.image_url ? (
-                                            <Image src={user.image_url} alt={user.name || "User avatar"} fill className="object-cover" unoptimized/>
+                                            <Image src={user.image_url} alt={user.name || "User avatar"} fill className="object-cover" unoptimized />
                                         ) : (
                                             user.name?.charAt(0) || "U"
                                         )}
-                                        
-                                        <label  
+
+                                        <label
                                             className="absolute top-4 right-4 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-white shadow-sm transition-colors hover:bg-gray-50 z-100 "
                                             aria-label={t("change_photo")}
                                         >
                                             {/* <Pencil size={14} className="text-gray-600 z-1000" /> */}
-                                                <Image src="/edit.svg" alt="Pencil" width={14} height={14} className="text-gray-600 z-1000" />
+                                            <Image src="/edit.svg" alt="Pencil" width={14} height={14} className="text-gray-600 z-1000" />
                                             <input
                                                 type="file"
                                                 className="hidden"
@@ -383,7 +384,7 @@ const ProfilePage = () => {
                                         <p className="text-sm font-medium text-gray-900">
                                             {user.gender
                                                 ? String(user.gender).charAt(0).toUpperCase() +
-                                                  String(user.gender).slice(1)
+                                                String(user.gender).slice(1)
                                                 : "-"}
                                         </p>
                                     </div>

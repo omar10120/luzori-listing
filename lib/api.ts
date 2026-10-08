@@ -32,7 +32,7 @@ const mapCenterToBusiness = (item: CenterResponse["data"][number]): Business => 
 
 export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
     try {
-        const response = await fetch(`${API_ENDPOINTS.CENTERS}?rate=${rate}`, {
+        const response = await fetch(`${API_ENDPOINTS.CENTERS}?rate=${rate}&include=global_categories,branches,categories,services,packages,about_us,workers,vacations&per_page=31`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
         });

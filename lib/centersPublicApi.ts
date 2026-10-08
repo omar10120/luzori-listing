@@ -68,6 +68,8 @@ export type CentersSearchParams = {
 export async function fetchCentersSearchClient(params: CentersSearchParams): Promise<CenterDetailData[]> {
   try {
     const qs = new URLSearchParams();
+    qs.set("include", "global_categories,branches,categories,services,packages,about_us,workers,vacations");
+    qs.set("per_page", "31");
     if (params.global_category_id) qs.set("global_category_id", params.global_category_id);
     if (params.global_category_slug) qs.set("global_category_slug", params.global_category_slug);
     if (params.rate) qs.set("rate", params.rate);

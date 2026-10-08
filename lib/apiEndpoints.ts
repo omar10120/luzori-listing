@@ -3,7 +3,7 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.
 export const API_ENDPOINTS = {
     CENTERS: `${API_BASE_URL}/center_api/centers`,
     GLOBAL_CATEGORIES: `${API_BASE_URL}/center_api/global-categories`,
-    CENTER_BY_ID: (id: string | number) => `${API_BASE_URL}/center_api/centers/${id}`,
+    CENTER_BY_ID: (id: string | number) => `${API_BASE_URL}/center_api/centers/${id}?include=global_categories,branches,categories,services,packages,about_us,workers,vacations`,
     REGISTER: `${API_BASE_URL}/center_api/auth/register`,
     LOGIN: `${API_BASE_URL}/center_api/auth/login`,
     USER_REGISTER: `${API_BASE_URL}/app_api/auth/register`,

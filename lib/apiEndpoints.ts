@@ -16,6 +16,7 @@ export const API_ENDPOINTS = {
     USER_PACKAGES_ALL: `${API_BASE_URL}/app_api/packages`,
     USER_PACKAGES: (centerId: string | number) => `${API_BASE_URL}/app_api/packages/${centerId}`,
     BOOKING_LIST: `${API_BASE_URL}/app_api/booking/list`,
+    FAVORITES_TOGGLE: `${API_BASE_URL}/app_api/favorites/toggle`,
     INFO: `${API_BASE_URL}/app_api/info`,
     /** MyFatoorah Embedded V3 — Laravel creates a fresh single-use session */
     CREATE_PAYMENT_SESSION: `${API_BASE_URL}/app_api/payment/create-session`,
@@ -194,6 +195,7 @@ export interface CenterDetailData {
     services: Service[]; // Root level services if any
     packages?: CenterPackage[];
     global_categories?: GlobalCategory[];
+    is_favorite?: boolean;
 }
 export interface CenterListItem {
     id: number;

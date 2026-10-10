@@ -32,7 +32,7 @@ const mapCenterToBusiness = (item: CenterResponse["data"][number]): Business => 
 
 export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
     try {
-        const response = await fetch(`${API_ENDPOINTS.CENTERS}?rate=${rate}&include=global_categories,branches,categories,services,packages,about_us,workers,vacations&per_page=31`, {
+        const response = await fetch(`${API_ENDPOINTS.CENTERS}?rate=${rate}&include=global_categories,branches,categories,services,packages,about_us,workers,vacations`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
         });
@@ -342,13 +342,17 @@ export const loginCenter = async (credentials: any): Promise<{ success: boolean;
     }
 };
 
-export const fetchCenterById = async (id: string | number): Promise<CenterDetailData | null> => {
+export const fetchCenterById = async (id: string | number, token?: string): Promise<CenterDetailData | null> => {
     try {
+        const headers: Record<string, string> = {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        };
+        if (token) headers.Authorization = `Bearer ${token}`;
+
         const response = await fetch(API_ENDPOINTS.CENTER_BY_ID(id), {
             method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers,
         });
 
         if (!response.ok) {
@@ -361,6 +365,47 @@ export const fetchCenterById = async (id: string | number): Promise<CenterDetail
     } catch (error) {
         console.error("Fetch Center Detail Error:", error);
         return null;
+    }
+};
+
+export const toggleCenterFavorite = async (
+    token: string,
+    centerId: number
+): Promise<{ success: boolean; isFavorite?: boolean; message: string }> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.FAVORITES_TOGGLE, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ center_id: centerId }),
+        });
+        // console.log("toggleCenterFavorite payload: ", + JSON.stringify({ center_id: centerId }) );
+
+        const json = await response.json();
+        if (!response.ok) {
+            return {
+                success: false,
+                message: json.message || "Failed to update favorite",
+            };
+        }
+
+        const raw = json?.data?.is_favorite;
+        const isFavorite = typeof raw === "boolean" ? raw : undefined;
+
+        return {
+            success: true,
+            isFavorite,
+            message: json.message || "Done Successfully",
+        };
+    } catch (error) {
+        console.error("Toggle Favorite Error:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred",
+        };
     }
 };
 

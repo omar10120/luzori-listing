@@ -16,7 +16,7 @@ import Sidebar from '@/features/center-details/sections/Sidebar';
 import BookingWizard from '@/features/center-details/booking/BookingWizard';
 import PackagePurchaseWizard from '@/features/center-details/packages/PackagePurchaseWizard';
 import { useTranslations } from "next-intl";
-import { fetchUserPurchasedPackages } from "@/lib/api";
+import { fetchCenterById, fetchUserPurchasedPackages, toggleCenterFavorite } from "@/lib/api";
 import toast from "react-hot-toast";
 
 
@@ -33,7 +33,9 @@ interface Props {
 export default function CenterDetailClient({ center }: Props) {
     const t = useTranslations();
     const [activeServiceTab, setActiveServiceTab] = useState("all");
-    const [isFav, setIsFav] = useState(false);
+    const [isFav, setIsFav] = useState(Boolean(center.is_favorite));
+    const [favLoading, setFavLoading] = useState(false);
+    const favLock = React.useRef(false);
     const [isBookingMode, setIsBookingMode] = useState(false);
     const [isPackageCheckoutMode, setIsPackageCheckoutMode] = useState(false);
     const [preSelectedServices, setPreSelectedServices] = useState<SelectedService[]>([]);
@@ -144,6 +146,57 @@ export default function CenterDetailClient({ center }: Props) {
     }, [center.id]);
 
     React.useEffect(() => {
+        setIsFav(Boolean(center.is_favorite));
+        const token = localStorage.getItem("authToken");
+        if (!token) return;
+
+        let cancelled = false;
+        void (async () => {
+            const fresh = await fetchCenterById(center.id, token);
+            if (!cancelled && !favLock.current && typeof fresh?.is_favorite === "boolean") {
+                setIsFav(fresh.is_favorite);
+            }
+        })();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [center.id, center.is_favorite]);
+
+    const handleToggleFav = async () => {
+        if (favLock.current) return;
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            toast.error(t("login_required"));
+            const redirect = encodeURIComponent(window.location.pathname);
+            const parts = window.location.pathname.split("/").filter(Boolean);
+            const maybeLocale = parts[0];
+            const loginPath = maybeLocale && maybeLocale.length <= 5 ? `/${maybeLocale}/login` : "/login";
+            window.location.href = `${loginPath}?redirect=${redirect}`;
+            return;
+        }
+
+        const previous = isFav;
+        favLock.current = true;
+        setIsFav(!previous);
+        setFavLoading(true);
+        const result = await toggleCenterFavorite(token, center.id);
+        favLock.current = false;
+        setFavLoading(false);
+
+        if (!result.success) {
+            setIsFav(previous);
+            toast.error(result.message || t("favorite_failed"));
+            return;
+        }
+
+        if (typeof result.isFavorite === "boolean") {
+            setIsFav(result.isFavorite);
+        }
+        toast.success(t("favorite_updated"));
+    };
+
+    React.useEffect(() => {
         const loadPurchasedPackages = async () => {
             const token = localStorage.getItem("authToken");
             if (!token) {
@@ -194,7 +247,7 @@ export default function CenterDetailClient({ center }: Props) {
                         <HeroBase
                             center={center}
                             isFav={isFav}
-                            onToggleFav={() => setIsFav(!isFav)}
+                            onToggleFav={handleToggleFav}
                         />
 
                         <Gallery
@@ -225,7 +278,14 @@ export default function CenterDetailClient({ center }: Props) {
                                 <Reviews reviews={mockReviews} />
                             </div>
 
-                            <Sidebar center={center} fallbackImage={fallbackImage} onBookNow={handleBookNow} />
+                            <Sidebar
+                                center={center}
+                                fallbackImage={fallbackImage}
+                                onBookNow={handleBookNow}
+                                isFav={isFav}
+                                onToggleFav={handleToggleFav}
+                                favLoading={favLoading}
+                            />
                         </div>
                     </Container>
 

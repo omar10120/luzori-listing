@@ -40,7 +40,7 @@ export async function fetchGlobalCategoriesClient(): Promise<GlobalCategory[]> {
       },
       cache: "no-store",
     });
- 
+
     if (!res.ok) {
       const errBody = await res.text();
       console.warn("[global-categories] HTTP", res.status, errBody.slice(0, 200));
@@ -69,7 +69,7 @@ export async function fetchCentersSearchClient(params: CentersSearchParams): Pro
   try {
     const qs = new URLSearchParams();
     qs.set("include", "global_categories,branches,categories,services,packages,about_us,workers,vacations");
-    qs.set("per_page", "31");
+    // qs.set("per_page", "10");
     if (params.global_category_id) qs.set("global_category_id", params.global_category_id);
     if (params.global_category_slug) qs.set("global_category_slug", params.global_category_slug);
     if (params.rate) qs.set("rate", params.rate);

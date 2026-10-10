@@ -3,15 +3,19 @@ import { motion } from 'framer-motion';
 import { Star, MapPin, Clock, ChevronRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import Button from '@/components/ui/Button';
+import { cn } from '@/lib/utils';
 import type { CenterDetailData } from '@/lib/apiEndpoints';
 
 interface SidebarProps {
     center: CenterDetailData;
     fallbackImage: string;
     onBookNow: () => void;
+    isFav: boolean;
+    onToggleFav: () => void;
+    favLoading?: boolean;
 }
 
-export default function Sidebar({ center, fallbackImage, onBookNow }: SidebarProps) {
+export default function Sidebar({ center, fallbackImage, onBookNow, isFav, onToggleFav, favLoading }: SidebarProps) {
     const t = useTranslations();
 
     return (
@@ -47,6 +51,22 @@ export default function Sidebar({ center, fallbackImage, onBookNow }: SidebarPro
                     <Button onClick={onBookNow} className="w-full py-4 text-base font-black uppercase tracking-wider shadow-lg shadow-gray-900/10">
                         {t('book_now')}
                     </Button>
+
+                    <button
+                        type="button"
+                        onClick={onToggleFav}
+                        disabled={favLoading}
+                        aria-pressed={isFav}
+                        className={cn(
+                            "mt-3 flex w-full items-center justify-center gap-2 rounded-xl border py-3.5 text-sm font-bold transition-colors disabled:opacity-60",
+                            isFav
+                                ? "border-amber-200 bg-amber-50 text-amber-700"
+                                : "border-gray-200 bg-white text-gray-800 hover:bg-gray-50"
+                        )}
+                    >
+                        <Star size={18} className={isFav ? "fill-amber-400 text-amber-400" : "text-gray-500"} />
+                        {isFav ? t("remove_from_favorites") : t("add_to_favorites")}
+                    </button>
 
                     {/* Info */}
                     <div className="mt-8 space-y-4 pt-6 border-t border-gray-50">

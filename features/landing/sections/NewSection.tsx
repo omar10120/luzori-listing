@@ -36,11 +36,15 @@ const NewSection: React.FC = () => {
     }
 
     return (
-        <BusinessCardScroll
-            heading={t('new_to_luzori')}
-            businesses={businesses}
-            rate="new_to"
-        />
+        <>
+        {businesses.length > 0 && (
+            <BusinessCardScroll
+                heading={t('new_to_luzori')}
+                businesses={businesses}
+                rate="new_to"
+            />
+        )}
+        </>
     );
 };
 

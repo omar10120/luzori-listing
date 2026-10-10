@@ -35,11 +35,15 @@ const TrendingSection: React.FC = () => {
     }
 
     return (
-        <BusinessCardScroll
-            heading={t('trending')}
-            businesses={businesses}
-            rate="trending"
-        />
+        <>
+        {businesses.length > 0 && (
+            <BusinessCardScroll
+                heading={t('trending')}
+                businesses={businesses}
+                rate="trending"
+            />
+        )}
+        </>
     );
 };
 

@@ -36,11 +36,15 @@ const RecommendedSection: React.FC = () => {
     }
 
     return (
-        <BusinessCardScroll
-            heading={t('recommended')}
-            businesses={businesses}
-            rate="recommended"
-        />
+        <>
+        {businesses.length > 0 && (
+            <BusinessCardScroll
+                heading={t('recommended')}
+                businesses={businesses}
+                rate="recommended"
+            />
+        )}
+        </>
     );
 };
 

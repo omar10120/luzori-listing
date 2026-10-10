@@ -11,6 +11,9 @@ import {
     CenterWorkersResponse,
     Worker,
     WorkersPagination,
+    FavoriteCenter,
+    FavoritesPagination,
+    FavoritesResponse,
 } from "./apiEndpoints";
 import { Business, CenterRate, } from "./types";
 
@@ -418,6 +421,53 @@ export const fetchCenterById = async (id: string | number, token?: string): Prom
     } catch (error) {
         console.error("Fetch Center Detail Error:", error);
         return null;
+    }
+};
+
+export const fetchUserFavorites = async (
+    token: string,
+    page = 1,
+    perPage = 20
+): Promise<{ favorites: FavoriteCenter[]; pagination: FavoritesPagination }> => {
+    const emptyPagination: FavoritesPagination = {
+        current_page: page,
+        last_page: 1,
+        per_page: perPage,
+        total: 0,
+    };
+
+    try {
+        const response = await fetch(API_ENDPOINTS.FAVORITES(page, perPage), {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            cache: "no-store",
+        });
+
+        if (!response.ok) {
+            console.error("Fetch Favorites Error:", response.status, response.statusText);
+            return { favorites: [], pagination: emptyPagination };
+        }
+
+        const json: FavoritesResponse = await response.json();
+        const favorites = Array.isArray(json.data?.favorites) ? json.data.favorites : [];
+        const pagination = json.data?.pagination;
+
+        return {
+            favorites,
+            pagination: {
+                current_page: pagination?.current_page ?? page,
+                last_page: pagination?.last_page ?? 1,
+                per_page: pagination?.per_page ?? perPage,
+                total: pagination?.total ?? favorites.length,
+            },
+        };
+    } catch (error) {
+        console.error("Fetch Favorites Error:", error);
+        return { favorites: [], pagination: emptyPagination };
     }
 };
 

@@ -21,6 +21,8 @@ export const API_ENDPOINTS = {
     USER_PACKAGES: (centerId: string | number) => `${API_BASE_URL}/app_api/packages/${centerId}`,
     BOOKING_LIST: `${API_BASE_URL}/app_api/booking/list`,
     FAVORITES_TOGGLE: `${API_BASE_URL}/app_api/favorites/toggle`,
+    FAVORITES: (page = 1, perPage = 20) =>
+        `${API_BASE_URL}/app_api/favorites?include=reviews&page=${page}&per_page=${perPage}`,
     INFO: `${API_BASE_URL}/app_api/info`,
     /** MyFatoorah Embedded V3 — Laravel creates a fresh single-use session */
     CREATE_PAYMENT_SESSION: `${API_BASE_URL}/app_api/payment/create-session`,
@@ -261,6 +263,40 @@ export interface CenterDetailResponse {
 export interface CenterResponse {
     message: string;
     data: CenterDetailData[];
+}
+
+export interface FavoriteCenterCategory {
+    id: number;
+    name: string;
+    slug: string;
+}
+
+export interface FavoriteCenter {
+    id: number;
+    name: string;
+    domain: string;
+    status: string;
+    rate: string | null;
+    logo: string | null;
+    primary_images: string[];
+    global_categories: FavoriteCenterCategory[];
+    is_favorite: boolean;
+    favorited_at: string;
+}
+
+export interface FavoritesPagination {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+}
+
+export interface FavoritesResponse {
+    message: string;
+    data: {
+        favorites: FavoriteCenter[];
+        pagination: FavoritesPagination;
+    };
 }
 
 export interface InfoContent {

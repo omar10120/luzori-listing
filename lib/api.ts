@@ -7,7 +7,10 @@ import {
     BookingListResponse,
     BookingListItem,
     UserPurchasedPackage,
-    CenterListResponse
+    CenterListResponse,
+    CenterWorkersResponse,
+    Worker,
+    WorkersPagination,
 } from "./apiEndpoints";
 import { Business, CenterRate, } from "./types";
 
@@ -32,7 +35,7 @@ const mapCenterToBusiness = (item: CenterResponse["data"][number]): Business => 
 
 export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
     try {
-        const response = await fetch(`${API_ENDPOINTS.CENTERS}?rate=${rate}&include=global_categories,branches,categories,services,packages,about_us,workers,vacations`, {
+        const response = await fetch(`${API_ENDPOINTS.CENTERS}?rate=${rate}&include=${API_ENDPOINTS.CENTER_LIST_INCLUDE}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
         });
@@ -339,6 +342,56 @@ export const loginCenter = async (credentials: any): Promise<{ success: boolean;
             success: false,
             message: "An unexpected error occurred during login",
         };
+    }
+};
+
+export const fetchCenterWorkers = async (
+    centerId: string | number,
+    page = 1,
+    perPage = 20
+): Promise<{ workers: Worker[]; pagination: WorkersPagination }> => {
+    const emptyPagination: WorkersPagination = {
+        current_page: page,
+        last_page: 1,
+        per_page: perPage,
+        total: 0,
+        next_page_url: null,
+        prev_page_url: null,
+    };
+
+    try {
+        const response = await fetch(API_ENDPOINTS.CENTER_WORKERS(centerId, page, perPage), {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            cache: "no-store",
+        });
+
+        if (!response.ok) {
+            console.error("Fetch Center Workers Error:", response.status, response.statusText);
+            return { workers: [], pagination: emptyPagination };
+        }
+
+        const json: CenterWorkersResponse = await response.json();
+        const pageData = json.data;
+        const workers = Array.isArray(pageData?.data) ? pageData.data : [];
+
+        return {
+            workers,
+            pagination: {
+                current_page: pageData?.current_page ?? page,
+                last_page: pageData?.last_page ?? 1,
+                per_page: pageData?.per_page ?? perPage,
+                total: pageData?.total ?? workers.length,
+                next_page_url: pageData?.next_page_url ?? null,
+                prev_page_url: pageData?.prev_page_url ?? null,
+            },
+        };
+    } catch (error) {
+        console.error("Fetch Center Workers Error:", error);
+        return { workers: [], pagination: emptyPagination };
     }
 };
 

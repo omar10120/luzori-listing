@@ -10,9 +10,12 @@ interface TeamMember {
 
 interface TeamProps {
     team: TeamMember[];
+    hasMore?: boolean;
+    loading?: boolean;
+    onLoadMore?: () => void;
 }
 
-export default function Team({ team }: TeamProps) {
+export default function Team({ team, hasMore, loading, onLoadMore }: TeamProps) {
     const t = useTranslations();
 
     return (
@@ -33,6 +36,16 @@ export default function Team({ team }: TeamProps) {
                     </div>
                 ))}
             </div>
+            {hasMore && (
+                <button
+                    type="button"
+                    onClick={onLoadMore}
+                    disabled={loading}
+                    className="mt-6 text-sm font-bold text-gray-900 hover:underline disabled:opacity-60"
+                >
+                    {t("see_more")}
+                </button>
+            )}
         </section>
     );
 }

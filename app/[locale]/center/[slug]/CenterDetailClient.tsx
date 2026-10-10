@@ -16,7 +16,7 @@ import Sidebar from '@/features/center-details/sections/Sidebar';
 import BookingWizard from '@/features/center-details/booking/BookingWizard';
 import PackagePurchaseWizard from '@/features/center-details/packages/PackagePurchaseWizard';
 import { useTranslations } from "next-intl";
-import { fetchCenterById, fetchUserPurchasedPackages, toggleCenterFavorite } from "@/lib/api";
+import { fetchCenterById, fetchCenterWorkers, fetchUserPurchasedPackages, toggleCenterFavorite } from "@/lib/api";
 import toast from "react-hot-toast";
 
 
@@ -41,6 +41,10 @@ export default function CenterDetailClient({ center }: Props) {
     const [preSelectedServices, setPreSelectedServices] = useState<SelectedService[]>([]);
     const [selectedPackageIds, setSelectedPackageIds] = useState<number[]>([]);
     const [purchasedPackages, setPurchasedPackages] = useState<UserPurchasedPackage[]>([]);
+    const [team, setTeam] = useState<{ id: number; name: string; role: string; avatar: string }[]>([]);
+    const [teamPage, setTeamPage] = useState(1);
+    const [teamLastPage, setTeamLastPage] = useState(1);
+    const [teamLoading, setTeamLoading] = useState(true);
 
     const handleBookNow = (service?: Service & { category?: string }) => {
         if (service) {
@@ -82,12 +86,6 @@ export default function CenterDetailClient({ center }: Props) {
     const displayImages = center.primary_images && center.primary_images.length > 0
         ? center.primary_images
         : [fallbackImage];
-    const mockTeam = [
-        { id: 1, name: "Sarah", role: t("center_team_role_senior_stylist"), avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face" },
-        { id: 2, name: "Nadia", role: t("center_team_role_colorist"), avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face" },
-        { id: 3, name: "Layla", role: t("center_team_role_nail_tech"), avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face" },
-        { id: 4, name: "Amira", role: t("center_team_role_therapist"), avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face" },
-    ];
     const mockReviews = [
         {
             id: 1,
@@ -196,6 +194,41 @@ export default function CenterDetailClient({ center }: Props) {
         toast.success(t("favorite_updated"));
     };
 
+    const mapTeam = React.useCallback((workers: { id: number; name: string; image: string; branch_name?: string | null }[]) => {
+        return workers.map((worker) => ({
+            id: worker.id,
+            name: worker.name,
+            role: worker.branch_name || t("professional"),
+            avatar: worker.image,
+        }));
+    }, [t]);
+
+    React.useEffect(() => {
+        let cancelled = false;
+        setTeamLoading(true);
+        void (async () => {
+            const result = await fetchCenterWorkers(center.id, 1, 20);
+            if (cancelled) return;
+            setTeam(mapTeam(result.workers));
+            setTeamPage(result.pagination.current_page);
+            setTeamLastPage(result.pagination.last_page);
+            setTeamLoading(false);
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, [center.id, mapTeam]);
+
+    const loadMoreTeam = async () => {
+        if (teamLoading || teamPage >= teamLastPage) return;
+        setTeamLoading(true);
+        const result = await fetchCenterWorkers(center.id, teamPage + 1, 20);
+        setTeam((prev) => [...prev, ...mapTeam(result.workers)]);
+        setTeamPage(result.pagination.current_page);
+        setTeamLastPage(result.pagination.last_page);
+        setTeamLoading(false);
+    };
+
     React.useEffect(() => {
         const loadPurchasedPackages = async () => {
             const token = localStorage.getItem("authToken");
@@ -273,7 +306,14 @@ export default function CenterDetailClient({ center }: Props) {
 
                                 <About centerName={center.name} />
 
-                                <Team team={mockTeam} />
+                                {(teamLoading || team.length > 0) && (
+                                    <Team
+                                        team={team}
+                                        hasMore={teamPage < teamLastPage}
+                                        loading={teamLoading}
+                                        onLoadMore={loadMoreTeam}
+                                    />
+                                )}
 
                                 <Reviews reviews={mockReviews} />
                             </div>

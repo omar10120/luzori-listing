@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Container from "@/components/ui/Container";
-import type { CenterDetailData, CenterPackage, Service, UserPurchasedPackage } from "@/lib/apiEndpoints";
+import type { CenterDetailData, CenterPackage, CenterReview, Service, UserPurchasedPackage } from "@/lib/apiEndpoints";
 import type { SelectedService } from '@/features/center-details/booking/BookingWizard';
 
 import Header from '@/features/center-details/sections/Header';
@@ -16,7 +16,17 @@ import Sidebar from '@/features/center-details/sections/Sidebar';
 import BookingWizard from '@/features/center-details/booking/BookingWizard';
 import PackagePurchaseWizard from '@/features/center-details/packages/PackagePurchaseWizard';
 import { useTranslations } from "next-intl";
-import { fetchCenterById, fetchCenterWorkers, fetchUserPurchasedPackages, toggleCenterFavorite } from "@/lib/api";
+import {
+    createCenterReview,
+    deleteCenterReview,
+    fetchCenterById,
+    fetchCenterReviews,
+    fetchCenterWorkers,
+    fetchMyCenterReview,
+    fetchUserPurchasedPackages,
+    toggleCenterFavorite,
+    updateCenterReview,
+} from "@/lib/api";
 import toast from "react-hot-toast";
 
 
@@ -45,6 +55,16 @@ export default function CenterDetailClient({ center }: Props) {
     const [teamPage, setTeamPage] = useState(1);
     const [teamLastPage, setTeamLastPage] = useState(1);
     const [teamLoading, setTeamLoading] = useState(true);
+    const [reviews, setReviews] = useState<CenterReview[]>([]);
+    const [myReview, setMyReview] = useState<CenterReview | null>(null);
+    const [reviewsAvg, setReviewsAvg] = useState<number | null>(center.avg_rating == null ? null : Number(center.avg_rating));
+    const [reviewsCount, setReviewsCount] = useState(center.reviews_count ?? 0);
+    const [reviewsPage, setReviewsPage] = useState(1);
+    const [reviewsLastPage, setReviewsLastPage] = useState(1);
+    const [reviewsLoading, setReviewsLoading] = useState(false);
+    const [reviewSubmitting, setReviewSubmitting] = useState(false);
+    const [isAuthed, setIsAuthed] = useState(false);
+    const [reviewsReady, setReviewsReady] = useState(false);
 
     const handleBookNow = (service?: Service & { category?: string }) => {
         if (service) {
@@ -86,29 +106,6 @@ export default function CenterDetailClient({ center }: Props) {
     const displayImages = center.primary_images && center.primary_images.length > 0
         ? center.primary_images
         : [fallbackImage];
-    const mockReviews = [
-        {
-            id: 1,
-            author: "Fatima K.",
-            rating: 5,
-            text: t("center_review_1_text"),
-            date: t("center_review_1_date"),
-        },
-        {
-            id: 2,
-            author: "Mariam S.",
-            rating: 4,
-            text: t("center_review_2_text"),
-            date: t("center_review_2_date"),
-        },
-        {
-            id: 3,
-            author: "Noura A.",
-            rating: 5,
-            text: t("center_review_3_text"),
-            date: t("center_review_3_date"),
-        },
-    ];
 
     useEffect(() => {
         if (typeof window === "undefined") return;
@@ -161,16 +158,86 @@ export default function CenterDetailClient({ center }: Props) {
         };
     }, [center.id, center.is_favorite]);
 
+    const redirectToLogin = () => {
+        toast.error(t("login_required"));
+        const redirect = encodeURIComponent(window.location.pathname);
+        const parts = window.location.pathname.split("/").filter(Boolean);
+        const maybeLocale = parts[0];
+        const loginPath = maybeLocale && maybeLocale.length <= 5 ? `/${maybeLocale}/login` : "/login";
+        window.location.href = `${loginPath}?redirect=${redirect}`;
+    };
+
+    const loadReviews = React.useCallback(async (page: number) => {
+        const token = localStorage.getItem("authToken");
+        setIsAuthed(Boolean(token));
+        if (!token) {
+            setReviews([]);
+            setMyReview(null);
+            setReviewsReady(true);
+            return;
+        }
+
+        setReviewsLoading(true);
+        const [list, mine] = await Promise.all([
+            fetchCenterReviews(token, center.id, page),
+            fetchMyCenterReview(token, center.id),
+        ]);
+        setReviews(list.reviews);
+        setReviewsAvg(list.avgRating);
+        setReviewsCount(list.reviewsCount);
+        setReviewsLastPage(list.pagination.last_page);
+        setMyReview(mine);
+        setReviewsLoading(false);
+        setReviewsReady(true);
+    }, [center.id]);
+
+    const handleReviewSubmit = async (payload: { rating: number; comment: string | null }) => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            redirectToLogin();
+            return;
+        }
+
+        setReviewSubmitting(true);
+        const result = myReview
+            ? await updateCenterReview(token, myReview.id, payload)
+            : await createCenterReview(token, { center_id: center.id, ...payload });
+        setReviewSubmitting(false);
+
+        if (!result.success) {
+            toast.error(result.message || t("review_failed"));
+            return;
+        }
+
+        toast.success(t("review_saved"));
+        await loadReviews(reviewsPage);
+    };
+
+    const handleReviewDelete = async () => {
+        const token = localStorage.getItem("authToken");
+        if (!token || !myReview) {
+            redirectToLogin();
+            return;
+        }
+
+        setReviewSubmitting(true);
+        const result = await deleteCenterReview(token, myReview.id);
+        setReviewSubmitting(false);
+
+        if (!result.success) {
+            toast.error(result.message || t("review_failed"));
+            return;
+        }
+
+        toast.success(t("review_deleted"));
+        await loadReviews(reviewsPage);
+    };
+
     const handleToggleFav = async () => {
         if (favLock.current) return;
         const token = localStorage.getItem("authToken");
         if (!token) {
-            toast.error(t("login_required"));
-            const redirect = encodeURIComponent(window.location.pathname);
-            const parts = window.location.pathname.split("/").filter(Boolean);
-            const maybeLocale = parts[0];
-            const loginPath = maybeLocale && maybeLocale.length <= 5 ? `/${maybeLocale}/login` : "/login";
-            window.location.href = `${loginPath}?redirect=${redirect}`;
+            redirectToLogin();
             return;
         }
 
@@ -228,6 +295,17 @@ export default function CenterDetailClient({ center }: Props) {
         setTeamLastPage(result.pagination.last_page);
         setTeamLoading(false);
     };
+
+    React.useEffect(() => {
+        let cancelled = false;
+        void (async () => {
+            if (cancelled) return;
+            await loadReviews(reviewsPage);
+        })();
+        return () => {
+            cancelled = true;
+        };
+    }, [loadReviews, reviewsPage]);
 
     React.useEffect(() => {
         const loadPurchasedPackages = async () => {
@@ -315,7 +393,22 @@ export default function CenterDetailClient({ center }: Props) {
                                     />
                                 )}
 
-                                <Reviews reviews={mockReviews} />
+                                <Reviews
+                                    reviews={reviews}
+                                    avgRating={reviewsAvg}
+                                    reviewsCount={reviewsCount}
+                                    myReview={myReview}
+                                    isAuthenticated={isAuthed}
+                                    loading={reviewsLoading}
+                                    ready={reviewsReady}
+                                    submitting={reviewSubmitting}
+                                    page={reviewsPage}
+                                    lastPage={reviewsLastPage}
+                                    onPageChange={setReviewsPage}
+                                    onRequireLogin={redirectToLogin}
+                                    onSubmit={handleReviewSubmit}
+                                    onDelete={handleReviewDelete}
+                                />
                             </div>
 
                             <Sidebar

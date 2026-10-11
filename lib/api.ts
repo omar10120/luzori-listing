@@ -14,6 +14,10 @@ import {
     FavoriteCenter,
     FavoritesPagination,
     FavoritesResponse,
+    CenterReview,
+    CenterReviewsPagination,
+    CenterReviewsResponse,
+    MyCenterReviewResponse,
 } from "./apiEndpoints";
 import { Business, CenterRate, } from "./types";
 
@@ -470,6 +474,133 @@ export const fetchUserFavorites = async (
         return { favorites: [], pagination: emptyPagination };
     }
 };
+
+export const fetchCenterReviews = async (
+    token: string,
+    centerId: string | number,
+    page = 1,
+    perPage = 20
+): Promise<{
+    reviews: CenterReview[];
+    avgRating: number | null;
+    reviewsCount: number;
+    pagination: CenterReviewsPagination;
+}> => {
+    const emptyPagination: CenterReviewsPagination = {
+        current_page: page,
+        last_page: 1,
+        per_page: perPage,
+        total: 0,
+    };
+
+    try {
+        const response = await fetch(API_ENDPOINTS.CENTER_REVIEWS(centerId, page, perPage), {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            cache: "no-store",
+        });
+
+        if (!response.ok) {
+            console.error("Fetch Center Reviews Error:", response.status, response.statusText);
+            return { reviews: [], avgRating: null, reviewsCount: 0, pagination: emptyPagination };
+        }
+
+        const json: CenterReviewsResponse = await response.json();
+        const reviews = Array.isArray(json.data?.reviews) ? json.data.reviews : [];
+        const avg = json.data?.avg_rating;
+        const avgRating = avg === null || avg === undefined || avg === "" ? null : Number(avg);
+
+        return {
+            reviews,
+            avgRating: Number.isFinite(avgRating) ? avgRating : null,
+            reviewsCount: json.data?.reviews_count ?? reviews.length,
+            pagination: {
+                current_page: json.data?.pagination?.current_page ?? page,
+                last_page: json.data?.pagination?.last_page ?? 1,
+                per_page: json.data?.pagination?.per_page ?? perPage,
+                total: json.data?.pagination?.total ?? reviews.length,
+            },
+        };
+    } catch (error) {
+        console.error("Fetch Center Reviews Error:", error);
+        return { reviews: [], avgRating: null, reviewsCount: 0, pagination: emptyPagination };
+    }
+};
+
+export const fetchMyCenterReview = async (
+    token: string,
+    centerId: string | number
+): Promise<CenterReview | null> => {
+    try {
+        const response = await fetch(API_ENDPOINTS.MY_CENTER_REVIEW(centerId), {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            cache: "no-store",
+        });
+
+        if (!response.ok) return null;
+
+        const json: MyCenterReviewResponse = await response.json();
+        if (!json.data?.has_review || !json.data.review) return null;
+        return json.data.review;
+    } catch (error) {
+        console.error("Fetch My Review Error:", error);
+        return null;
+    }
+};
+
+async function mutateReview(
+    url: string,
+    method: "POST" | "PUT" | "DELETE",
+    token: string,
+    body?: Record<string, unknown>
+): Promise<{ success: boolean; message: string }> {
+    try {
+        const response = await fetch(url, {
+            method,
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+                ...(body ? { "Content-Type": "application/json" } : {}),
+            },
+            body: body ? JSON.stringify(body) : undefined,
+        });
+
+        const json = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            return { success: false, message: json.message || "Failed" };
+        }
+        return { success: true, message: json.message || "Done Successfully" };
+    } catch (error) {
+        console.error("Review Mutation Error:", error);
+        return { success: false, message: "An unexpected error occurred" };
+    }
+}
+
+export async function createCenterReview(
+    token: string,
+    payload: { center_id: number; rating: number; comment: string | null }
+) {
+    return mutateReview(API_ENDPOINTS.REVIEWS, "POST", token, payload);
+}
+
+export async function updateCenterReview(
+    token: string,
+    reviewId: number,
+    payload: { rating: number; comment: string | null }
+) {
+    return mutateReview(API_ENDPOINTS.REVIEW_BY_ID(reviewId), "PUT", token, payload);
+}
+
+export async function deleteCenterReview(token: string, reviewId: number) {
+    return mutateReview(API_ENDPOINTS.REVIEW_BY_ID(reviewId), "DELETE", token);
+}
 
 export const toggleCenterFavorite = async (
     token: string,

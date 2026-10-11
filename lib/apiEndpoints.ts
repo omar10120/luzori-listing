@@ -23,6 +23,11 @@ export const API_ENDPOINTS = {
     FAVORITES_TOGGLE: `${API_BASE_URL}/app_api/favorites/toggle`,
     FAVORITES: (page = 1, perPage = 20) =>
         `${API_BASE_URL}/app_api/favorites?include=reviews&page=${page}&per_page=${perPage}`,
+    REVIEWS: `${API_BASE_URL}/app_api/reviews`,
+    REVIEW_BY_ID: (id: string | number) => `${API_BASE_URL}/app_api/reviews/${id}`,
+    CENTER_REVIEWS: (centerId: string | number, page = 1, perPage = 20) =>
+        `${API_BASE_URL}/app_api/reviews/center/${centerId}?page=${page}&per_page=${perPage}`,
+    MY_CENTER_REVIEW: (centerId: string | number) => `${API_BASE_URL}/app_api/reviews/${centerId}/mine`,
     INFO: `${API_BASE_URL}/app_api/info`,
     /** MyFatoorah Embedded V3 — Laravel creates a fresh single-use session */
     CREATE_PAYMENT_SESSION: `${API_BASE_URL}/app_api/payment/create-session`,
@@ -263,6 +268,49 @@ export interface CenterDetailResponse {
 export interface CenterResponse {
     message: string;
     data: CenterDetailData[];
+}
+
+export interface CenterReviewUser {
+    id: number;
+    name: string;
+    image: string | null;
+}
+
+export interface CenterReview {
+    id: number;
+    center_id: number;
+    rating: number;
+    comment: string | null;
+    user: CenterReviewUser;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface CenterReviewsPagination {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+}
+
+export interface CenterReviewsResponse {
+    message: string;
+    data: {
+        center_id: number;
+        avg_rating: number | string | null;
+        reviews_count: number;
+        reviews: CenterReview[];
+        pagination: CenterReviewsPagination;
+    };
+}
+
+export interface MyCenterReviewResponse {
+    message: string;
+    data: {
+        center_id: number;
+        has_review: boolean;
+        review: CenterReview | null;
+    };
 }
 
 export interface FavoriteCenterCategory {

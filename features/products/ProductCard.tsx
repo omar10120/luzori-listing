@@ -33,14 +33,14 @@ export default function ProductCard({ item, className, compact }: ProductCardPro
     return (
         <Link href={href} className={cn("block", className)}>
             <motion.article
-                whileHover={{ y: -6 }}
-                transition={{ duration: 0.22 }}
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.2 }}
                 className={cn(
-                    "group relative overflow-hidden rounded-3xl bg-white ring-1 ring-black/5 shadow-sm hover:shadow-xl hover:ring-[#225D5C]/20 transition-shadow",
-                    compact ? "w-full" : "w-56 sm:w-64"
+                    "group relative overflow-hidden rounded-2xl bg-white ring-1 ring-black/5 shadow-sm hover:shadow-lg hover:ring-[#225D5C]/20 transition-shadow",
+                    compact ? "w-full" : "w-40 sm:w-44"
                 )}
             >
-                <div className="relative aspect-[4/5] overflow-hidden bg-[#F3EFE8]">
+                <div className="relative aspect-square overflow-hidden bg-[#EAF1F0]">
                     <img
                         src={image}
                         alt={item.name}
@@ -49,26 +49,30 @@ export default function ProductCard({ item, className, compact }: ProductCardPro
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
                     {product?.brand && (
-                        <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#225D5C]">
+                        <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-[#225D5C]">
                             {product.brand}
                         </span>
                     )}
                     {price && (
-                        <span className="absolute bottom-3 right-3 rounded-full bg-[#225D5C] px-3 py-1 text-xs font-bold text-[#FFD6A8]">
+                        <span className="absolute bottom-2 right-2 rounded-full bg-[#225D5C] px-2 py-0.5 text-[10px] font-bold text-[#FFD6A8]">
                             {price}
                         </span>
                     )}
                 </div>
-                <div className="p-4">
-                    <h3 className="text-sm font-bold text-gray-900 line-clamp-2 leading-snug">{item.name}</h3>
-                    <div className="mt-2 flex items-center gap-1 text-xs text-gray-500">
-                        <MapPin size={12} className="shrink-0 text-[#225D5C]" />
+                <div className="p-2.5">
+                    <h3 className="text-xs font-bold text-gray-900 line-clamp-2 leading-snug">
+                        {item.name}
+                    </h3>
+                    <div className="mt-1.5 flex items-center gap-1 text-[10px] text-gray-500">
+                        <MapPin size={10} className="shrink-0 text-[#225D5C]" />
                         <span className="line-clamp-1">
                             {t("product_from_center")} {item.center_name}
                         </span>
                     </div>
                     {product?.category && (
-                        <p className="mt-1 text-[11px] text-gray-400 line-clamp-1">{product.category}</p>
+                        <p className="mt-0.5 text-[10px] text-gray-400 line-clamp-1">
+                            {product.category}
+                        </p>
                     )}
                 </div>
             </motion.article>

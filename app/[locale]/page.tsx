@@ -18,7 +18,7 @@ export default function Home() {
     <>
       <HeroSection />
 
-      <GlobalProductsSection />
+      
 
       <SectionWrapper>
         <RecommendedSection />
@@ -32,16 +32,19 @@ export default function Home() {
         <TrendingSection />
       </SectionWrapper>
 
+      <SectionWrapper>
+        <GlobalProductsSection />
+      </SectionWrapper>
       <AppDownloadSection />
 
       <SectionWrapper>
         <ReviewsSection />
       </SectionWrapper>
 
+
       <SectionWrapper>
         <StatsSection />
       </SectionWrapper>
-
 
       <BusinessSection />
 

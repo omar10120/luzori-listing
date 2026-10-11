@@ -18,6 +18,11 @@ import {
     CenterReviewsPagination,
     CenterReviewsResponse,
     MyCenterReviewResponse,
+    GlobalProductListItem,
+    GlobalProductsPagination,
+    GlobalProductsResponse,
+    CenterProductDetail,
+    CenterProductDetailResponse,
 } from "./apiEndpoints";
 import { Business, CenterRate, } from "./types";
 
@@ -829,6 +834,78 @@ export const createPaymentSession = async (
         };
     }
 };
+
+export async function fetchGlobalProducts(
+    page = 1,
+    perPage = 30
+): Promise<{ products: GlobalProductListItem[]; pagination: GlobalProductsPagination }> {
+    const emptyPagination: GlobalProductsPagination = {
+        current_page: page,
+        last_page: 1,
+        per_page: perPage,
+        total: 0,
+    };
+
+    try {
+        const response = await fetch(API_ENDPOINTS.GLOBAL_PRODUCTS(page, perPage), {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            cache: "no-store",
+        });
+
+        if (!response.ok) {
+            console.error("Fetch Global Products Error:", response.status, response.statusText);
+            return { products: [], pagination: emptyPagination };
+        }
+
+        const json: GlobalProductsResponse = await response.json();
+        const products = Array.isArray(json.data?.products) ? json.data.products : [];
+        const pagination = json.data?.pagination;
+
+        return {
+            products,
+            pagination: {
+                current_page: pagination?.current_page ?? page,
+                last_page: pagination?.last_page ?? 1,
+                per_page: pagination?.per_page ?? perPage,
+                total: pagination?.total ?? products.length,
+            },
+        };
+    } catch (error) {
+        console.error("Fetch Global Products Error:", error);
+        return { products: [], pagination: emptyPagination };
+    }
+}
+
+export async function fetchCenterProduct(
+    centerId: string | number,
+    productId: string | number
+): Promise<CenterProductDetail | null> {
+    try {
+        const response = await fetch(API_ENDPOINTS.CENTER_PRODUCT(centerId, productId), {
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            cache: "no-store",
+        });
+
+        if (!response.ok) {
+            console.error("Fetch Center Product Error:", response.status, response.statusText);
+            return null;
+        }
+
+        const json: CenterProductDetailResponse = await response.json();
+        return json.data ?? null;
+    } catch (error) {
+        console.error("Fetch Center Product Error:", error);
+        return null;
+    }
+}
 
 export const fetchInfo = async (): Promise<import("./apiEndpoints").InfoData | null> => {
     try {

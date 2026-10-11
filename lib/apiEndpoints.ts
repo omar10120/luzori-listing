@@ -28,6 +28,10 @@ export const API_ENDPOINTS = {
     CENTER_REVIEWS: (centerId: string | number, page = 1, perPage = 20) =>
         `${API_BASE_URL}/app_api/reviews/center/${centerId}?page=${page}&per_page=${perPage}`,
     MY_CENTER_REVIEW: (centerId: string | number) => `${API_BASE_URL}/app_api/reviews/${centerId}/mine`,
+    GLOBAL_PRODUCTS: (page = 1, perPage = 30) =>
+        `${API_BASE_URL}/app_api/global-products?page=${page}&per_page=${perPage}`,
+    CENTER_PRODUCT: (centerId: string | number, productId: string | number) =>
+        `${API_BASE_URL}/center_api/centers/${centerId}/products/${productId}`,
     INFO: `${API_BASE_URL}/app_api/info`,
     /** MyFatoorah Embedded V3 — Laravel creates a fresh single-use session */
     CREATE_PAYMENT_SESSION: `${API_BASE_URL}/app_api/payment/create-session`,
@@ -345,6 +349,106 @@ export interface FavoritesResponse {
         favorites: FavoriteCenter[];
         pagination: FavoritesPagination;
     };
+}
+
+export interface GlobalProductSku {
+    id: number;
+    sku?: string | null;
+    name?: string | null;
+    price?: number | string | null;
+    type?: string | null;
+    order?: number;
+}
+
+export interface GlobalProductNested {
+    id: number;
+    details_available?: boolean;
+    name: string;
+    description?: string | null;
+    barcode?: string | null;
+    brand?: string | null;
+    category?: string | null;
+    measure_unit?: string | null;
+    measure_amount?: number | string | null;
+    supply_price?: number | string | null;
+    retail_price?: number | string | null;
+    markup?: number | string | null;
+    allow_retail_sales?: boolean;
+    track_stock?: boolean;
+    primary_sku?: GlobalProductSku | null;
+    skus?: GlobalProductSku[];
+    image_url?: string | null;
+}
+
+export interface GlobalProductListItem {
+    id: number;
+    center_id: number;
+    center_name: string;
+    center_domain: string;
+    product_id: number;
+    name: string;
+    sort_order: number;
+    product: GlobalProductNested;
+}
+
+export interface GlobalProductsPagination {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+}
+
+export interface GlobalProductsResponse {
+    message: string;
+    data: {
+        products: GlobalProductListItem[];
+        pagination: GlobalProductsPagination;
+    };
+}
+
+export interface CenterProductBranch {
+    id: number;
+    name: string;
+    stock_quantity: number;
+}
+
+export interface CenterProductTranslation {
+    locale: string;
+    name: string;
+    text?: string | null;
+}
+
+export interface CenterProductDetail {
+    id: number;
+    center_id: number;
+    center_name: string;
+    center_domain: string;
+    name: string;
+    text?: string | null;
+    short_description?: string | null;
+    barcode?: string | null;
+    brand_id?: number | null;
+    brand_name?: string | null;
+    category_id?: number | null;
+    category_name?: string | null;
+    measure_unit?: string | null;
+    measure_amount?: number | string | null;
+    supply_price?: number | string | null;
+    retail_price?: number | string | null;
+    markup?: number | string | null;
+    allow_retail_sales?: boolean;
+    track_stock?: boolean;
+    image?: string | null;
+    gallery?: string[];
+    skus?: GlobalProductSku[];
+    primary_sku?: GlobalProductSku | null;
+    branches?: CenterProductBranch[];
+    translations?: CenterProductTranslation[];
+}
+
+export interface CenterProductDetailResponse {
+    message: string;
+    data: CenterProductDetail;
 }
 
 export interface InfoContent {

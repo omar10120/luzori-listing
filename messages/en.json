@@ -405,5 +405,17 @@
     "cancel": "cancel",
     "continue": "continue",
     "see_more": "See More",
+    "global_products": "Featured Products",
+    "global_products_subtitle": "Curated products from top venues",
+    "global_products_empty": "No products available yet",
+    "product_details": "Product details",
+    "product_brand": "Brand",
+    "product_category": "Category",
+    "product_from_center": "From",
+    "product_measure": "Size",
+    "product_sku": "SKU",
+    "product_stock": "Stock",
+    "product_branches": "Available at",
+    "view_center": "View venue",
     "premium_service_desc": "Premium services are available at this center. Please select a service to see the available packages."
 }

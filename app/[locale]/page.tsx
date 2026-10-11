@@ -1,4 +1,5 @@
 import HeroSection from "@/features/landing/sections/HeroSection";
+import GlobalProductsSection from "@/features/landing/sections/GlobalProductsSection";
 import RecommendedSection from "@/features/landing/sections/RecommendedSection";
 import NewSection from "@/features/landing/sections/NewSection";
 import TrendingSection from "@/features/landing/sections/TrendingSection";
@@ -16,6 +17,9 @@ export default function Home() {
   return (
     <>
       <HeroSection />
+
+      <GlobalProductsSection />
+
       <SectionWrapper>
         <RecommendedSection />
       </SectionWrapper>

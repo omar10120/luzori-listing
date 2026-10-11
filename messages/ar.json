@@ -405,5 +405,17 @@
     "cancel": "إلغاء",
     "continue": "متابعة",
     "see_more": "عرض المزيد",
+    "global_products": "منتجات مميزة",
+    "global_products_subtitle": "منتجات مختارة من أفضل المراكز",
+    "global_products_empty": "لا توجد منتجات بعد",
+    "product_details": "تفاصيل المنتج",
+    "product_brand": "العلامة",
+    "product_category": "التصنيف",
+    "product_from_center": "من",
+    "product_measure": "الحجم",
+    "product_sku": "رمز المنتج",
+    "product_stock": "المخزون",
+    "product_branches": "متوفر في",
+    "view_center": "عرض المركز",
     "premium_service_desc": "تتوفر الخدمات المميزة في هذا المركز. يرجى اختيار خدمة لعرض الباقات المتاحة."
 }

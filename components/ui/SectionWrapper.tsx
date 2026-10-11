@@ -28,7 +28,7 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({
                 duration: 0.7,
                 ease: [0.21, 0.47, 0.32, 0.98] // Premium cubic-bezier
             }}
-            className={cn("w-full py-2 sm:py-4", className)}
+            className={cn("w-full py-0 sm:py-2", className)}
         >
             <div className="mx-auto max-w-7xl">
                 {children}

@@ -59,7 +59,7 @@ export default function GlobalProductsSection() {
     if (products.length === 0) return null;
 
     return (
-        <section className="relative overflow-hidden py-8 sm:py-12">
+        <section className="relative overflow-hidden py-8 sm:py-4">
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(255,214,168,0.18),_transparent_55%),radial-gradient(ellipse_at_bottom_left,_rgba(34,93,92,0.12),_transparent_50%)]" />
             <Container className="relative">
                 <div className="flex items-end justify-between gap-4">

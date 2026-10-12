@@ -15,6 +15,7 @@ import {
     Percent,
     CircleDollarSign,
     ShoppingCart,
+    AlertTriangle,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Container from "@/components/ui/Container";
@@ -49,12 +50,39 @@ function uniqueImages(...groups: Array<string | null | undefined | string[]>) {
     return out;
 }
 
+type CartLike = {
+    getQuantity?: (centerId: number, productId: number) => number;
+    items?: Array<{
+        centerId?: number;
+        center_id?: number;
+        productId?: number;
+        product_id?: number;
+        quantity?: number;
+    }>;
+};
+
+function getCartQuantity(cart: CartLike, centerId: number, productId: number) {
+    if (typeof cart.getQuantity === "function") {
+        return Number(cart.getQuantity(centerId, productId)) || 0;
+    }
+    if (!Array.isArray(cart.items)) return 0;
+    return cart.items
+        .filter(
+            (item) =>
+                (item.centerId ?? item.center_id) === centerId &&
+                (item.productId ?? item.product_id) === productId
+        )
+        .reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+}
+
 export default function ProductDetailClient({ product }: ProductDetailClientProps) {
     const t = useTranslations();
     const locale = useLocale();
     const currency = t("activity_currency_aed");
-    const { addItem, isInCart } = useProductCart();
+    const cart = useProductCart();
+    const { addItem, isInCart } = cart;
     const alreadyInCart = isInCart(product.center_id, product.id);
+    const cartQuantity = getCartQuantity(cart, product.center_id, product.id);
 
     const translation = product.translations?.find((entry) => entry.locale === locale);
     const displayName = translation?.name || product.name;
@@ -111,6 +139,31 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         0
     );
     const skus = product.skus?.length ? product.skus : product.primary_sku ? [product.primary_sku] : [];
+
+    const stockLimit = typeof totalStock === "number" ? totalStock : null;
+    const outOfStock = stockLimit != null && stockLimit <= 0;
+    const reachedStockLimit = stockLimit != null && cartQuantity >= stockLimit;
+    const canAddToCart = !outOfStock && !reachedStockLimit;
+
+    const handleAddToCart = () => {
+        if (outOfStock) {
+            toast.error(t("product_out_of_stock"));
+            return;
+        }
+        if (stockLimit != null && cartQuantity + 1 > stockLimit) {
+            toast.error(t("product_stock_limit_warning", { stock: stockLimit }));
+            return;
+        }
+        addItem({
+            productId: product.id,
+            centerId: product.center_id,
+            centerName: product.center_name,
+            name: displayName,
+            price: Number(product.retail_price) || 0,
+            image: product.image || product.gallery?.[0] || null,
+        });
+        toast.success(t("cart_added"));
+    };
 
     return (
         <div className="min-h-screen bg-[#F7F5F1] pt-20 pb-16">
@@ -347,20 +400,17 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                             <Button
                                 size="sm"
                                 className="w-full sm:w-auto"
-                                onClick={() => {
-                                    addItem({
-                                        productId: product.id,
-                                        centerId: product.center_id,
-                                        centerName: product.center_name,
-                                        name: displayName,
-                                        price: Number(product.retail_price) || 0,
-                                        image: product.image || product.gallery?.[0] || null,
-                                    });
-                                    toast.success(t("cart_added"));
-                                }}
+                                disabled={!canAddToCart}
+                                onClick={handleAddToCart}
                             >
                                 <ShoppingCart size={14} className="mr-1.5" />
-                                {alreadyInCart ? t("cart_add_again") : t("add_to_cart")}
+                                {outOfStock
+                                    ? t("product_out_of_stock")
+                                    : reachedStockLimit
+                                    ? t("product_stock_limit_reached_short")
+                                    : alreadyInCart
+                                    ? t("cart_add_again")
+                                    : t("add_to_cart")}
                             </Button>
                             <Link href={`/center/${centerSlug}`} className="block">
                                 <Button size="sm" variant="outline" className="w-full sm:w-auto">
@@ -368,6 +418,18 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                                 </Button>
                             </Link>
                         </div>
+
+                        {(outOfStock || reachedStockLimit) && (
+                            <p className="flex items-center gap-1.5 rounded-lg bg-red-50 px-3 py-2 text-xs font-semibold text-red-600 ring-1 ring-red-200">
+                                <AlertTriangle size={13} className="shrink-0" />
+                                {outOfStock
+                                    ? t("product_out_of_stock")
+                                    : t("product_stock_limit_warning", {
+                                          stock: stockLimit ?? 0,
+                                          inCart: cartQuantity,
+                                      })}
+                            </p>
+                        )}
                     </div>
                 </div>
             </Container>

@@ -429,5 +429,15 @@
     "product_no": "لا",
     "product_branches": "متوفر في",
     "view_center": "عرض المركز",
+    "cart": "السلة",
+    "cart_empty": "سلتك فارغة",
+    "cart_remove": "إزالة",
+    "cart_checkout": "إتمام الشراء",
+    "cart_pay_now": "ادفع الآن",
+    "cart_added": "تمت الإضافة إلى السلة",
+    "cart_add_again": "أضف مرة أخرى",
+    "add_to_cart": "أضف إلى السلة",
+    "product_purchase_success": "تم شراء المنتجات بنجاح",
+    "product_purchase_failed": "تعذر إتمام شراء المنتجات",
     "premium_service_desc": "تتوفر الخدمات المميزة في هذا المركز. يرجى اختيار خدمة لعرض الباقات المتاحة."
 }

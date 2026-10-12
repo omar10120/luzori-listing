@@ -11,6 +11,7 @@ import {
 import { useTranslations } from 'next-intl';
 import { fetchUserProfile } from '@/lib/api';
 import LocaleSwitcher from '@/components/layout/LocaleSwitcher';
+import ProductCartButton from '@/components/cart/ProductCartButton';
 
 export default function Header() {
     const t = useTranslations();
@@ -65,6 +66,7 @@ export default function Header() {
 
                 {/* User Profile / Menu */}
                 <div className="flex items-center gap-2">
+                    <ProductCartButton />
                     {user ? (
                         <div className="flex items-center gap-3">
                             <div className="hidden flex-col items-end sm:flex text-right">

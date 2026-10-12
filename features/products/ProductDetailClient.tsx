@@ -14,6 +14,7 @@ import {
     ScanLine,
     Percent,
     CircleDollarSign,
+    ShoppingCart,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Container from "@/components/ui/Container";
@@ -21,6 +22,8 @@ import Button from "@/components/ui/Button";
 import type { CenterProductDetail } from "@/lib/apiEndpoints";
 import { generateCenterSlug } from "@/lib/slugify";
 import { cn } from "@/lib/utils";
+import { useProductCart } from "@/components/cart/ProductCartContext";
+import toast from "react-hot-toast";
 
 interface ProductDetailClientProps {
     product: CenterProductDetail;
@@ -50,6 +53,8 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     const t = useTranslations();
     const locale = useLocale();
     const currency = t("activity_currency_aed");
+    const { addItem, isInCart } = useProductCart();
+    const alreadyInCart = isInCart(product.center_id, product.id);
 
     const translation = product.translations?.find((entry) => entry.locale === locale);
     const displayName = translation?.name || product.name;
@@ -338,9 +343,27 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                             </div>
                         )}
 
-                        <div>
+                        <div className="flex flex-col gap-2 sm:flex-row">
+                            <Button
+                                size="sm"
+                                className="w-full sm:w-auto"
+                                onClick={() => {
+                                    addItem({
+                                        productId: product.id,
+                                        centerId: product.center_id,
+                                        centerName: product.center_name,
+                                        name: displayName,
+                                        price: Number(product.retail_price) || 0,
+                                        image: product.image || product.gallery?.[0] || null,
+                                    });
+                                    toast.success(t("cart_added"));
+                                }}
+                            >
+                                <ShoppingCart size={14} className="mr-1.5" />
+                                {alreadyInCart ? t("cart_add_again") : t("add_to_cart")}
+                            </Button>
                             <Link href={`/center/${centerSlug}`} className="block">
-                                <Button size="sm" className="w-full sm:w-auto">
+                                <Button size="sm" variant="outline" className="w-full sm:w-auto">
                                     {t("view_center")}
                                 </Button>
                             </Link>

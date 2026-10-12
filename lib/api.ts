@@ -728,6 +728,54 @@ export const storePackages = async (
     }
 };
 
+export async function buyProducts(
+    token: string,
+    payload: {
+        center_id: number;
+        products: number[];
+        payment_type: "wallet" | "service_visa";
+        sales_worker_id?: number;
+    }
+): Promise<{ success: boolean; message: string; data?: unknown }> {
+    try {
+        const response = await fetch(API_ENDPOINTS.BUY_PRODUCTS, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                center_id: payload.center_id,
+                products: payload.products,
+                payment_type: payload.payment_type,
+                sales_worker_id: payload.sales_worker_id ?? 1,
+            }),
+        });
+
+        const json = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            return {
+                success: false,
+                message: json.message || "Product purchase failed",
+                data: json.errors || json,
+            };
+        }
+
+        return {
+            success: true,
+            message: json.message || "Products purchased successfully",
+            data: json.data,
+        };
+    } catch (error) {
+        console.error("Buy Products Error:", error);
+        return {
+            success: false,
+            message: "An unexpected error occurred during product purchase",
+        };
+    }
+}
+
 export const fetchUserPurchasedPackages = async (
     token: string,
     centerId: string | number

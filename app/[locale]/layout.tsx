@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { PhoneRequirementProvider } from "@/components/auth/PhoneRequirementProvider";
+import { ProductCartProvider } from "@/components/cart/ProductCartContext";
+import { Toaster } from "react-hot-toast";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 import "../globals.css";
 import { NextIntlClientProvider } from 'next-intl';
@@ -61,11 +63,14 @@ export default async function RootLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <MuiProvider>
           <PhoneRequirementProvider>
-            <Navbar />
-            <main id="main-content">{children}</main>
-            <div className="site-footer">
-              <Footer />
-            </div>
+            <ProductCartProvider>
+              <Toaster position="top-center" />
+              <Navbar />
+              <main id="main-content">{children}</main>
+              <div className="site-footer">
+                <Footer />
+              </div>
+            </ProductCartProvider>
           </PhoneRequirementProvider>
           </MuiProvider>
         </NextIntlClientProvider>

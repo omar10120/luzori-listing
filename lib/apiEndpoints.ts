@@ -32,6 +32,7 @@ export const API_ENDPOINTS = {
         `${API_BASE_URL}/app_api/global-products?page=${page}&per_page=${perPage}`,
     CENTER_PRODUCT: (centerId: string | number, productId: string | number) =>
         `${API_BASE_URL}/center_api/centers/${centerId}/products/${productId}`,
+    BUY_PRODUCTS: `${API_BASE_URL}/app_api/buyproducts/add`,
     INFO: `${API_BASE_URL}/app_api/info`,
     /** MyFatoorah Embedded V3 — Laravel creates a fresh single-use session */
     CREATE_PAYMENT_SESSION: `${API_BASE_URL}/app_api/payment/create-session`,

@@ -14,6 +14,7 @@ import LocaleSwitcher from "./LocaleSwitcher";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { fetchUserProfile } from "@/lib/api";
+import ProductCartButton from "@/components/cart/ProductCartButton";
 
 const Navbar: React.FC = () => {
     const t = useTranslations();
@@ -73,6 +74,7 @@ const Navbar: React.FC = () => {
 
                     {/* Desktop right side */}
                     <div className="hidden items-center gap-6 sm:flex">
+                        <ProductCartButton />
                         <LocaleSwitcher />
                         {!user ? (
                             <div className="flex items-center gap-2">
@@ -172,6 +174,7 @@ const Navbar: React.FC = () => {
 
                     {/* Mobile menu toggle */}
                     <div className="flex items-center gap-2 sm:hidden">
+                        <ProductCartButton />
                         <LocaleSwitcher />
                         <button
                             type="button"

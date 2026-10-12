@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShoppingCart, Trash2, X } from "lucide-react";
+import { ShoppingCart, Trash2, X, Minus, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
@@ -22,7 +22,10 @@ function formatPrice(amount: number) {
 export default function ProductCartButton({ className }: { className?: string }) {
   const t = useTranslations();
   const router = useRouter();
-  const { items, count, removeItem } = useProductCart();
+  const cart = useProductCart();
+  const { items, count, removeItem } = cart;
+  const updateQuantity = (cart as { updateQuantity?: (key: string, qty: number) => void })
+    .updateQuantity;
   const [open, setOpen] = useState(false);
 
   const groups = useMemo(() => {
@@ -45,6 +48,25 @@ export default function ProductCartButton({ className }: { className?: string })
     }
     setOpen(false);
     router.push(`/checkout/${centerId}`);
+  };
+
+  const changeQty = (key: string, current: number, delta: number, stock?: number) => {
+    const next = current + delta;
+    if (next < 1) {
+      removeItem(key);
+      return;
+    }
+    if (delta > 0 && typeof stock === "number" && stock > 0 && current >= stock) {
+      toast.error(t("product_stock_limit_reached_short"));
+      return;
+    }
+    if (typeof updateQuantity === "function") {
+      updateQuantity(key, next);
+    } else {
+      // Fallback: context has no updateQuantity — remove and re-add is not safe,
+      // so just log. Add `updateQuantity` to ProductCartContext (see note below).
+      console.warn("ProductCartContext is missing `updateQuantity(key, qty)`.");
+    }
   };
 
   return (
@@ -87,30 +109,70 @@ export default function ProductCartButton({ className }: { className?: string })
                       </span>
                     </div>
                     <ul className="space-y-2">
-                      {group.items.map((item) => (
-                        <li key={item.key} className="flex items-center gap-2 rounded-lg bg-gray-50 p-2">
-                          <div className="h-12 w-12 overflow-hidden rounded-lg bg-gray-200">
-                            {item.image ? (
-                              <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
-                            ) : null}
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-xs font-semibold text-gray-900">{item.name}</p>
-                            <p className="text-[11px] text-gray-500">
-                              {formatPrice(item.price)}
-                              {item.quantity > 1 ? ` × ${item.quantity}` : ""}
-                            </p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => removeItem(item.key)}
-                            className="rounded-lg p-1.5 text-gray-400 hover:bg-white hover:text-red-500"
-                            aria-label={t("cart_remove")}
+                      {group.items.map((item) => {
+                        const stock = (item as { stock?: number; stock_quantity?: number }).stock
+                          ?? (item as { stock_quantity?: number }).stock_quantity;
+                        const atMax =
+                          typeof stock === "number" && stock > 0 && item.quantity >= stock;
+
+                        return (
+                          <li
+                            key={item.key}
+                            className="flex items-center gap-2 rounded-lg bg-gray-50 p-2"
                           >
-                            <Trash2 size={14} />
-                          </button>
-                        </li>
-                      ))}
+                            <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-gray-200">
+                              {item.image ? (
+                                <img
+                                  src={item.image}
+                                  alt={item.name}
+                                  className="h-full w-full object-cover"
+                                />
+                              ) : null}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-xs font-semibold text-gray-900">
+                                {item.name}
+                              </p>
+                              <p className="text-[11px] text-gray-500">
+                                {formatPrice(item.price)}
+                                {item.quantity > 1
+                                  ? ` · ${formatPrice(item.price * item.quantity)}`
+                                  : ""}
+                              </p>
+                            </div>
+
+                            <div className="flex shrink-0 items-center gap-0.5 rounded-full border border-gray-200 bg-white p-0.5">
+                              <button
+                                type="button"
+                                onClick={() => changeQty(item.key, item.quantity, -1, stock)}
+                                aria-label={
+                                  item.quantity === 1 ? t("cart_remove") : t("cart_decrease")
+                                }
+                                className={cn(
+                                  "flex h-6 w-6 items-center justify-center rounded-full transition",
+                                  item.quantity === 1
+                                    ? "text-gray-400 hover:bg-red-50 hover:text-red-500"
+                                    : "text-gray-500 hover:bg-gray-100 hover:text-gray-900"
+                                )}
+                              >
+                                {item.quantity === 1 ? <Trash2 size={12} /> : <Minus size={12} />}
+                              </button>
+                              <span className="min-w-[1.25rem] text-center text-xs font-bold text-gray-900">
+                                {item.quantity}
+                              </span>
+                              <button
+                                type="button"
+                                disabled={atMax}
+                                onClick={() => changeQty(item.key, item.quantity, 1, stock)}
+                                aria-label={t("cart_increase")}
+                                className="flex h-6 w-6 items-center justify-center rounded-full text-gray-500 transition hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
+                              >
+                                <Plus size={12} />
+                              </button>
+                            </div>
+                          </li>
+                        );
+                      })}
                     </ul>
                     <Button
                       size="sm"

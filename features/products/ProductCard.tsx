@@ -27,7 +27,7 @@ export default function ProductCard({ item, className, compact }: ProductCardPro
     const t = useTranslations();
     const product = item.product;
     const image = product?.image_url || FALLBACK;
-    const price = formatPrice(product?.retail_price, t("activity_currency_aed"));
+    const price = formatPrice(product?.supply_price ?? product?.retail_price, t("activity_currency_aed"));
     const href = `/global-products/${item.center_id}/${item.product_id}`;
 
     return (

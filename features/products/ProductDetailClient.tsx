@@ -96,8 +96,8 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     const [activeImage, setActiveImage] = useState(gallery[0] || "");
     const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-    const retailPrice = formatMoney(product.retail_price, currency);
-    const supplyPrice = formatMoney(product.supply_price, currency);
+    const retailPrice = formatMoney(product.supply_price ?? product.retail_price, currency);
+    const supplyPrice = formatMoney(product.supply_price ?? product.retail_price, currency);
     const markup = formatMoney(product.markup, currency);
     const centerSlug = generateCenterSlug(product.center_name, product.center_id);
     const measure =
@@ -159,7 +159,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             centerId: product.center_id,
             centerName: product.center_name,
             name: displayName,
-            price: Number(product.retail_price) || 0,
+            price: Number(product.supply_price ?? product.retail_price) || 0,
             image: product.image || product.gallery?.[0] || null,
         });
         toast.success(t("cart_added"));

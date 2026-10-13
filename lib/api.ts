@@ -732,12 +732,26 @@ export async function buyProducts(
     token: string,
     payload: {
         center_id: number;
-        products: number[];
-        payment_type: "wallet" | "service_visa";
+        branch_id: number;
+        products: Array<{ id: number; qty: number }>;
+        payment_type: "wallet" | "service_visa" | "sales_cash";
         sales_worker_id?: number;
+        worker_id?: number | null;
     }
-): Promise<{ success: boolean; message: string; data?: unknown }> {
+): Promise<{ success: boolean; message: string; data?: unknown; code?: "insufficient_stock" }> {
     try {
+        const body = {
+            center_id: payload.center_id,
+            branch_id: payload.branch_id,
+            products: payload.products.map((line) => ({
+                id: line.id,
+                qty: Math.max(1, Math.floor(Number(line.qty) || 1)),
+            })),
+            payment_type: payload.payment_type,
+            sales_worker_id: payload.sales_worker_id ?? 1,
+            worker_id: payload.worker_id ?? null,
+        };
+
         const response = await fetch(API_ENDPOINTS.BUY_PRODUCTS, {
             method: "POST",
             headers: {
@@ -745,26 +759,25 @@ export async function buyProducts(
                 Accept: "application/json",
                 Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify({
-                center_id: payload.center_id,
-                products: payload.products,
-                payment_type: payload.payment_type,
-                sales_worker_id: payload.sales_worker_id ?? 1,
-            }),
+            body: JSON.stringify(body),
         });
 
         const json = await response.json().catch(() => ({}));
-        if (!response.ok) {
+        const message = String(json.message || "");
+        const insufficientStock = /insufficient stock/i.test(message);
+
+        if (!response.ok || insufficientStock) {
             return {
                 success: false,
-                message: json.message || "Product purchase failed",
-                data: json.errors || json,
+                message: message || "Product purchase failed",
+                data: json.data ?? json.errors ?? json,
+                code: insufficientStock ? "insufficient_stock" : undefined,
             };
         }
 
         return {
             success: true,
-            message: json.message || "Products purchased successfully",
+            message: message || "Products purchased successfully",
             data: json.data,
         };
     } catch (error) {

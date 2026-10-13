@@ -57,7 +57,8 @@ export default function ProductCheckoutPage() {
     amount: number;
     reference: string;
     centerId: number;
-    productIds: number[];
+    branchId: number;
+    products: Array<{ id: number; qty: number }>;
   } | null>(null);
 
   useEffect(() => {
@@ -111,9 +112,11 @@ export default function ProductCheckoutPage() {
         const msg =
           outcome.code === "insufficient_balance"
             ? t("insufficient_balance")
-            : outcome.message.startsWith("product_") || outcome.message.startsWith("payment_")
-              ? t(outcome.message)
-              : outcome.message;
+            : outcome.code === "insufficient_stock"
+              ? outcome.message
+              : outcome.message.startsWith("product_") || outcome.message.startsWith("payment_")
+                ? t(outcome.message)
+                : outcome.message;
         toast.error(msg || t("product_purchase_failed"));
         return;
       }
@@ -123,7 +126,8 @@ export default function ProductCheckoutPage() {
           amount: outcome.amount,
           reference: outcome.customerReference,
           centerId: outcome.centerId,
-          productIds: outcome.productIds,
+          branchId: outcome.branchId,
+          products: outcome.products,
         });
         return;
       }
@@ -312,7 +316,8 @@ export default function ProductCheckoutPage() {
               const result = await finalizeProductPurchaseAfterPayment({
                 token,
                 centerId: embeddedPayment.centerId,
-                productIds: embeddedPayment.productIds,
+                branchId: embeddedPayment.branchId,
+                products: embeddedPayment.products,
               });
               setEmbeddedPayment(null);
               if (!result.success) {

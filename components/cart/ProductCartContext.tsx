@@ -92,12 +92,19 @@ function makeKey(centerId: number, productId: number) {
   return `${centerId}:${productId}`;
 }
 
-function getStockLimit(item: ProductCartItem): number | null {
-  const raw =
-    (item as { stock?: number | string | null }).stock ??
-    (item as { stock_quantity?: number | string | null }).stock_quantity;
-  const n = Number(raw);
-  return Number.isFinite(n) && n > 0 ? n : null;
+/** Returns max qty when stock is tracked; null means unlimited. */
+function getStockLimit(item: Pick<ProductCartItem, "stock">): number | null {
+  if (item.stock === null || item.stock === undefined) return null;
+  const n = Number(item.stock);
+  if (!Number.isFinite(n) || n < 0) return null;
+  return Math.floor(n);
+}
+
+function capQuantity(quantity: number, limit: number | null): number {
+  const next = Math.max(1, Math.floor(quantity));
+  if (limit == null) return next;
+  if (limit <= 0) return 0;
+  return Math.min(next, limit);
 }
 
 /* ------------------------------------------------------------------ */
@@ -131,28 +138,47 @@ export function ProductCartProvider({ children }: { children: React.ReactNode })
       const prev = getSnapshot();
       const existing = prev.find((row) => row.key === key);
       const incomingQty = item.quantity || 1;
+      const incomingStock =
+        item.stock === undefined ? undefined : getStockLimit({ stock: item.stock });
 
       if (existing) {
-        const limit = getStockLimit(existing);
+        const limit =
+          incomingStock !== undefined ? incomingStock : getStockLimit(existing);
+        if (limit != null && limit <= 0) return;
+
         const nextQty = existing.quantity + incomingQty;
-        const capped = limit != null ? Math.min(nextQty, limit) : nextQty;
+        const capped = capQuantity(nextQty, limit);
+        if (capped < 1) return;
+
         writeItems(
           prev.map((row) =>
-            row.key === key ? { ...row, quantity: capped } : row
+            row.key === key
+              ? {
+                  ...row,
+                  quantity: capped,
+                  stock: incomingStock !== undefined ? incomingStock : row.stock,
+                  branchId: item.branchId ?? row.branchId,
+                }
+              : row
           )
         );
         return;
       }
 
-      const limit = getStockLimit(item as ProductCartItem);
-      const initialQty = limit != null ? Math.min(incomingQty, limit) : incomingQty;
+      const limit = incomingStock !== undefined ? incomingStock : getStockLimit(item);
+      if (limit != null && limit <= 0) return;
+
+      const initialQty = capQuantity(incomingQty, limit);
+      if (initialQty < 1) return;
+
       writeItems([
         ...prev,
         {
           ...item,
           key,
-          quantity: Math.max(1, initialQty),
+          quantity: initialQty,
           price: Number(item.price) || 0,
+          stock: limit,
         },
       ]);
     },
@@ -175,7 +201,11 @@ export function ProductCartProvider({ children }: { children: React.ReactNode })
       writeItems(prev.filter((row) => row.key !== key));
       return;
     }
-    if (limit != null && next > limit) next = limit;
+    next = capQuantity(next, limit);
+    if (next < 1) {
+      writeItems(prev.filter((row) => row.key !== key));
+      return;
+    }
 
     writeItems(prev.map((row) => (row.key === key ? { ...row, quantity: next } : row)));
   }, []);
@@ -186,8 +216,10 @@ export function ProductCartProvider({ children }: { children: React.ReactNode })
     if (!target) return;
 
     const limit = getStockLimit(target);
-    const nextQty = target.quantity + step;
-    const capped = limit != null ? Math.min(nextQty, limit) : nextQty;
+    if (limit != null && target.quantity >= limit) return;
+
+    const capped = capQuantity(target.quantity + step, limit);
+    if (capped < 1 || capped === target.quantity) return;
 
     writeItems(prev.map((row) => (row.key === key ? { ...row, quantity: capped } : row)));
   }, []);

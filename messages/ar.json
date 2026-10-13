@@ -441,5 +441,7 @@
     "premium_service_desc": "تتوفر الخدمات المميزة في هذا المركز. يرجى اختيار خدمة لعرض الباقات المتاحة.",
     "product_out_of_stock": "غير متاح",
     "product_stock_limit_reached_short": "تم الوصول إلى الحد الأقصى للمخزون",
-    "product_stock_limit_warning": "فقط {stock} متاح. لديك {inCart} في السلة."
+    "product_stock_limit_warning": "فقط {stock} متاح. لديك {inCart} في السلة.",
+    "cart_increase": "زيادة",
+    "cart_decrease": "إنقاص"
 }

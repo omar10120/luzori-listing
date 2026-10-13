@@ -154,6 +154,11 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             toast.error(t("product_stock_limit_warning", { stock: stockLimit }));
             return;
         }
+        const preferredBranch =
+            product.branches
+                ?.slice()
+                .sort((a, b) => Number(b.stock_quantity || 0) - Number(a.stock_quantity || 0))[0] ?? null;
+
         addItem({
             productId: product.id,
             centerId: product.center_id,
@@ -161,6 +166,8 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             name: displayName,
             price: Number(product.supply_price ?? product.retail_price) || 0,
             image: product.image || product.gallery?.[0] || null,
+            branchId: preferredBranch?.id ?? product.branches?.[0]?.id ?? 1,
+            stock: product.track_stock ? (stockLimit ?? 0) : null,
         });
         toast.success(t("cart_added"));
     };

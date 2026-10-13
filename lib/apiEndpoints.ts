@@ -39,6 +39,23 @@ export const API_ENDPOINTS = {
     WALLET_BUY: `${API_BASE_URL}/app_api/wallet/buy`,
 };
 
+/** Line item for POST /app_api/buyproducts/add */
+export interface BuyProductLine {
+    id: number;
+    qty: number;
+}
+
+export type BuyProductPaymentType = "wallet" | "service_visa" | "sales_cash";
+
+export interface BuyProductsPayload {
+    center_id: number;
+    branch_id: number;
+    products: BuyProductLine[];
+    payment_type: BuyProductPaymentType;
+    sales_worker_id: number;
+    worker_id: number | null;
+}
+
 /** Single line item on a user booking (from booking list API). */
 export interface BookingListService {
     name: string;

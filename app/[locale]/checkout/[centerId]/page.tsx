@@ -40,7 +40,7 @@ export default function ProductCheckoutPage() {
   const router = useRouter();
   const params = useParams<{ centerId: string }>();
   const centerId = Number(params.centerId);
-  const { items, removeItem, clearCenter } = useProductCart();
+  const { items, removeItem, refreshCart } = useProductCart();
 
   const checkoutItems = useMemo(
     () => (Number.isFinite(centerId) ? items.filter((item) => item.centerId === centerId) : []),
@@ -59,6 +59,7 @@ export default function ProductCheckoutPage() {
     centerId: number;
     branchId: number;
     products: Array<{ id: number; qty: number }>;
+    cartItemIds: number[];
   } | null>(null);
 
   useEffect(() => {
@@ -128,11 +129,12 @@ export default function ProductCheckoutPage() {
           centerId: outcome.centerId,
           branchId: outcome.branchId,
           products: outcome.products,
+          cartItemIds: outcome.cartItemIds,
         });
         return;
       }
 
-      clearCenter(centerId);
+      await refreshCart();
       toast.success(outcome.message || t("product_purchase_success"));
       router.push("/global-products");
     } catch {
@@ -199,7 +201,12 @@ export default function ProductCheckoutPage() {
                       </p>
                       <button
                         type="button"
-                        onClick={() => removeItem(item.key)}
+                        onClick={() => {
+                          void (async () => {
+                            const result = await removeItem(item.key);
+                            if (!result.ok) toast.error(result.message);
+                          })();
+                        }}
                         className="rounded-lg p-2 text-gray-400 hover:bg-white hover:text-red-500"
                         aria-label={t("cart_remove")}
                       >
@@ -318,13 +325,14 @@ export default function ProductCheckoutPage() {
                 centerId: embeddedPayment.centerId,
                 branchId: embeddedPayment.branchId,
                 products: embeddedPayment.products,
+                cartItemIds: embeddedPayment.cartItemIds,
               });
               setEmbeddedPayment(null);
               if (!result.success) {
                 toast.error(result.message || t("product_purchase_failed"));
                 return;
               }
-              clearCenter(embeddedPayment.centerId);
+              await refreshCart();
               toast.success(t("product_purchase_success"));
               router.push("/global-products");
             })();

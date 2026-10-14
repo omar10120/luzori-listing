@@ -33,6 +33,11 @@ export const API_ENDPOINTS = {
     CENTER_PRODUCT: (centerId: string | number, productId: string | number) =>
         `${API_BASE_URL}/center_api/centers/${centerId}/products/${productId}`,
     BUY_PRODUCTS: `${API_BASE_URL}/app_api/buyproducts/add`,
+    CART: `${API_BASE_URL}/app_api/cart`,
+    CART_PRODUCTS: `${API_BASE_URL}/app_api/cart/products`,
+    CART_ITEM: (id: string | number) => `${API_BASE_URL}/app_api/cart/${id}`,
+    CART_CLEAR: `${API_BASE_URL}/app_api/cart/clear`,
+    CART_CHECKOUT_PAYLOAD: `${API_BASE_URL}/app_api/cart/checkout-payload`,
     INFO: `${API_BASE_URL}/app_api/info`,
     /** MyFatoorah Embedded V3 — Laravel creates a fresh single-use session */
     CREATE_PAYMENT_SESSION: `${API_BASE_URL}/app_api/payment/create-session`,
@@ -54,6 +59,55 @@ export interface BuyProductsPayload {
     payment_type: BuyProductPaymentType;
     sales_worker_id: number;
     worker_id: number | null;
+    clear_cart?: boolean;
+    cart_item_ids?: number[];
+}
+
+export interface ApiCartCenter {
+    id: number;
+    name: string;
+    domain: string;
+}
+
+export interface ApiCartItem {
+    id: number;
+    center_id: number;
+    center?: ApiCartCenter | null;
+    branch_id: number;
+    item_type: string;
+    item_id: number;
+    qty: number;
+    name: string;
+    sku?: string | null;
+    image_url?: string | null;
+    unit_price: number | string;
+    total_price: number | string;
+    request_payload?: BuyProductLine | null;
+    booking?: unknown;
+    created_at?: string;
+    updated_at?: string;
+}
+
+export interface ApiCartListResponse {
+    message: string;
+    data: {
+        items: ApiCartItem[];
+        count: number;
+        subtotal: number | string;
+    };
+}
+
+export interface ApiCartCheckoutPayload {
+    center_id: number;
+    branch_id: number;
+    products: BuyProductLine[];
+    cart_item_ids: number[];
+    subtotal: number | string;
+}
+
+export interface ApiCartCheckoutPayloadResponse {
+    message: string;
+    data: ApiCartCheckoutPayload;
 }
 
 /** Single line item on a user booking (from booking list API). */

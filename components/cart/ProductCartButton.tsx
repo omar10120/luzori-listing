@@ -128,7 +128,14 @@ export default function ProductCartButton({ className }: { className?: string })
                             <div className="flex shrink-0 items-center gap-0.5 rounded-full border border-gray-200 bg-white p-0.5">
                               <button
                                 type="button"
-                                onClick={() => decrementQuantity(item.key)}
+                                onClick={() => {
+                                  void (async () => {
+                                    const result = await decrementQuantity(item.key);
+                                    if (!result.ok && result.message !== "login_required") {
+                                      toast.error(result.message);
+                                    }
+                                  })();
+                                }}
                                 aria-label={
                                   item.quantity === 1 ? t("cart_remove") : t("cart_decrease")
                                 }
@@ -152,7 +159,16 @@ export default function ProductCartButton({ className }: { className?: string })
                                     toast.error(t("product_stock_limit_reached_short"));
                                     return;
                                   }
-                                  incrementQuantity(item.key);
+                                  void (async () => {
+                                    const result = await incrementQuantity(item.key);
+                                    if (!result.ok) {
+                                      toast.error(
+                                        result.message === "product_stock_limit_reached_short"
+                                          ? t("product_stock_limit_reached_short")
+                                          : result.message
+                                      );
+                                    }
+                                  })();
                                 }}
                                 aria-label={
                                   atMax

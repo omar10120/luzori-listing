@@ -435,6 +435,7 @@
     "cart_checkout": "إتمام الشراء",
     "cart_pay_now": "ادفع الآن",
     "cart_added": "تمت الإضافة إلى السلة",
+    "cart_add_failed": "تعذر الإضافة إلى السلة",
     "cart_add_again": "أضف مرة أخرى",
     "product_purchase_success": "تم شراء المنتجات بنجاح",
     "product_purchase_failed": "تعذر إتمام شراء المنتجات",

@@ -80,7 +80,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     const locale = useLocale();
     const currency = t("activity_currency_aed");
     const cart = useProductCart();
-    const { addItem, isInCart } = cart;
+    const { addItem, isInCart, mutating } = cart;
     const alreadyInCart = isInCart(product.center_id, product.id);
     const cartQuantity = getCartQuantity(cart, product.center_id, product.id);
 
@@ -145,7 +145,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     const reachedStockLimit = stockLimit != null && cartQuantity >= stockLimit;
     const canAddToCart = !outOfStock && !reachedStockLimit;
 
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
         if (outOfStock) {
             toast.error(t("product_out_of_stock"));
             return;
@@ -154,12 +154,21 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             toast.error(t("product_stock_limit_warning", { stock: stockLimit }));
             return;
         }
+
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            toast.error(t("login_required"));
+            const redirect = encodeURIComponent(window.location.pathname);
+            window.location.href = `/${locale}/login?redirect=${redirect}`;
+            return;
+        }
+
         const preferredBranch =
             product.branches
                 ?.slice()
                 .sort((a, b) => Number(b.stock_quantity || 0) - Number(a.stock_quantity || 0))[0] ?? null;
 
-        addItem({
+        const result = await addItem({
             productId: product.id,
             centerId: product.center_id,
             centerName: product.center_name,
@@ -169,6 +178,19 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             branchId: preferredBranch?.id ?? product.branches?.[0]?.id ?? 1,
             stock: product.track_stock ? (stockLimit ?? 0) : null,
         });
+
+        if (!result.ok) {
+            const msg =
+                result.message === "login_required"
+                    ? t("login_required")
+                    : result.message === "product_out_of_stock"
+                      ? t("product_out_of_stock")
+                      : result.message === "product_stock_limit_reached_short"
+                        ? t("product_stock_limit_reached_short")
+                        : result.message;
+            toast.error(msg || t("cart_add_failed"));
+            return;
+        }
         toast.success(t("cart_added"));
     };
 
@@ -407,8 +429,8 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                             <Button
                                 size="sm"
                                 className="w-full sm:w-auto"
-                                disabled={!canAddToCart}
-                                onClick={handleAddToCart}
+                                disabled={!canAddToCart || mutating}
+                                onClick={() => void handleAddToCart()}
                             >
                                 <ShoppingCart size={14} className="mr-1.5" />
                                 {outOfStock

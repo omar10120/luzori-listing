@@ -4,124 +4,52 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
-  useSyncExternalStore,
+  useRef,
+  useState,
 } from "react";
+import type { ApiCartItem } from "@/lib/apiEndpoints";
 import type { ProductCartItem } from "@/lib/productCartTypes";
+import {
+  addCartProduct,
+  clearCart,
+  fetchCart,
+  removeCartItem,
+  updateCartItem,
+} from "@/lib/api";
 
 export type { ProductCartItem };
 
-const STORAGE_KEY = "luzori_product_cart_v1";
+export type CartMutationResult = { ok: true } | { ok: false; message: string };
 
-/* ------------------------------------------------------------------ */
-/* External store (localStorage-backed)                                */
-/* ------------------------------------------------------------------ */
-
-let cachedRaw: string | null = null;
-let cachedItems: ProductCartItem[] = [];
-const listeners = new Set<() => void>();
-
-function readRaw(): string | null {
-  if (typeof window === "undefined") return null;
-  try {
-    return localStorage.getItem(STORAGE_KEY);
-  } catch {
-    return null;
-  }
-}
-
-function parseItems(raw: string | null): ProductCartItem[] {
-  if (!raw) return [];
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function getSnapshot(): ProductCartItem[] {
-  const raw = readRaw();
-  if (raw === cachedRaw) return cachedItems;
-  cachedRaw = raw;
-  cachedItems = parseItems(raw);
-  return cachedItems;
-}
-
-function getServerSnapshot(): ProductCartItem[] {
-  return [];
-}
-
-function subscribe(callback: () => void): () => void {
-  listeners.add(callback);
-
-  const onStorage = (event: StorageEvent) => {
-    if (event.key === STORAGE_KEY || event.key === null) callback();
-  };
-  if (typeof window !== "undefined") {
-    window.addEventListener("storage", onStorage);
-  }
-
-  return () => {
-    listeners.delete(callback);
-    if (typeof window !== "undefined") {
-      window.removeEventListener("storage", onStorage);
-    }
-  };
-}
-
-function writeItems(next: ProductCartItem[]) {
-  const raw = JSON.stringify(next);
-  cachedRaw = raw;
-  cachedItems = next;
-  if (typeof window !== "undefined") {
-    try {
-      localStorage.setItem(STORAGE_KEY, raw);
-    } catch {
-      /* ignore quota / privacy mode errors */
-    }
-  }
-  listeners.forEach((cb) => cb());
-}
-
-/* ------------------------------------------------------------------ */
-/* Helpers                                                             */
-/* ------------------------------------------------------------------ */
-
-function makeKey(centerId: number, productId: number) {
-  return `${centerId}:${productId}`;
-}
-
-/** Returns max qty when stock is tracked; null means unlimited. */
-function getStockLimit(item: Pick<ProductCartItem, "stock">): number | null {
-  if (item.stock === null || item.stock === undefined) return null;
-  const n = Number(item.stock);
-  if (!Number.isFinite(n) || n < 0) return null;
-  return Math.floor(n);
-}
-
-function capQuantity(quantity: number, limit: number | null): number {
-  const next = Math.max(1, Math.floor(quantity));
-  if (limit == null) return next;
-  if (limit <= 0) return 0;
-  return Math.min(next, limit);
-}
-
-/* ------------------------------------------------------------------ */
-/* Context                                                             */
-/* ------------------------------------------------------------------ */
+type AddCartInput = {
+  productId: number;
+  centerId: number;
+  centerName?: string;
+  name?: string;
+  price?: number;
+  image?: string | null;
+  quantity?: number;
+  branchId?: number | null;
+  stock?: number | null;
+  sku?: string | null;
+};
 
 interface ProductCartContextValue {
   items: ProductCartItem[];
   count: number;
   total: number;
-  addItem: (item: Omit<ProductCartItem, "key" | "quantity"> & { quantity?: number }) => void;
-  removeItem: (key: string) => void;
-  updateQuantity: (key: string, quantity: number) => void;
-  incrementQuantity: (key: string, step?: number) => void;
-  decrementQuantity: (key: string, step?: number) => void;
-  clearCenter: (centerId: number) => void;
-  clearAll: () => void;
+  loading: boolean;
+  mutating: boolean;
+  refreshCart: () => Promise<void>;
+  addItem: (item: AddCartInput) => Promise<CartMutationResult>;
+  removeItem: (key: string) => Promise<CartMutationResult>;
+  updateQuantity: (key: string, quantity: number) => Promise<CartMutationResult>;
+  incrementQuantity: (key: string, step?: number) => Promise<CartMutationResult>;
+  decrementQuantity: (key: string, step?: number) => Promise<CartMutationResult>;
+  clearCenter: (centerId: number) => Promise<CartMutationResult>;
+  clearAll: () => Promise<CartMutationResult>;
   itemsByCenter: (centerId: number) => ProductCartItem[];
   isInCart: (centerId: number, productId: number) => boolean;
   getQuantity: (centerId: number, productId: number) => number;
@@ -129,122 +57,232 @@ interface ProductCartContextValue {
 
 const ProductCartContext = createContext<ProductCartContextValue | null>(null);
 
+function readAuthToken(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    return localStorage.getItem("authToken");
+  } catch {
+    return null;
+  }
+}
+
+function stockKey(centerId: number, productId: number) {
+  return `${centerId}:${productId}`;
+}
+
+function getStockLimit(stock: number | null | undefined): number | null {
+  if (stock === null || stock === undefined) return null;
+  const n = Number(stock);
+  if (!Number.isFinite(n) || n < 0) return null;
+  return Math.floor(n);
+}
+
+function mapApiItem(
+  item: ApiCartItem,
+  stockHints: Map<string, number | null>
+): ProductCartItem {
+  const productId = Number(item.item_id);
+  const centerId = Number(item.center_id);
+  const hint = stockHints.get(stockKey(centerId, productId));
+  return {
+    key: String(item.id),
+    cartItemId: Number(item.id),
+    productId,
+    centerId,
+    centerName: item.center?.name || "",
+    name: item.name || "",
+    price: Number(item.unit_price) || 0,
+    totalPrice: Number(item.total_price) || 0,
+    image: item.image_url ?? null,
+    quantity: Math.max(1, Math.floor(Number(item.qty) || 1)),
+    branchId: item.branch_id != null ? Number(item.branch_id) : null,
+    sku: item.sku ?? null,
+    stock: hint !== undefined ? hint : null,
+  };
+}
+
+function fail(message: string): CartMutationResult {
+  return { ok: false, message };
+}
+
 export function ProductCartProvider({ children }: { children: React.ReactNode }) {
-  const items = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const [items, setItems] = useState<ProductCartItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [mutating, setMutating] = useState(false);
+  const stockHintsRef = useRef<Map<string, number | null>>(new Map());
+  const itemsRef = useRef<ProductCartItem[]>([]);
+  itemsRef.current = items;
 
-  const addItem = useCallback(
-    (item: Omit<ProductCartItem, "key" | "quantity"> & { quantity?: number }) => {
-      const key = makeKey(item.centerId, item.productId);
-      const prev = getSnapshot();
-      const existing = prev.find((row) => row.key === key);
-      const incomingQty = item.quantity || 1;
-      const incomingStock =
-        item.stock === undefined ? undefined : getStockLimit({ stock: item.stock });
+  const applyItems = useCallback((apiItems: ApiCartItem[]) => {
+    setItems(apiItems.map((row) => mapApiItem(row, stockHintsRef.current)));
+  }, []);
 
-      if (existing) {
-        const limit =
-          incomingStock !== undefined ? incomingStock : getStockLimit(existing);
-        if (limit != null && limit <= 0) return;
+  const refreshCart = useCallback(async () => {
+    const token = readAuthToken();
+    if (!token) {
+      setItems([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    try {
+      const result = await fetchCart(token, { item_type: "product" });
+      if (result.success) applyItems(result.items);
+      else setItems([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [applyItems]);
 
-        const nextQty = existing.quantity + incomingQty;
-        const capped = capQuantity(nextQty, limit);
-        if (capped < 1) return;
+  useEffect(() => {
+    void refreshCart();
 
-        writeItems(
-          prev.map((row) =>
-            row.key === key
-              ? {
-                  ...row,
-                  quantity: capped,
-                  stock: incomingStock !== undefined ? incomingStock : row.stock,
-                  branchId: item.branchId ?? row.branchId,
-                }
-              : row
-          )
-        );
-        return;
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === "authToken" || event.key === null) void refreshCart();
+    };
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [refreshCart]);
+
+  const withMutation = useCallback(
+    async (fn: (token: string) => Promise<CartMutationResult>): Promise<CartMutationResult> => {
+      const token = readAuthToken();
+      if (!token) return fail("login_required");
+      setMutating(true);
+      try {
+        return await fn(token);
+      } finally {
+        setMutating(false);
       }
-
-      const limit = incomingStock !== undefined ? incomingStock : getStockLimit(item);
-      if (limit != null && limit <= 0) return;
-
-      const initialQty = capQuantity(incomingQty, limit);
-      if (initialQty < 1) return;
-
-      writeItems([
-        ...prev,
-        {
-          ...item,
-          key,
-          quantity: initialQty,
-          price: Number(item.price) || 0,
-          stock: limit,
-        },
-      ]);
     },
     []
   );
 
-  const removeItem = useCallback((key: string) => {
-    const prev = getSnapshot();
-    writeItems(prev.filter((row) => row.key !== key));
-  }, []);
+  const addItem = useCallback(
+    async (item: AddCartInput): Promise<CartMutationResult> => {
+      const branchId = Number(item.branchId);
+      if (!Number.isFinite(branchId) || branchId <= 0) {
+        return fail("missing_branch");
+      }
 
-  const updateQuantity = useCallback((key: string, quantity: number) => {
-    const prev = getSnapshot();
-    const target = prev.find((row) => row.key === key);
-    if (!target) return;
+      const qty = Math.max(1, Math.floor(Number(item.quantity) || 1));
+      const limit = getStockLimit(item.stock);
+      if (limit != null && limit <= 0) return fail("product_out_of_stock");
 
-    const limit = getStockLimit(target);
-    let next = Math.floor(quantity);
-    if (!Number.isFinite(next) || next < 1) {
-      writeItems(prev.filter((row) => row.key !== key));
-      return;
-    }
-    next = capQuantity(next, limit);
-    if (next < 1) {
-      writeItems(prev.filter((row) => row.key !== key));
-      return;
-    }
+      const existing = itemsRef.current.find(
+        (row) => row.centerId === item.centerId && row.productId === item.productId
+      );
+      if (limit != null && existing && existing.quantity + qty > limit) {
+        return fail("product_stock_limit_reached_short");
+      }
 
-    writeItems(prev.map((row) => (row.key === key ? { ...row, quantity: next } : row)));
-  }, []);
+      stockHintsRef.current.set(
+        stockKey(item.centerId, item.productId),
+        limit
+      );
 
-  const incrementQuantity = useCallback((key: string, step = 1) => {
-    const prev = getSnapshot();
-    const target = prev.find((row) => row.key === key);
-    if (!target) return;
+      return withMutation(async (token) => {
+        const result = await addCartProduct(token, {
+          center_id: item.centerId,
+          branch_id: branchId,
+          product_id: item.productId,
+          qty,
+        });
+        if (!result.success) return fail(result.message || "cart_add_failed");
+        const list = await fetchCart(token, { item_type: "product" });
+        if (list.success) applyItems(list.items);
+        return { ok: true };
+      });
+    },
+    [applyItems, withMutation]
+  );
 
-    const limit = getStockLimit(target);
-    if (limit != null && target.quantity >= limit) return;
+  const removeItem = useCallback(
+    async (key: string): Promise<CartMutationResult> => {
+      const target = itemsRef.current.find((row) => row.key === key);
+      if (!target) return { ok: true };
+      return withMutation(async (token) => {
+        const result = await removeCartItem(token, target.cartItemId);
+        if (!result.success) return fail(result.message || "cart_remove_failed");
+        const list = await fetchCart(token, { item_type: "product" });
+        if (list.success) applyItems(list.items);
+        return { ok: true };
+      });
+    },
+    [applyItems, withMutation]
+  );
 
-    const capped = capQuantity(target.quantity + step, limit);
-    if (capped < 1 || capped === target.quantity) return;
+  const updateQuantity = useCallback(
+    async (key: string, quantity: number): Promise<CartMutationResult> => {
+      const target = itemsRef.current.find((row) => row.key === key);
+      if (!target) return fail("cart_item_missing");
 
-    writeItems(prev.map((row) => (row.key === key ? { ...row, quantity: capped } : row)));
-  }, []);
+      let next = Math.floor(quantity);
+      if (!Number.isFinite(next) || next < 1) {
+        return removeItem(key);
+      }
 
-  const decrementQuantity = useCallback((key: string, step = 1) => {
-    const prev = getSnapshot();
-    const target = prev.find((row) => row.key === key);
-    if (!target) return;
+      const limit = getStockLimit(target.stock);
+      if (limit != null) next = Math.min(next, limit);
+      if (next < 1) return removeItem(key);
+      if (next === target.quantity) return { ok: true };
 
-    const nextQty = target.quantity - step;
-    if (nextQty < 1) {
-      writeItems(prev.filter((row) => row.key !== key));
-      return;
-    }
-    writeItems(prev.map((row) => (row.key === key ? { ...row, quantity: nextQty } : row)));
-  }, []);
+      return withMutation(async (token) => {
+        const result = await updateCartItem(token, target.cartItemId, next);
+        if (!result.success) return fail(result.message || "cart_update_failed");
+        const list = await fetchCart(token, { item_type: "product" });
+        if (list.success) applyItems(list.items);
+        return { ok: true };
+      });
+    },
+    [applyItems, removeItem, withMutation]
+  );
 
-  const clearCenter = useCallback((centerId: number) => {
-    const prev = getSnapshot();
-    writeItems(prev.filter((row) => row.centerId !== centerId));
-  }, []);
+  const incrementQuantity = useCallback(
+    async (key: string, step = 1): Promise<CartMutationResult> => {
+      const target = itemsRef.current.find((row) => row.key === key);
+      if (!target) return fail("cart_item_missing");
+      const limit = getStockLimit(target.stock);
+      if (limit != null && target.quantity >= limit) {
+        return fail("product_stock_limit_reached_short");
+      }
+      return updateQuantity(key, target.quantity + step);
+    },
+    [updateQuantity]
+  );
 
-  const clearAll = useCallback(() => {
-    writeItems([]);
-  }, []);
+  const decrementQuantity = useCallback(
+    async (key: string, step = 1): Promise<CartMutationResult> => {
+      const target = itemsRef.current.find((row) => row.key === key);
+      if (!target) return fail("cart_item_missing");
+      const next = target.quantity - step;
+      if (next < 1) return removeItem(key);
+      return updateQuantity(key, next);
+    },
+    [removeItem, updateQuantity]
+  );
+
+  const clearCenter = useCallback(
+    async (centerId: number): Promise<CartMutationResult> => {
+      return withMutation(async (token) => {
+        const result = await clearCart(token, { center_id: centerId });
+        if (!result.success) return fail(result.message || "cart_clear_failed");
+        const list = await fetchCart(token, { item_type: "product" });
+        if (list.success) applyItems(list.items);
+        return { ok: true };
+      });
+    },
+    [applyItems, withMutation]
+  );
+
+  const clearAll = useCallback(async (): Promise<CartMutationResult> => {
+    return withMutation(async (token) => {
+      const result = await clearCart(token);
+      if (!result.success) return fail(result.message || "cart_clear_failed");
+      applyItems([]);
+      return { ok: true };
+    });
+  }, [applyItems, withMutation]);
 
   const itemsByCenter = useCallback(
     (centerId: number) => items.filter((row) => row.centerId === centerId),
@@ -271,7 +309,13 @@ export function ProductCartProvider({ children }: { children: React.ReactNode })
     () => ({
       items,
       count: items.reduce((sum, row) => sum + row.quantity, 0),
-      total: items.reduce((sum, row) => sum + row.price * row.quantity, 0),
+      total: items.reduce(
+        (sum, row) => sum + (Number(row.totalPrice) || row.price * row.quantity),
+        0
+      ),
+      loading,
+      mutating,
+      refreshCart,
       addItem,
       removeItem,
       updateQuantity,
@@ -285,6 +329,9 @@ export function ProductCartProvider({ children }: { children: React.ReactNode })
     }),
     [
       items,
+      loading,
+      mutating,
+      refreshCart,
       addItem,
       removeItem,
       updateQuantity,

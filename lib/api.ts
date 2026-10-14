@@ -23,6 +23,10 @@ import {
     GlobalProductsResponse,
     CenterProductDetail,
     CenterProductDetailResponse,
+    ApiCartItem,
+    ApiCartListResponse,
+    ApiCartCheckoutPayload,
+    ApiCartCheckoutPayloadResponse,
 } from "./apiEndpoints";
 import { Business, CenterRate, } from "./types";
 
@@ -737,10 +741,12 @@ export async function buyProducts(
         payment_type: "wallet" | "service_visa" | "sales_cash";
         sales_worker_id?: number;
         worker_id?: number | null;
+        clear_cart?: boolean;
+        cart_item_ids?: number[];
     }
 ): Promise<{ success: boolean; message: string; data?: unknown; code?: "insufficient_stock" }> {
     try {
-        const body = {
+        const body: Record<string, unknown> = {
             center_id: payload.center_id,
             branch_id: payload.branch_id,
             products: payload.products.map((line) => ({
@@ -751,6 +757,8 @@ export async function buyProducts(
             sales_worker_id: payload.sales_worker_id ?? 1,
             worker_id: payload.worker_id ?? null,
         };
+        if (payload.clear_cart) body.clear_cart = true;
+        if (payload.cart_item_ids?.length) body.cart_item_ids = payload.cart_item_ids;
 
         const response = await fetch(API_ENDPOINTS.BUY_PRODUCTS, {
             method: "POST",
@@ -786,6 +794,212 @@ export async function buyProducts(
             success: false,
             message: "An unexpected error occurred during product purchase",
         };
+    }
+}
+
+function authHeaders(token: string): HeadersInit {
+    return {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+    };
+}
+
+export async function fetchCart(
+    token: string,
+    params?: { center_id?: number; item_type?: string }
+): Promise<{ success: boolean; message: string; items: ApiCartItem[]; count: number; subtotal: number }> {
+    try {
+        const search = new URLSearchParams();
+        if (params?.center_id != null) search.set("center_id", String(params.center_id));
+        if (params?.item_type) search.set("item_type", params.item_type);
+        const qs = search.toString();
+        const url = qs ? `${API_ENDPOINTS.CART}?${qs}` : API_ENDPOINTS.CART;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: authHeaders(token),
+            cache: "no-store",
+        });
+        const json = (await response.json().catch(() => ({}))) as Partial<ApiCartListResponse>;
+        const items = Array.isArray(json?.data?.items) ? json.data!.items : [];
+        const count = Number(json?.data?.count ?? items.length) || 0;
+        const subtotal = Number(json?.data?.subtotal ?? 0) || 0;
+
+        if (!response.ok) {
+            return {
+                success: false,
+                message: String(json?.message || "Failed to load cart"),
+                items: [],
+                count: 0,
+                subtotal: 0,
+            };
+        }
+
+        return {
+            success: true,
+            message: String(json?.message || "Done Successfully"),
+            items,
+            count,
+            subtotal,
+        };
+    } catch (error) {
+        console.error("Fetch Cart Error:", error);
+        return { success: false, message: "Failed to load cart", items: [], count: 0, subtotal: 0 };
+    }
+}
+
+export async function addCartProduct(
+    token: string,
+    payload: { center_id: number; branch_id: number; product_id: number; qty?: number }
+): Promise<{ success: boolean; message: string; data?: unknown }> {
+    try {
+        const response = await fetch(API_ENDPOINTS.CART_PRODUCTS, {
+            method: "POST",
+            headers: authHeaders(token),
+            body: JSON.stringify({
+                center_id: payload.center_id,
+                branch_id: payload.branch_id,
+                product_id: payload.product_id,
+                qty: Math.max(1, Math.floor(Number(payload.qty) || 1)),
+            }),
+        });
+        const json = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            return {
+                success: false,
+                message: String(json?.message || "Failed to add to cart"),
+                data: json?.data ?? json?.errors ?? json,
+            };
+        }
+        return {
+            success: true,
+            message: String(json?.message || "Added to cart"),
+            data: json?.data,
+        };
+    } catch (error) {
+        console.error("Add Cart Product Error:", error);
+        return { success: false, message: "Failed to add to cart" };
+    }
+}
+
+export async function updateCartItem(
+    token: string,
+    cartItemId: number,
+    qty: number
+): Promise<{ success: boolean; message: string; data?: unknown }> {
+    try {
+        const response = await fetch(API_ENDPOINTS.CART_ITEM(cartItemId), {
+            method: "PUT",
+            headers: authHeaders(token),
+            body: JSON.stringify({ qty: Math.max(1, Math.floor(qty)) }),
+        });
+        const json = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            return {
+                success: false,
+                message: String(json?.message || "Failed to update cart"),
+                data: json?.data ?? json?.errors ?? json,
+            };
+        }
+        return {
+            success: true,
+            message: String(json?.message || "Cart updated"),
+            data: json?.data,
+        };
+    } catch (error) {
+        console.error("Update Cart Item Error:", error);
+        return { success: false, message: "Failed to update cart" };
+    }
+}
+
+export async function removeCartItem(
+    token: string,
+    cartItemId: number
+): Promise<{ success: boolean; message: string }> {
+    try {
+        const response = await fetch(API_ENDPOINTS.CART_ITEM(cartItemId), {
+            method: "DELETE",
+            headers: authHeaders(token),
+        });
+        const json = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            return {
+                success: false,
+                message: String(json?.message || "Failed to remove cart item"),
+            };
+        }
+        return {
+            success: true,
+            message: String(json?.message || "Removed from cart"),
+        };
+    } catch (error) {
+        console.error("Remove Cart Item Error:", error);
+        return { success: false, message: "Failed to remove cart item" };
+    }
+}
+
+export async function clearCart(
+    token: string,
+    params?: { center_id?: number; branch_id?: number }
+): Promise<{ success: boolean; message: string }> {
+    try {
+        const search = new URLSearchParams();
+        if (params?.center_id != null) search.set("center_id", String(params.center_id));
+        if (params?.branch_id != null) search.set("branch_id", String(params.branch_id));
+        const qs = search.toString();
+        const url = qs ? `${API_ENDPOINTS.CART_CLEAR}?${qs}` : API_ENDPOINTS.CART_CLEAR;
+
+        const response = await fetch(url, {
+            method: "DELETE",
+            headers: authHeaders(token),
+        });
+        const json = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            return {
+                success: false,
+                message: String(json?.message || "Failed to clear cart"),
+            };
+        }
+        return {
+            success: true,
+            message: String(json?.message || "Cart cleared"),
+        };
+    } catch (error) {
+        console.error("Clear Cart Error:", error);
+        return { success: false, message: "Failed to clear cart" };
+    }
+}
+
+export async function fetchCartCheckoutPayload(
+    token: string,
+    params: { center_id: number; branch_id: number }
+): Promise<{ success: boolean; message: string; data?: ApiCartCheckoutPayload }> {
+    try {
+        const search = new URLSearchParams({
+            center_id: String(params.center_id),
+            branch_id: String(params.branch_id),
+        });
+        const response = await fetch(`${API_ENDPOINTS.CART_CHECKOUT_PAYLOAD}?${search}`, {
+            method: "GET",
+            headers: authHeaders(token),
+            cache: "no-store",
+        });
+        const json = (await response.json().catch(() => ({}))) as Partial<ApiCartCheckoutPayloadResponse>;
+        if (!response.ok || !json?.data) {
+            return {
+                success: false,
+                message: String(json?.message || "Failed to build checkout payload"),
+            };
+        }
+        return {
+            success: true,
+            message: String(json.message || "Done Successfully"),
+            data: json.data,
+        };
+    } catch (error) {
+        console.error("Cart Checkout Payload Error:", error);
+        return { success: false, message: "Failed to build checkout payload" };
     }
 }
 

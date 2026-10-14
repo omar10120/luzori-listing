@@ -1,4 +1,8 @@
-import { buyProducts, fetchUserProfile } from "@/lib/api";
+import {
+  buyProducts,
+  fetchCartCheckoutPayload,
+  fetchUserProfile,
+} from "@/lib/api";
 import type { BuyProductLine } from "@/lib/apiEndpoints";
 import type { ProductCartItem } from "@/lib/productCartTypes";
 
@@ -21,6 +25,7 @@ export type ProductPurchaseResult =
       centerId: number;
       branchId: number;
       products: BuyProductLine[];
+      cartItemIds: number[];
       message?: string;
     }
   | {
@@ -30,24 +35,67 @@ export type ProductPurchaseResult =
     };
 
 export function cartTotal(items: ProductCartItem[]): number {
-  return items.reduce((sum, item) => sum + Number(item.price || 0) * (item.quantity || 1), 0);
+  return items.reduce((sum, item) => {
+    const lineTotal = Number(item.totalPrice);
+    if (Number.isFinite(lineTotal) && lineTotal > 0) return sum + lineTotal;
+    return sum + Number(item.price || 0) * (item.quantity || 1);
+  }, 0);
 }
 
-function toBuyLines(items: ProductCartItem[]): BuyProductLine[] {
-  const map = new Map<number, number>();
-  for (const item of items) {
-    const qty = Math.max(1, Math.floor(Number(item.quantity) || 1));
-    map.set(item.productId, (map.get(item.productId) || 0) + qty);
+function resolveBranchId(items: ProductCartItem[], preferred?: number | null): number | null {
+  if (preferred != null) {
+    const n = Number(preferred);
+    if (Number.isFinite(n) && n > 0) return n;
   }
-  return Array.from(map.entries()).map(([id, qty]) => ({ id, qty }));
-}
-
-function resolveBranchId(items: ProductCartItem[]): number | null {
   for (const item of items) {
     const id = Number(item.branchId);
     if (Number.isFinite(id) && id > 0) return id;
   }
   return null;
+}
+
+async function loadCheckoutPayload(input: {
+  token: string;
+  centerId: number;
+  items: ProductCartItem[];
+  branchId?: number | null;
+}): Promise<
+  | { ok: true; branchId: number; products: BuyProductLine[]; cartItemIds: number[]; subtotal: number }
+  | { ok: false; message: string; code?: "empty_cart" | "missing_branch" }
+> {
+  const { token, centerId, items } = input;
+  const centerItems = items.filter((item) => item.centerId === centerId);
+  const branchId = resolveBranchId(centerItems, input.branchId);
+
+  if (!branchId) {
+    return { ok: false, message: "missing_branch", code: "missing_branch" };
+  }
+
+  const payload = await fetchCartCheckoutPayload(token, {
+    center_id: centerId,
+    branch_id: branchId,
+  });
+
+  if (!payload.success || !payload.data) {
+    return { ok: false, message: payload.message || "empty_cart", code: "empty_cart" };
+  }
+
+  const products = Array.isArray(payload.data.products) ? payload.data.products : [];
+  const cartItemIds = Array.isArray(payload.data.cart_item_ids)
+    ? payload.data.cart_item_ids.map(Number).filter((id) => Number.isFinite(id) && id > 0)
+    : [];
+
+  if (products.length === 0) {
+    return { ok: false, message: "empty_cart", code: "empty_cart" };
+  }
+
+  return {
+    ok: true,
+    branchId: Number(payload.data.branch_id) || branchId,
+    products,
+    cartItemIds,
+    subtotal: Number(payload.data.subtotal) || cartTotal(centerItems),
+  };
 }
 
 /**
@@ -59,22 +107,26 @@ export async function purchaseProductsWithPayment(input: {
   centerId: number;
   items: ProductCartItem[];
   paymentType: ProductPaymentType;
+  branchId?: number | null;
 }): Promise<ProductPurchaseResult> {
   const { token, centerId, items, paymentType } = input;
-  const centerItems = items.filter((item) => item.centerId === centerId);
-  const products = toBuyLines(centerItems);
-  const branchId = resolveBranchId(centerItems) ?? 1;
+  const checkout = await loadCheckoutPayload({
+    token,
+    centerId,
+    items,
+    branchId: input.branchId,
+  });
 
-  if (products.length === 0) {
-    return { ok: false, message: "empty_cart", code: "empty_cart" };
+  if (!checkout.ok) {
+    return { ok: false, message: checkout.message, code: checkout.code };
   }
 
-  const totalPrice = cartTotal(centerItems);
+  const { branchId, products, cartItemIds, subtotal } = checkout;
 
   if (paymentType === "wallet") {
     const profile = await fetchUserProfile(token);
     const wallet = Number(profile?.wallet ?? 0);
-    if (wallet < totalPrice) {
+    if (wallet < subtotal) {
       return { ok: false, message: "insufficient_balance", code: "insufficient_balance" };
     }
 
@@ -85,6 +137,8 @@ export async function purchaseProductsWithPayment(input: {
       payment_type: "wallet",
       sales_worker_id: 1,
       worker_id: null,
+      clear_cart: true,
+      cart_item_ids: cartItemIds,
     });
 
     if (!result.success) {
@@ -101,11 +155,12 @@ export async function purchaseProductsWithPayment(input: {
   return {
     ok: true,
     needsEmbeddedPayment: true,
-    amount: totalPrice,
+    amount: subtotal,
     customerReference: `products-${centerId}-${products.map((p) => `${p.id}x${p.qty}`).join("-")}-${Date.now()}`,
     centerId,
     branchId,
     products,
+    cartItemIds,
     message: "payment_start_demo",
   };
 }
@@ -115,6 +170,7 @@ export async function finalizeProductPurchaseAfterPayment(input: {
   centerId: number;
   branchId: number;
   products: BuyProductLine[];
+  cartItemIds?: number[];
 }): Promise<{ success: boolean; message: string; code?: "insufficient_stock" }> {
   return buyProducts(input.token, {
     center_id: input.centerId,
@@ -123,5 +179,7 @@ export async function finalizeProductPurchaseAfterPayment(input: {
     payment_type: "sales_cash",
     sales_worker_id: 1,
     worker_id: null,
+    clear_cart: true,
+    cart_item_ids: input.cartItemIds,
   });
 }

@@ -435,6 +435,7 @@
     "cart_checkout": "Checkout",
     "cart_pay_now": "Pay now",
     "cart_added": "Added to cart",
+    "cart_add_failed": "Could not add to cart",
     "cart_add_again": "Add again",
     "product_purchase_success": "Products purchased successfully",
     "product_purchase_failed": "Could not complete product purchase",

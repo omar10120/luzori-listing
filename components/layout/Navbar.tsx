@@ -129,10 +129,10 @@ const Navbar: React.FC = () => {
                                                 <Heart size={18} className="text-gray-500" />
                                                 <span>{t('favorites') || "Favorites"}</span>
                                             </Link>
-                                            <Link href="/forms" className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                            {/* <Link href="/forms" className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                                                 <ClipboardList size={18} className="text-gray-500" />
                                                 <span>{t('forms') || "Forms"}</span>
-                                            </Link>
+                                            </Link> */}
                                             <Link href="/product-orders" className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                                                 <ShoppingBag size={18} className="text-gray-500" />
                                                 <span>{t('product_orders') || "Product orders"}</span>
@@ -244,10 +244,10 @@ const Navbar: React.FC = () => {
                                         <Heart size={18} className="shrink-0 text-[#225D5C]" />
                                         {t("favorites")}
                                     </Link>
-                                    <Link href="/forms" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 transition-colors duration-200 hover:bg-[#225D5C]/8" onClick={() => setMobileOpen(false)}>
+                                    {/* <Link href="/forms" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 transition-colors duration-200 hover:bg-[#225D5C]/8" onClick={() => setMobileOpen(false)}>
                                         <ClipboardList size={18} className="shrink-0 text-[#225D5C]" />
                                         {t("forms")}
-                                    </Link>
+                                    </Link> */}
                                     <Link href="/product-orders" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 transition-colors duration-200 hover:bg-[#225D5C]/8" onClick={() => setMobileOpen(false)}>
                                         <ShoppingBag size={18} className="shrink-0 text-[#225D5C]" />
                                         {t("product_orders")}

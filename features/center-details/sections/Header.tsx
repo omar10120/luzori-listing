@@ -119,10 +119,10 @@ export default function Header() {
                                                     <Heart size={18} className="text-gray-500" />
                                                     <span>{t('favorites') || "Favorites"}</span>
                                                 </Link>
-                                                <Link href="/forms" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
+                                                {/* <Link href="/forms" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
                                                     <ClipboardList size={18} className="text-gray-500" />
                                                     <span>{t('forms') || "Forms"}</span>
-                                                </Link>
+                                                </Link> */}
                                                 <Link href="/product-orders" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
                                                     <ShoppingBag size={18} className="text-gray-500" />
                                                     <span>{t('product_orders') || "Product orders"}</span>

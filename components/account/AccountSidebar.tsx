@@ -31,7 +31,7 @@ export default function AccountSidebar({ userName }: AccountSidebarProps) {
         { label: t("activity"), href: "/activity", icon: Calendar },
         { label: t("wallet"), href: "/wallet", icon: Wallet },
         { label: t("favorites"), href: "/favorites", icon: Heart },
-        { label: t("forms"), href: "/forms", icon: ClipboardList },
+        // { label: t("forms"), href: "/forms", icon: ClipboardList },
         { label: t("product_orders"), href: "/product-orders", icon: ShoppingBag },
         { label: t("settings"), href: "/settings", icon: Settings },
     ];

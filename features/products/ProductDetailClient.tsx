@@ -96,8 +96,8 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     const [activeImage, setActiveImage] = useState(gallery[0] || "");
     const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-    const retailPrice = formatMoney(product.supply_price ?? product.retail_price, currency);
-    const supplyPrice = formatMoney(product.supply_price ?? product.retail_price, currency);
+    // const retailPrice = formatMoney(product.supply_price ?? product.retail_price, currency);
+    const supplyPrice = formatMoney(product.supply_price , currency);
     const markup = formatMoney(product.markup, currency);
     const centerSlug = generateCenterSlug(product.center_name, product.center_id);
     const measure =
@@ -110,7 +110,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         product.category_name && { icon: Store, label: t("product_category"), value: product.category_name },
         measure && { icon: Ruler, label: t("product_measure"), value: measure },
         product.barcode && { icon: ScanLine, label: t("product_barcode"), value: product.barcode },
-        retailPrice && { icon: CircleDollarSign, label: t("product_retail_price"), value: retailPrice },
+        // retailPrice && { icon: CircleDollarSign, label: t("product_retail_price"), value: retailPrice },
         supplyPrice && { icon: CircleDollarSign, label: t("product_supply_price"), value: supplyPrice },
         markup && { icon: Percent, label: t("product_markup"), value: markup },
         {
@@ -173,7 +173,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             centerId: product.center_id,
             centerName: product.center_name,
             name: displayName,
-            price: Number(product.supply_price ?? product.retail_price) || 0,
+            price: Number(product.supply_price) || 0,
             image: product.image || product.gallery?.[0] || null,
             branchId: preferredBranch?.id ?? product.branches?.[0]?.id ?? 1,
             stock: product.track_stock ? (stockLimit ?? 0) : null,
@@ -295,14 +295,14 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                                         )}
                                     </div>
                                 </div>
-                                {retailPrice && (
+                                {/* {retailPrice && (
                                     <div className="shrink-0 rounded-xl bg-[#225D5C] px-3 py-2 text-right">
                                         <p className="text-[9px] font-bold uppercase tracking-wider text-[#FFD6A8]/80">
                                             {t("product_price")}
                                         </p>
                                         <p className="text-lg font-black text-[#FFD6A8]">{retailPrice}</p>
                                     </div>
-                                )}
+                                )} */}
                             </div>
 
                             {shortDescription && (

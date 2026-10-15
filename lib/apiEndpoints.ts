@@ -521,7 +521,7 @@ export interface GlobalProductNested {
     measure_unit?: string | null;
     measure_amount?: number | string | null;
     supply_price?: number | string | null;
-    retail_price?: number | string | null;
+    // retail_price?: number | string | null;
     markup?: number | string | null;
     allow_retail_sales?: boolean;
     track_stock?: boolean;
@@ -584,7 +584,7 @@ export interface CenterProductDetail {
     measure_unit?: string | null;
     measure_amount?: number | string | null;
     supply_price?: number | string | null;
-    retail_price?: number | string | null;
+    // retail_price?: number | string | null;
     markup?: number | string | null;
     allow_retail_sales?: boolean;
     track_stock?: boolean;

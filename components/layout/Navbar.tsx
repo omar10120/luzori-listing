@@ -133,11 +133,11 @@ const Navbar: React.FC = () => {
                                                 <ClipboardList size={18} className="text-gray-500" />
                                                 <span>{t('forms') || "Forms"}</span>
                                             </Link>
-                                            <Link href="/product_orders" className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <Link href="/product-orders" className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                                                 <ShoppingBag size={18} className="text-gray-500" />
                                                 <span>{t('product_orders') || "Product orders"}</span>
                                             </Link>
-                                            <Link href="/product_orders" className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                                            <Link href="/product-orders" className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                                                 <Settings size={18} className="text-gray-500" />
                                                 <span>{t('settings') || "Settings"}</span>
                                             </Link>
@@ -248,7 +248,7 @@ const Navbar: React.FC = () => {
                                         <ClipboardList size={18} className="shrink-0 text-[#225D5C]" />
                                         {t("forms")}
                                     </Link>
-                                    <Link href="/product_orders" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 transition-colors duration-200 hover:bg-[#225D5C]/8" onClick={() => setMobileOpen(false)}>
+                                    <Link href="/product-orders" className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-gray-800 transition-colors duration-200 hover:bg-[#225D5C]/8" onClick={() => setMobileOpen(false)}>
                                         <ShoppingBag size={18} className="shrink-0 text-[#225D5C]" />
                                         {t("product_orders")}
                                     </Link>

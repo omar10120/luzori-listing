@@ -33,6 +33,7 @@ export const API_ENDPOINTS = {
     CENTER_PRODUCT: (centerId: string | number, productId: string | number) =>
         `${API_BASE_URL}/center_api/centers/${centerId}/products/${productId}`,
     BUY_PRODUCTS: `${API_BASE_URL}/app_api/buyproducts/add`,
+    BUY_PRODUCTS_ALL: `${API_BASE_URL}/app_api/buyproducts/all`,
     CART: `${API_BASE_URL}/app_api/cart`,
     CART_PRODUCTS: `${API_BASE_URL}/app_api/cart/products`,
     CART_ITEM: (id: string | number) => `${API_BASE_URL}/app_api/cart/${id}`,
@@ -61,6 +62,83 @@ export interface BuyProductsPayload {
     worker_id: number | null;
     clear_cart?: boolean;
     cart_item_ids?: number[];
+}
+
+export interface BuyProductOrderProduct {
+    id: number;
+    product_id: number;
+    name: string;
+    price: number | string;
+    /** Per-line sold qty when API sends it; otherwise group by product_id. */
+    qty?: number;
+    image_url?: string | null;
+}
+
+export interface BuyProductOrderCenter {
+    id: number;
+    name: string;
+    domain?: string | null;
+    logo?: string | null;
+}
+
+export interface BuyProductOrderWorker {
+    id: number;
+    name: string;
+    image?: string | null;
+    phone?: string | null;
+    email?: string | null;
+    branch?: {
+        id: number;
+        name: string;
+        city?: string | null;
+        address?: string | null;
+    } | null;
+}
+
+export interface BuyProductOrder {
+    id: number;
+    payment_type: string;
+    commission?: number | string | null;
+    discount?: number | string | null;
+    global_user_id?: number;
+    sale_id?: number | null;
+    /** Total sold quantity across the order. */
+    qty: number;
+    unit_price?: number | string | null;
+    subtotal?: number | string | null;
+    total: number | string;
+    items_count?: number;
+    products: BuyProductOrderProduct[];
+    product_names?: string[];
+    sales_worker?: BuyProductOrderWorker | null;
+    worker?: BuyProductOrderWorker | null;
+    center?: BuyProductOrderCenter | null;
+    created_at: string;
+}
+
+export interface BuyProductOrdersPagination {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    next_page_url?: string | null;
+    prev_page_url?: string | null;
+}
+
+export interface BuyProductOrdersResponse {
+    message: string;
+    data: BuyProductOrder[];
+    paginationData?: {
+        current_page?: number;
+        last_page?: number;
+        per_page?: number;
+        total?: number;
+        next_page_url?: string | null;
+        prev_page_url?: string | null;
+        first_page?: number;
+        last_item?: number;
+        first_item?: number;
+    };
 }
 
 export interface ApiCartCenter {

@@ -27,6 +27,9 @@ import {
     ApiCartListResponse,
     ApiCartCheckoutPayload,
     ApiCartCheckoutPayloadResponse,
+    BuyProductOrder,
+    BuyProductOrdersPagination,
+    BuyProductOrdersResponse,
 } from "./apiEndpoints";
 import { Business, CenterRate, } from "./types";
 
@@ -793,6 +796,72 @@ export async function buyProducts(
         return {
             success: false,
             message: "An unexpected error occurred during product purchase",
+        };
+    }
+}
+
+export async function fetchBuyProductOrders(
+    token: string,
+    params?: { center_id?: number; page?: number }
+): Promise<{
+    success: boolean;
+    message: string;
+    orders: BuyProductOrder[];
+    pagination: BuyProductOrdersPagination;
+}> {
+    const page = Math.max(1, Math.floor(Number(params?.page) || 1));
+    const emptyPagination: BuyProductOrdersPagination = {
+        current_page: page,
+        last_page: 1,
+        per_page: 15,
+        total: 0,
+    };
+
+    try {
+        const search = new URLSearchParams();
+        search.set("page", String(page));
+        if (params?.center_id != null && Number.isFinite(params.center_id) && params.center_id > 0) {
+            search.set("center_id", String(params.center_id));
+        }
+
+        const response = await fetch(`${API_ENDPOINTS.BUY_PRODUCTS_ALL}?${search}`, {
+            method: "GET",
+            headers: authHeaders(token),
+            cache: "no-store",
+        });
+        const json = (await response.json().catch(() => ({}))) as Partial<BuyProductOrdersResponse>;
+        const orders = Array.isArray(json?.data) ? json.data! : [];
+        const p = json?.paginationData;
+
+        if (!response.ok) {
+            return {
+                success: false,
+                message: String(json?.message || "Failed to load product orders"),
+                orders: [],
+                pagination: emptyPagination,
+            };
+        }
+
+        return {
+            success: true,
+            message: String(json?.message || "Done Successfully"),
+            orders,
+            pagination: {
+                current_page: Number(p?.current_page) || page,
+                last_page: Number(p?.last_page) || 1,
+                per_page: Number(p?.per_page) || 15,
+                total: Number(p?.total) || orders.length,
+                next_page_url: p?.next_page_url ?? null,
+                prev_page_url: p?.prev_page_url ?? null,
+            },
+        };
+    } catch (error) {
+        console.error("Fetch Buy Product Orders Error:", error);
+        return {
+            success: false,
+            message: "Failed to load product orders",
+            orders: [],
+            pagination: emptyPagination,
         };
     }
 }

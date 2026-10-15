@@ -113,11 +113,11 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         // retailPrice && { icon: CircleDollarSign, label: t("product_retail_price"), value: retailPrice },
         supplyPrice && { icon: CircleDollarSign, label: t("product_supply_price"), value: supplyPrice },
         markup && { icon: Percent, label: t("product_markup"), value: markup },
-        {
-            icon: Check,
-            label: t("product_retail_sales"),
-            value: product.allow_retail_sales ? t("product_yes") : t("product_no"),
-        },
+        // {
+        //     icon: Check,
+        //     label: t("product_retail_sales"),
+        //     value: product.allow_retail_sales ? t("product_yes") : t("product_no"),
+        // },
         {
             icon: Package,
             label: t("product_track_stock"),

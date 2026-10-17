@@ -74,7 +74,7 @@ export default function ProfessionalPageClient({ slug }: Props) {
   useEffect(() => {
     if (!ids) return;
     let cancelled = false;
-    void fetchCentersSearchClient({}).then((centers) => {
+    void fetchCentersSearchClient({}, { includeWorkers: true }).then((centers) => {
       if (cancelled) return;
       setProfile(findProfessionalProfile(centers, ids.centerId, ids.workerId));
       setLoading(false);

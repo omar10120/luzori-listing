@@ -123,40 +123,53 @@ export function buildProfessionals(centers: CenterDetailData[]): Professional[] 
     const branchById = new Map<number, Branch>();
     for (const b of c.branches || []) branchById.set(b.id, b);
 
+    const ensureProfessional = (
+      w: NonNullable<CenterDetailData["workers"]>[number],
+      categoryName?: string
+    ): MutableProfessional | null => {
+      if (!isProfessionalWorker(w.is_professional)) return null;
+
+      const key = professionalKey(c.id, w.id);
+      let pro = map.get(key);
+      if (!pro) {
+        pro = {
+          key,
+          workerId: w.id,
+          centerId: c.id,
+          centerName: c.name,
+          centerLogo: c.logo,
+          centerSlug: null,
+          centerCategoryName: categoryName ?? null,
+          centerGlobalCategoryName: c.global_categories?.[0]?.name ?? null,
+          name: w.name,
+          image: w.image,
+          email: w.email ?? null,
+          phone: w.phone ?? null,
+          countryCode: w.country_code ?? null,
+          branch: branchById.get(w.branch_id) ?? null,
+          branchName: w.branch_name ?? branchById.get(w.branch_id)?.name ?? null,
+          hasCommission: Boolean(w.has_commission),
+          services: [],
+          _seenServiceIds: new Set<number>(),
+        };
+        map.set(key, pro);
+      } else if (!pro.centerCategoryName && categoryName) {
+        pro.centerCategoryName = categoryName;
+      }
+      return pro;
+    };
+
     for (const cat of c.categories || []) {
       for (const s of cat.services || []) {
         for (const w of s.workers || []) {
-          if (!isProfessionalWorker(w.is_professional)) continue;
-
-          const key = professionalKey(c.id, w.id);
-          let pro = map.get(key);
-          if (!pro) {
-            pro = {
-              key,
-              workerId: w.id,
-              centerId: c.id,
-              centerName: c.name,
-              centerLogo: c.logo,
-              centerSlug: null,
-              centerCategoryName: cat.name,
-              centerGlobalCategoryName: c.global_categories?.[0]?.name ?? null,
-              name: w.name,
-              image: w.image,
-              email: w.email ?? null,
-              phone: w.phone ?? null,
-              countryCode: w.country_code ?? null,
-              branch: branchById.get(w.branch_id) ?? null,
-              branchName: w.branch_name ?? branchById.get(w.branch_id)?.name ?? null,
-              hasCommission: Boolean(w.has_commission),
-              services: [],
-              _seenServiceIds: new Set<number>(),
-            };
-            map.set(key, pro);
-          }
+          const pro = ensureProfessional(w, cat.name);
+          if (!pro) continue;
           pushService(pro, s, cat.name);
         }
       }
     }
+
+    for (const worker of c.workers || []) ensureProfessional(worker);
   }
 
   return Array.from(map.values()).map((p) => {

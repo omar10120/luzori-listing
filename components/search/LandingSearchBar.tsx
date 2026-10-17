@@ -37,6 +37,7 @@ export interface LandingSearchBarProps {
   initialCategorySlug?: string | null;
   initialCategoryId?: string | null;
   initialCategoryName?: string | null;
+  initialSearch?: string | null;
   initialDate?: string | null;
   initialTimePreset?: "any" | "morning" | "afternoon" | "evening" | null;
 }
@@ -72,6 +73,7 @@ export default function LandingSearchBar({
   initialCategorySlug,
   initialCategoryId,
   initialCategoryName,
+  initialSearch,
   initialDate,
   initialTimePreset,
 }: LandingSearchBarProps) {
@@ -87,7 +89,7 @@ export default function LandingSearchBar({
   const [entityFilter, setEntityFilter] = useState<EntityFilter>("all");
   const [treatmentOpen, setTreatmentOpen] = useState(false);
   const [timeOpen, setTimeOpen] = useState(false);
-  const [treatmentFilter, setTreatmentFilter] = useState("");
+  const [treatmentFilter, setTreatmentFilter] = useState(initialSearch ?? "");
   const [manualSelectedCategory, setManualSelectedCategory] = useState<GlobalCategory | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(initialDate ?? null);
   const [timePreset, setTimePreset] = useState<"any" | "morning" | "afternoon" | "evening">(
@@ -117,7 +119,7 @@ export default function LandingSearchBar({
   const loadCenters = useCallback(async () => {
     setCentersLoading(true);
     try {
-      const rows = await fetchCentersSearchClient({});
+      const rows = await fetchCentersSearchClient({}, { includeWorkers: true });
       setCenters(rows);
       setCentersLoaded(true);
     } finally {
@@ -299,10 +301,11 @@ export default function LandingSearchBar({
   const goSearch = useCallback(() => {
     const params = new URLSearchParams();
     if (selectedCategory) params.set("global_category_slug", selectedCategory.slug);
+    if (treatmentFilter.trim()) params.set("search", treatmentFilter.trim());
     if (selectedDate) params.set("date", selectedDate);
     if (timePreset !== "any") params.set("time_preset", timePreset);
     router.push(`/${locale}/search${params.toString() ? `?${params}` : ""}`);
-  }, [router, locale, selectedCategory, selectedDate, timePreset]);
+  }, [router, locale, selectedCategory, treatmentFilter, selectedDate, timePreset]);
 
   const previousMonth = () => {
     if (calMonth === 0) {
@@ -600,6 +603,15 @@ export default function LandingSearchBar({
           )}
         </DialogContent>
         <DialogActions>
+          <Button
+            onClick={() => {
+              setTreatmentOpen(false);
+              goSearch();
+            }}
+            variant="contained"
+          >
+            {t("search")}
+          </Button>
           <Button onClick={() => setTreatmentOpen(false)}>{t("close")}</Button>
         </DialogActions>
       </Dialog>

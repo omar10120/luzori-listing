@@ -1,11 +1,12 @@
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000";
+export const API_CENTER_DOMAIN = process.env.NEXT_PUBLIC_CENTER_DOMAIN || "meenscare";
 
 export const API_ENDPOINTS = {
     CENTERS: `${API_BASE_URL}/center_api/centers`,
     /** Rate/list payloads skip workers — load them from CENTER_WORKERS. */
     CENTER_LIST_INCLUDE: "global_categories,branches,categories,services,packages,about_us,vacations",
     GLOBAL_CATEGORIES: `${API_BASE_URL}/center_api/global-categories`,
-    CENTER_BY_ID: (id: string | number) => `${API_BASE_URL}/center_api/centers/${id}?include=global_categories,branches,categories,services,packages,about_us,workers,vacations`,
+    CENTER_BY_ID: (id: string | number) => `${API_BASE_URL}/center_api/centers/${id}?include=global_categories,branches,categories,services,packages,about_us,vacations`,
     CENTER_WORKERS: (id: string | number, page = 1, perPage = 20) =>
         `${API_BASE_URL}/center_api/centers/${id}/workers?page=${page}&per_page=${perPage}`,
     REGISTER: `${API_BASE_URL}/center_api/auth/register`,
@@ -377,6 +378,7 @@ export interface CenterDetailData {
     packages?: CenterPackage[];
     global_categories?: GlobalCategory[];
     is_favorite?: boolean;
+    workers?: Worker[];
 }
 export interface CenterListItem {
     id: number;

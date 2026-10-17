@@ -41,6 +41,7 @@ export default function SearchPageClient() {
 
   const slug = searchParams.get("global_category_slug");
   const id = searchParams.get("global_category_id");
+  const search = searchParams.get("search");
   const date = searchParams.get("date");
   const timePreset = searchParams.get("time_preset") as
     | "morning"
@@ -61,12 +62,18 @@ export default function SearchPageClient() {
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
   const queryArgs = useMemo(() => {
-    const p: { global_category_slug?: string; global_category_id?: string; rate?: string } = {};
+    const p: {
+      search?: string;
+      global_category_slug?: string;
+      global_category_id?: string;
+      rate?: string;
+    } = {};
+    if (search?.trim()) p.search = search.trim();
     if (slug) p.global_category_slug = slug;
     else if (id) p.global_category_id = id;
     if (rate) p.rate = rate;
     return p;
-  }, [slug, id, rate]);
+  }, [search, slug, id, rate]);
 
   const [lastArgs, setLastArgs] = useState(queryArgs);
   if (lastArgs !== queryArgs) {
@@ -76,7 +83,7 @@ export default function SearchPageClient() {
 
   useEffect(() => {
     let cancelled = false;
-    void fetchCentersSearchClient(queryArgs).then((data) => {
+    void fetchCentersSearchClient(queryArgs, { includeWorkers: true }).then((data) => {
       if (cancelled) return;
       setCenters(data);
       setLoading(false);
@@ -136,6 +143,7 @@ export default function SearchPageClient() {
         <Container>
           <LandingSearchBar
             variant="header"
+            initialSearch={search}
             initialCategorySlug={slug}
             initialCategoryId={id}
             initialDate={date}

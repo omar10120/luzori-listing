@@ -1,5 +1,6 @@
 'use server'
 import {
+    API_CENTER_DOMAIN,
     API_ENDPOINTS,
     CenterResponse,
     CenterDetailResponse,
@@ -56,7 +57,11 @@ export const fetchCenters = async (rate: CenterRate): Promise<Business[]> => {
     try {
         const response = await fetch(`${API_ENDPOINTS.CENTERS}?rate=${rate}&include=${API_ENDPOINTS.CENTER_LIST_INCLUDE}`, {
             method: "GET",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                domain: API_CENTER_DOMAIN,
+            },
         });
 
         if (!response.ok) {
@@ -384,6 +389,7 @@ export const fetchCenterWorkers = async (
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
+                domain: API_CENTER_DOMAIN,
             },
             cache: "no-store",
         });
@@ -419,6 +425,7 @@ export const fetchCenterById = async (id: string | number, token?: string): Prom
         const headers: Record<string, string> = {
             "Content-Type": "application/json",
             Accept: "application/json",
+            domain: API_CENTER_DOMAIN,
         };
         if (token) headers.Authorization = `Bearer ${token}`;
 

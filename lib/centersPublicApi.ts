@@ -1,10 +1,13 @@
 'use server'
 import {
+  API_CENTER_DOMAIN,
   API_ENDPOINTS,
   CenterResponse,
+  CenterListResponse,
   GlobalCategory,
   CenterDetailData,
 } from "./apiEndpoints";
+import { fetchCenterWorkers } from "./api";
 
 function isGlobalCategory(item: unknown): item is GlobalCategory {
   return (
@@ -37,6 +40,7 @@ export async function fetchGlobalCategoriesClient(): Promise<GlobalCategory[]> {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        domain: API_CENTER_DOMAIN,
       },
       cache: "no-store",
     });
@@ -60,16 +64,20 @@ export async function fetchGlobalCategoriesClient(): Promise<GlobalCategory[]> {
 }
 
 export type CentersSearchParams = {
+  search?: string;
   global_category_id?: string;
   global_category_slug?: string;
   rate?: string;
 };
 
-export async function fetchCentersSearchClient(params: CentersSearchParams): Promise<CenterDetailData[]> {
+export async function fetchCentersSearchClient(
+  params: CentersSearchParams,
+  options: { includeWorkers?: boolean } = {}
+): Promise<CenterDetailData[]> {
   try {
     const qs = new URLSearchParams();
-    qs.set("include", "global_categories,branches,categories,services,packages,about_us,workers,vacations");
-    // qs.set("per_page", "10");
+    qs.set("include", "global_categories,branches,categories,services,packages,about_us,vacations");
+    if (params.search?.trim()) qs.set("search", params.search.trim());
     if (params.global_category_id) qs.set("global_category_id", params.global_category_id);
     if (params.global_category_slug) qs.set("global_category_slug", params.global_category_slug);
     if (params.rate) qs.set("rate", params.rate);
@@ -78,13 +86,48 @@ export async function fetchCentersSearchClient(params: CentersSearchParams): Pro
 
     const res = await fetch(url, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        domain: API_CENTER_DOMAIN,
+      },
       cache: "no-store",
     });
-    if (!res.ok) return [];
-    const json: CenterResponse = await res.json();
-    return Array.isArray(json.data) ? json.data : [];
-  } catch {
+    if (!res.ok) {
+      console.error("[centers-search] HTTP", res.status, res.statusText);
+      return [];
+    }
+
+    const json: CenterResponse | CenterListResponse = await res.json();
+    const centers = Array.isArray(json.data) ? json.data : json.data.data;
+    if (!Array.isArray(centers)) {
+      console.error("[centers-search] Unexpected response shape", json);
+      return [];
+    }
+
+    if (!options.includeWorkers) return centers;
+
+    return Promise.all(
+      centers.map(async (center) => {
+        const firstPage = await fetchCenterWorkers(center.id, 1, 100);
+        const remainingPages = await Promise.all(
+          Array.from(
+            { length: Math.max(0, firstPage.pagination.last_page - 1) },
+            (_, index) => fetchCenterWorkers(center.id, index + 2, 100)
+          )
+        );
+
+        return {
+          ...center,
+          workers: [
+            ...firstPage.workers,
+            ...remainingPages.flatMap((page) => page.workers),
+          ],
+        };
+      })
+    );
+  } catch (error) {
+    console.error("[centers-search]", error);
     return [];
   }
 }

@@ -3,7 +3,7 @@ export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.
 export const API_ENDPOINTS = {
     CENTERS: `${API_BASE_URL}/center_api/centers`,
     /** Rate/list payloads skip workers — load them from CENTER_WORKERS. */
-    CENTER_LIST_INCLUDE: "global_categories,branches,categories,services,packages,about_us,vacations,workers",
+    CENTER_LIST_INCLUDE: "global_categories,branches,categories,services,packages,about_us,vacations",
     GLOBAL_CATEGORIES: `${API_BASE_URL}/center_api/global-categories`,
     CENTER_BY_ID: (id: string | number) => `${API_BASE_URL}/center_api/centers/${id}?include=global_categories,branches,categories,services,packages,about_us,workers,vacations`,
     CENTER_WORKERS: (id: string | number, page = 1, perPage = 20) =>

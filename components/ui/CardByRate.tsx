@@ -58,7 +58,7 @@ const Card: React.FC<CardProps> = ({ business, className }) => {
                         <span className="line-clamp-1 text-black font-bold">{location}</span>
                     </div>
                     <span className="text-xs text-gray-400">{category}</span>
-                    <div className="mt-auto flex items-center gap-2 pt-2">
+                    <div className="mt-auto flex items-center gap-2 pt-2 text-black-700">
                         <RatingStars rating={rating} size={12} />
                         <span className="text-xs font-medium text-black-700">
                             {rating}

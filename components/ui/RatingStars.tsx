@@ -31,10 +31,11 @@ const RatingStars: React.FC<RatingStarsProps> = ({
                         className={cn(
                             "shrink-0",
                             filled
-                                ? "fill-amber-400 text-amber-400"
+                                ? "fill-amber-400 text-black-400"
                                 : halfFilled
-                                    ? "fill-amber-200 text-amber-400"
-                                    : "fill-gray-200 text-gray-200"
+                                    ? "fill-amber-200 text-black-400"
+                                    
+                                    : "fill-gray-200 text-gray-400" 
                         )}
                     />
                 );

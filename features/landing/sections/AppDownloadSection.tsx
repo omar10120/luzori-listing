@@ -98,7 +98,7 @@ const AppDownloadSection: React.FC = () => {
                             }}
                         >
                             <Image
-                                src="/appdownload/luzori-app.png"
+                                src="/appdownload/luzoriApp.png"
                                 alt="Luzori App Screens"
                                 fill
                                 className="object-contain object-right drop-shadow-2xl"

@@ -1,187 +1,133 @@
-import React from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import Container from '@/components/ui/Container';
-import Button from "@/components/ui/Button";
-import {
-    Search, Menu, User, Calendar, Wallet, Heart, ClipboardList,
-    ShoppingBag, Settings, LogOut, Download, HelpCircle,
-    Globe, Building2, ChevronRight
-} from "lucide-react";
-import { useTranslations } from 'next-intl';
-import { fetchUserProfile } from '@/lib/api';
-import LocaleSwitcher from '@/components/layout/LocaleSwitcher';
-import ProductCartButton from '@/components/cart/ProductCartButton';
+"use client";
 
-export default function Header() {
+import React from "react";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+import Container from "@/components/ui/Container";
+
+const AppDownloadSection: React.FC = () => {
     const t = useTranslations();
-    const [user, setUser] = React.useState<any>(null);
-    const [isLoading, setIsLoading] = React.useState(true);
-    const [isProfileOpen, setIsProfileOpen] = React.useState(false);
-
-    React.useEffect(() => {
-        const token = localStorage.getItem("authToken");
-        if (token) {
-            fetchUserProfile(token).then(data => {
-                if (data) setUser(data);
-                setIsLoading(false);
-            });
-        } else {
-            setIsLoading(false);
-        }
-    }, []);
-
-    const handleLogout = () => {
-        localStorage.removeItem("authToken");
-        setUser(null);
-        window.location.reload();
-    };
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white shadow-sm">
-            <Container className="flex h-16 items-center justify-between py-2">
-                {/* Logo */}
-                <Link href="/" className="flex items-center gap-1">
-                    <Image src="/logo.svg" alt="Luzori" width={100} height={100} />
-                </Link>
+        <motion.section 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{
+                duration: 0.7,
+                ease: [0.21, 0.47, 0.32, 0.98]
+            }}
+            className="relative w-full py-12 sm:py-20 lg:py-24 overflow-hidden bg-[#f8f5f0]"
+        >
+            {/* Full Section Background Image */}
+            <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
+                <Image
+                    src="/appdownload/Background.png"
+                    alt="Background"
+                    fill
+                    className="object-cover object-center"
+                    priority
+                    unoptimized 
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#f8f5f0] via-[#f8f5f0]/80 to-transparent"></div>
+            </div>
 
+            <Container className="relative z-10">
+                <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
+                    
+                    {/* Left content */}
+                    <div className="flex flex-col items-start px-4 lg:px-0">
+                        {/* Overline Text */}
+                        <span className="mb-3 sm:mb-4 text-xs sm:text-sm font-semibold tracking-widest text-[#C29A5C] uppercase">
+                            {t('app_download_overline')}
+                        </span>
 
-                {/* Compact Search Box */}
-                <div className="hidden max-w-xl flex-1 items-center gap-0 rounded-full border border-gray-200 bg-white p-1 md:flex mx-8 shadow-sm">
-                    <div className="flex flex-1 items-center gap-2 px-3">
-                        <span className="text-xs font-medium text-gray-500 whitespace-nowrap">{t('all_treatments')}</span>
-                    </div>
-                    <div className="h-4 w-px bg-gray-200" />
-                    <div className="flex flex-1 items-center gap-2 px-3">
-                        <span className="text-xs font-medium text-gray-500 whitespace-nowrap">{t('current_location')}</span>
-                    </div>
-                    <div className="h-4 w-px bg-gray-200" />
-                    <div className="flex flex-1 items-center gap-2 px-3">
-                        <span className="text-xs font-medium text-gray-500 whitespace-nowrap">{t('any_time')}</span>
-                    </div>
-                    <button className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-900 text-white transition-colors hover:bg-gray-800">
-                        <Search size={14} />
-                    </button>
-                </div>
+                        {/* Main Heading */}
+                        <h2 className="text-3xl font-normal tracking-tight text-[#0E3D35] sm:text-5xl lg:text-6xl max-w-lg leading-[1.1] font-serif">
+                            {t('app_download_heading_1')}<br />
+                            {t('app_download_heading_2')}<br />
+                            {t('app_download_heading_3')}
+                        </h2>
 
-                {/* User Profile / Menu */}
-                <div className="flex items-center gap-2">
-                    <ProductCartButton />
-                    {user ? (
-                        <div className="flex items-center gap-3">
-                            <div className="hidden flex-col items-end sm:flex text-right">
-                                <span className="text-sm font-semibold text-gray-900">{user.name}</span>
-                                <span className="text-xs text-gray-500">{user.email}</span>
-                                
-                            </div>
-                            <div className="relative">
-                            
-                                <button
-                                    onClick={() => setIsProfileOpen(!isProfileOpen)}
-                                    className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#d4af37] overflow-hidden transition-transform hover:scale-105 active:scale-95 focus:outline-none"
-                                >
-                                    
-                                    <Image
-                                        src={user.image_url || "/assets/img/avatars/1.png"}
-                                        alt={user.name}
-                                        width={40}
-                                        height={40}
-                                        className="h-full w-full object-cover"
-                                        unoptimized
-                                    />
-                                </button>
-                                {/* Dropdown placeholder or Logout bit */}
-                                {isProfileOpen && (
-                                    <>
-                                        <div
-                                            className="fixed inset-0 z-40"
-                                            onClick={() => setIsProfileOpen(false)}
-                                        />
-                                        <div className="absolute right-0 top-full mt-2 w-64 rounded-2xl bg-white p-2 shadow-2xl ring-1 ring-black/5 transition-all z-50 overflow-hidden">
-                                            <div className="px-4 py-3 border-b border-gray-50 mb-1 text-left">
-                                                <p className="text-sm font-semibold text-gray-900">{user.name}</p>
-                                            </div>
+                        {/* Subtitle */}
+                        <p className="mt-4 sm:mt-6 max-w-md text-base sm:text-lg text-[#4A5D5A] font-medium leading-relaxed">
+                            {t('app_download_subtitle')}
+                        </p>
 
-                                            <div className="space-y-0.5">
-                                                <Link href="/profile" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
-                                                    <User size={18} className="text-gray-500" />
-                                                    <span>{t('profile') || "Profile"}</span>
-                                                </Link>
-                                                <Link href="/activity" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
-                                                    <Calendar size={18} className="text-gray-500" />
-                                                    <span>{t('activity') || "Activity"}</span>
-                                                </Link>
-                                                <Link href="/wallet" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
-                                                    <Wallet size={18} className="text-gray-500" />
-                                                    <span>{t('wallet') || "Wallet"}</span>
-                                                </Link>
-                                                <Link href="/favorites" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
-                                                    <Heart size={18} className="text-gray-500" />
-                                                    <span>{t('favorites') || "Favorites"}</span>
-                                                </Link>
-                                                {/* <Link href="/forms" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
-                                                    <ClipboardList size={18} className="text-gray-500" />
-                                                    <span>{t('forms') || "Forms"}</span>
-                                                </Link> */}
-                                                <Link href="/product-orders" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
-                                                    <ShoppingBag size={18} className="text-gray-500" />
-                                                    <span>{t('product_orders') || "Product orders"}</span>
-                                                </Link>
-                                                <Link href="/settings" className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors" onClick={() => setIsProfileOpen(false)}>
-                                                    <Settings size={18} className="text-gray-500" />
-                                                    <span>{t('settings') || "Settings"}</span>
-                                                </Link>
+                        {/* App Store Buttons */}
+                        <div className="mt-8 sm:mt-10 flex flex-wrap items-center gap-3 sm:gap-4">
+                            {/* Apple App Store Button */}
+                            <Link 
+                                href="https://apps.apple.com/ae/app/luzori-customer/id6793425715" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 sm:gap-3 bg-[#0B3B35] hover:bg-[#154A44] text-white px-4 py-2 sm:px-5 sm:py-3 rounded-xl transition-colors duration-300 shadow-md"
+                            >
+                                <svg viewBox="0 0 384 512" className="w-5 h-5 sm:w-7 sm:h-7 fill-current">
+                                    <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                                </svg>
+                                <div className="flex flex-col items-start leading-tight">
+                                    <span className="text-[9px] sm:text-[10px] font-medium">{t('app_download_apple_top')}</span>
+                                    <span className="text-xs sm:text-sm font-bold">{t('app_download_apple_bottom')}</span>
+                                </div>
+                            </Link>
 
-                                                <div className="py-1">
-                                                    <button
-                                                        onClick={handleLogout}
-                                                        className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left"
-                                                    >
-                                                        <LogOut size={18} className="text-gray-500" />
-                                                        <span>{t('logout') || "Log out"}</span>
-                                                    </button>
-                                                </div>
-
-                                                <div className="h-px bg-gray-100 my-1 mx-2" />
-
-                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
-                                                    <Download size={18} className="text-gray-500" />
-                                                    <span>{t('download_app') || "Download the app"}</span>
-                                                </button>
-                                                <button className="flex w-full items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors text-left">
-                                                    <HelpCircle size={18} className="text-gray-500" />
-                                                    <span>{t('help_support') || "Help and support"}</span>
-                                                </button>
-                                                <div className="px-3 py-2 text-left">
-                                                    <div className="flex items-center gap-3 text-sm text-gray-700">
-                                                        <Globe size={18} className="text-gray-500" />
-                                                        <LocaleSwitcher />
-                                                    </div>
-                                                </div>
-
-                                                <div className="h-px bg-gray-100 my-1 mx-2" />
-
-                                                {/* <Link href="https://dashboard.luzori.com" target="_blank" className="flex items-center justify-between gap-3 px-3 py-3 text-sm font-semibold text-gray-900 hover:bg-gray-50 rounded-lg transition-colors">
-                                                    <div className="flex items-center gap-3">
-                                                        <Building2 size={18} className="text-gray-500" />
-                                                        <span>{t('for_businesses') || "For businesses"}</span>
-                                                    </div>
-                                                    <ChevronRight size={16} className="text-gray-400" />
-                                                </Link> */}
-                                            </div>
-                                        </div>
-                                    </>
-                                )}
-                            </div>
+                            {/* Google Play Button */}
+                            <Link 
+                                href="https://play.google.com/store/apps/details?id=com.luzori.etechnocode&pcampaignid=web_share" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 sm:gap-3 bg-[#0B3B35] hover:bg-[#154A44] text-white px-4 py-2 sm:px-5 sm:py-3 rounded-xl transition-colors duration-300 shadow-md"
+                            >
+                                <svg viewBox="0 0 512 512" className="w-5 h-5 sm:w-7 sm:h-7 fill-current">
+                                    <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/>
+                                </svg>
+                                <div className="flex flex-col items-start leading-tight">
+                                    <span className="text-[9px] sm:text-[10px] font-medium">{t('app_download_google_top')}</span>
+                                    <span className="text-xs sm:text-sm font-bold">{t('app_download_google_bottom')}</span>
+                                </div>
+                            </Link>
                         </div>
-                    ) : (
-                        <Button variant="outline" size="sm" className="flex items-center gap-2 rounded-full px-4 font-semibold">
-                            {t('menu')} <Menu size={16} />
-                        </Button>
-                    )}
-                </div>
+                    </div>
 
+                    {/* Right — App Image with Soft Mask Blend */}
+                    <div className="relative w-full h-[350px] sm:h-[450px] lg:h-[600px] mt-8 lg:mt-0 flex justify-center lg:justify-end">
+                        <motion.div
+                            initial={{ opacity: 0, x: 30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                            className="relative w-full max-w-lg lg:max-w-none lg:w-[130%] h-full"
+                            style={{
+                                // Increased top fade to 30% to completely remove the top edge
+                                maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 30%, black 100%)',
+                                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 30%, black 100%)',
+                                maskComposite: 'intersect',
+                                WebkitMaskComposite: 'source-in', 
+                                maskRepeat: 'no-repeat',
+                                WebkitMaskRepeat: 'no-repeat',
+                                maskSize: '100% 100%',
+                                WebkitMaskSize: '100% 100%',
+                            }}
+                        >
+                            <Image
+                                src="/appdownload/luzoriApp.png"
+                                alt="Luzori App Screens"
+                                fill
+                                // Removed drop-shadow-2xl as it can create a hard edge on PNGs
+                                className="object-contain object-center lg:object-right mix-blend-multiply"
+                                priority
+                                unoptimized 
+                            />
+                        </motion.div>
+                    </div>
+                    
+                </div>
             </Container>
-        </header>
+        </motion.section>
     );
-}
+};
+
+export default AppDownloadSection;

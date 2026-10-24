@@ -93,16 +93,17 @@ const AppDownloadSection: React.FC = () => {
                     </div>
 
                     {/* Right — App Image with Soft Mask Blend */}
-                    <div className="relative w-full h-[300px] sm:h-[450px] lg:h-[600px] mt-4 lg:mt-0 flex justify-center lg:justify-end">
+                    <div className="relative w-full h-[350px] sm:h-[450px] lg:h-[600px] mt-8 lg:mt-0 flex justify-center lg:justify-end">
                         <motion.div
                             initial={{ opacity: 0, x: 30 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                            className="relative w-full max-w-md lg:max-w-none lg:w-[130%] h-full"
+                            className="relative w-full max-w-lg lg:max-w-none lg:w-[130%] h-full"
                             style={{
-                                maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 15%, black 100%)',
-                                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 15%, black 100%)',
+                                // Fades all 4 edges to completely remove the box look
+                                maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+                                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
                                 maskComposite: 'intersect',
                                 WebkitMaskComposite: 'source-in', 
                                 maskRepeat: 'no-repeat',
@@ -115,7 +116,9 @@ const AppDownloadSection: React.FC = () => {
                                 src="/appdownload/luzoriApp.png"
                                 alt="Luzori App Screens"
                                 fill
-                                className="object-contain object-right drop-shadow-2xl"
+                                // mix-blend-multiply removes the image's background color
+                                // object-center on mobile, object-right on desktop
+                                className="object-contain object-center lg:object-right drop-shadow-2xl mix-blend-multiply"
                                 priority
                                 unoptimized 
                             />

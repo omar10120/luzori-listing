@@ -37,9 +37,9 @@ export default function Home() {
       </SectionWrapper>
       <AppDownloadSection />
 
-      <SectionWrapper>
+      {/* <SectionWrapper>
         <ReviewsSection />
-      </SectionWrapper>
+      </SectionWrapper> */}
 
 
       <SectionWrapper>

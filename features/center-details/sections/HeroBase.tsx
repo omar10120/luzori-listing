@@ -18,13 +18,11 @@ export default function HeroBase({ center, isFav, onToggleFav }: HeroBaseProps) 
     const [copied, setCopied] = useState(false);
 
     const handleShare = async () => {
-        // Use the current URL
         const shareUrl = window.location.href;
         const shareTitle = center.name;
         const shareText = `Check out ${center.name} on Luzori!`;
 
         try {
-            // 1. Try Native Web Share API (Mobile)
             if (navigator.share) {
                 await navigator.share({
                     title: shareTitle,
@@ -32,20 +30,21 @@ export default function HeroBase({ center, isFav, onToggleFav }: HeroBaseProps) 
                     url: shareUrl,
                 });
             } else {
-                // 2. Fallback: Copy to Clipboard (Desktop)
                 await navigator.clipboard.writeText(shareUrl);
                 setCopied(true);
-                setTimeout(() => setCopied(false), 2000); // Reset icon after 2 seconds
+                setTimeout(() => setCopied(false), 2000);
             }
         } catch (error) {
             console.error('Error sharing:', error);
-            // If the user cancels the share sheet, it throws an error. 
-            // We only want to alert if it's a real failure, not a cancellation.
             if ((error as Error).name !== 'AbortError') {
                 alert('Could not share. Please try copying the URL from the address bar.');
             }
         }
     };
+
+    // Safely get the first branch and its open time
+    const firstBranch = center.branches?.[0];
+    const openTime = firstBranch?.open_time || "9:00 AM";
 
     return (
         <div className="mb-6">
@@ -67,26 +66,44 @@ export default function HeroBase({ center, isFav, onToggleFav }: HeroBaseProps) 
                     <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                         <div className="flex items-center gap-1">
                             <span className="font-bold text-gray-900">
-                                {center.avg_rating}
+                                {center.avg_rating || "0.0"}
                             </span>
                             <div className="flex gap-0.5">
-                                {[1, 2, 3, 4, 5].map((i) => (
-                                    <Star key={i} size={14} className="fill-yellow-400 text-yellow-400" />
-                                ))}
+                                {[1, 2, 3, 4, 5].map((i) => {
+                                    // Dynamic star filling based on rating
+                                    const isFilled = i <= Number(center.avg_rating || 0);
+                                    return (
+                                        <Star 
+                                            key={i} 
+                                            size={14} 
+                                            className={isFilled ? "fill-yellow-400 text-yellow-400" : "fill-gray-200 text-gray-200"} 
+                                        />
+                                    );
+                                })}
                             </div>
-                            <span className="text-blue-600 hover:underline cursor-pointer">(1,496)</span>
+                            {/* Use real review count if available */}
+                            <span className="text-blue-600 hover:underline cursor-pointer">
+                                ({center.reviews_count?.toLocaleString() || "0"})
+                            </span>
                         </div>
-                        <span className="text-gray-300">•</span>
-                        <div className="flex items-center gap-1">
-                            <span className="font-semibold text-green-600">{t('open_now')}</span>
-                            <span>– {t('until')} {center.branches[0].open_time == null ? "9:00 AM" : center.branches[0].open_time}</span>
-                        </div>
+                        
+                        {/* Only show opening hours if a branch exists */}
+                        {firstBranch && (
+                            <>
+                                <span className="text-gray-300">•</span>
+                                <div className="flex items-center gap-1">
+                                    <span className="font-semibold text-green-600">{t('open_now')}</span>
+                                    <span>– {t('until')} {openTime}</span>
+                                </div>
+                            </>
+                        )}
+
                         <span className="text-gray-300">•</span>
                         <div className="flex items-center gap-1">
                             <MapPin size={14} className="text-gray-400" />
                             <span>
-                                {center.branches?.[0]
-                                    ? `${center.branches[0].address}, ${center.branches[0].city}`
+                                {firstBranch
+                                    ? `${firstBranch.address}, ${firstBranch.city}`
                                     : center.domain}
                             </span>
                         </div>

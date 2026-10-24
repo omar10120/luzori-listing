@@ -2,16 +2,10 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Apple } from "lucide-react";
+import Image from "next/image";
 import Container from "@/components/ui/Container";
-import { useTranslations } from "next-intl";
-import { SITE_NAME } from "@/lib/constants";
 
 const AppDownloadSection: React.FC = () => {
-    const t = useTranslations();
-    // QR Code for https://play.google.com/
-    const qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://play.google.com/&color=111827";
-
     return (
         <motion.section 
             initial={{ opacity: 0, y: 20 }}
@@ -21,93 +15,87 @@ const AppDownloadSection: React.FC = () => {
                 duration: 0.7,
                 ease: [0.21, 0.47, 0.32, 0.98]
             }}
-            className="w-full bg-white/60 py-16 sm:py-24 overflow-hidden"
+            className="relative w-full py-16 sm:py-24 overflow-hidden bg-[#f8f5f0]"
         >
-            <Container>
+            {/* Full Section Background Image */}
+            <div className="absolute inset-0 w-full h-full z-0">
+                <Image
+                    src="/appdownload/Background.png"
+                    alt="Background"
+                    fill
+                    className="object-cover object-center"
+                    priority
+                />
+                {/* Soft overlay to ensure text is perfectly readable against the pattern */}
+                <div className="absolute inset-0 bg-gradient-to-r from-[#f8f5f0] via-[#f8f5f0]/80 to-transparent"></div>
+            </div>
+
+            <Container className="relative z-10">
                 <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+                    
                     {/* Left content */}
                     <div className="flex flex-col items-start px-4 lg:px-0">
-                        {/* Store Logos / Available on */}
-                        <div className="mb-6 flex items-center gap-2">
-                            <span className="text-sm font-semibold text-gray-900">Available on</span>
-                            <div className="flex items-center gap-3">
-                                <Apple size={20} className="text-gray-900 fill-current" />
-                                <svg className="h-5 w-5 fill-current text-gray-900" viewBox="0 0 24 24">
-                                    <path d="M3.609 1.814L13.792 12 3.61 22.186a2.23 2.23 0 0 1-.41-.716V2.53c0-.263.14-.515.41-.716zm11.597 11.196l2.13-2.13c.456-.456.456-1.194 0-1.65l-2.13-2.13-2.588 2.588 2.588 2.588h.001zm-3.83-1.428L1.48 2.067C1.04 1.81 0 2.128 0 2.92v18.16c0 .792 1.04 1.11 1.48.853l9.896-9.518-2.588-2.588h-.001-.001zm11.238-3.048l-3.326-1.92-3.13 3.13 3.13 3.13 3.326-1.92c.692-.4 1.088-1.046 1.088-1.71s-.396-1.31-1.088-1.71z" />
-                                </svg>
-                            </div>
-                        </div>
+                        {/* Overline Text */}
+                        <span className="mb-4 text-sm font-semibold tracking-widest text-[#C29A5C] uppercase">
+                            THE LUZORI APP
+                        </span>
 
-                        <h2 className="text-2xl font-extrabold tracking-tight text-gray-900 sm:text-2xl lg:text-2xl max-w-lg leading-[1.1]">
-                            {t('download_app_heading')}
+                        {/* Main Heading */}
+                        <h2 className="text-4xl font-normal tracking-tight text-[#0E3D35] sm:text-5xl lg:text-6xl max-w-lg leading-[1.1] font-serif">
+                            Your Beauty<br />Journey,<br />Anytime
                         </h2>
-                        <p className="mt-6 max-w-md text-lg text-gray-600 font-medium">
-                            {t('download_app_subtitle')}
+
+                        {/* Subtitle */}
+                        <p className="mt-6 max-w-md text-lg text-[#4A5D5A] font-medium leading-relaxed">
+                            Book your appointments, explore premium services, and enjoy a seamless experience with the Luzori app.
                         </p>
 
-                        {/* QR Code Card */}
-                        <div className="mt-10 p-4 bg-white rounded-2xl shadow-[0_0_20px_rgba(0,0,0,0.08)] border border-gray-100 group transition-all hover:shadow-[0_0_30px_rgba(0,0,0,0.12)]">
-                            <img
-                                src={qrCodeUrl}
-                                alt="Scan to download app"
-                                className="w-20 h-20 object-contain rounded-lg transition-transform duration-300 group-hover:scale-105"
-                            />
+                        {/* App Store Buttons */}
+                        <div className="mt-10 flex flex-wrap items-center gap-4">
+                            {/* Apple App Store Button */}
+                            <a href="#" className="flex items-center gap-3 bg-[#0B3B35] hover:bg-[#154A44] text-white px-5 py-3 rounded-xl transition-colors duration-300 shadow-md">
+                                <svg viewBox="0 0 384 512" className="w-7 h-7 fill-current">
+                                    <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                                </svg>
+                                <div className="flex flex-col items-start leading-tight">
+                                    <span className="text-[10px] font-medium">Download on the</span>
+                                    <span className="text-sm font-bold">App Store</span>
+                                </div>
+                            </a>
+
+                            {/* Google Play Button */}
+                            <a href="#" className="flex items-center gap-3 bg-[#0B3B35] hover:bg-[#154A44] text-white px-5 py-3 rounded-xl transition-colors duration-300 shadow-md">
+                                <svg viewBox="0 0 512 512" className="w-7 h-7 fill-current">
+                                    <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.2 225.6l-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/>
+                                </svg>
+                                <div className="flex flex-col items-start leading-tight">
+                                    <span className="text-[10px] font-medium">GET IT ON</span>
+                                    <span className="text-sm font-bold">Google Play</span>
+                                </div>
+                            </a>
                         </div>
                     </div>
 
-                    {/* Right — Dual Phone Mockups */}
-                    <div className="relative flex justify-center lg:justify-end h-[500px] sm:h-[600px] overflow-visible">
-                        {/* Main Phone (Left) */}
+                    {/* Right — App Image with Soft Mask Blend */}
+                    <div className="relative flex justify-center lg:justify-end z-10 mt-12 lg:mt-0 h-full">
                         <motion.div
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
-                            className="absolute z-20 left-0 lg:-left-20 top-0 w-64 sm:w-80"
-                        >
-                            <div className="relative overflow-hidden rounded-[2.8rem] border-[8px] border-gray-900 bg-white shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] ring-1 ring-gray-900/5 aspect-[9/18.5]">
-                                {/* UI Mockup */}
-                                <img
-                                    src="https://images.unsplash.com/photo-1562322140-8baeececf3df?auto=format&fit=crop&q=80&w=800"
-                                    className="w-full h-full object-cover"
-                                    alt="App Screenshot 1"
-                                />
-                                {/* Bottom Bar Mockup */}
-                                <div className="absolute bottom-0 inset-x-0 h-16 bg-white/90 backdrop-blur-sm border-t border-gray-100 flex items-center justify-around px-4">
-                                    <div className="w-8 h-8 rounded-full bg-gray-100" />
-                                    <div className="w-8 h-8 rounded-full bg-gray-100" />
-                                    <div className="w-12 h-12 rounded-full bg-gray-900 flex items-center justify-center -mt-8 border-4 border-white shadow-lg">
-                                        <div className="w-4 h-4 bg-white rounded-sm" />
-                                    </div>
-                                    <div className="w-8 h-8 rounded-full bg-gray-100" />
-                                    <div className="w-8 h-8 rounded-full bg-gray-100" />
-                                </div>
-                            </div>
-                        </motion.div>
-
-                        {/* Secondary Phone (Right) */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 100 }}
-                            whileInView={{ opacity: 1, y: 30 }}
+                            initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                            className="absolute z-10 right-0 top-10 w-56 sm:w-72 group"
+                            className="relative w-full max-w-md lg:max-w-none lg:w-[130%] lg:-mr-12 xl:-mr-24 h-[400px] sm:h-[500px] lg:h-[600px]"
                         >
-                            <div className="relative overflow-hidden rounded-[2.5rem] border-[7px] border-gray-900 bg-white shadow-[0_20px_40px_-8px_rgba(0,0,0,0.15)] ring-1 ring-gray-900/5 aspect-[9/18.5]">
-                                <img
-                                    src="https://images.unsplash.com/photo-1512428559083-a40ce503367d?auto=format&fit=crop&q=80&w=800"
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    alt="App Screenshot 2"
-                                />
-                                {/* Play Overlay to simulate video/gif content */}
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/5 group-hover:bg-black/10 transition-colors">
-                                    <div className="w-14 h-14 rounded-full bg-white/40 backdrop-blur-md flex items-center justify-center border border-white/40 shadow-xl transition-transform group-hover:scale-110">
-                                        <div className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[14px] border-l-white border-b-[8px] border-b-transparent ml-1" />
-                                    </div>
-                                </div>
-                            </div>
+                            <Image
+                                src="/appdownload/Luzori App.png"
+                                alt="Luzori App Screens"
+                                fill
+                                // Updated mask to fade BOTH the left and right sides perfectly
+                                className="object-contain object-right drop-shadow-2xl [mask-image:linear-gradient(to_right,transparent_0%,black_10%,black_90%,transparent_100%)]"
+                                priority
+                            />
                         </motion.div>
                     </div>
+                    
                 </div>
             </Container>
         </motion.section>

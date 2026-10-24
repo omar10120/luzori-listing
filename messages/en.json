@@ -454,5 +454,14 @@
     "product_stock_limit_reached_short": "Stock limit reached",
     "product_stock_limit_warning": "Only {stock} in stock. You already have {inCart} in your cart.",
     "cart_increase": "Increase",
-    "cart_decrease": "Decrease"
+    "cart_decrease": "Decrease",
+    "app_download_overline": "THE LUZORI APP",
+    "app_download_heading_1": "Your Beauty",
+    "app_download_heading_2": "Journey,",
+    "app_download_heading_3": "Anytime",
+    "app_download_subtitle": "Book your appointments, explore premium services, and enjoy a seamless experience with the Luzori app.",
+    "app_download_apple_top": "Download on the",
+    "app_download_apple_bottom": "App Store",
+    "app_download_google_top": "GET IT ON",
+    "app_download_google_bottom": "Google Play"
 }

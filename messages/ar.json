@@ -454,5 +454,15 @@
     "product_stock_limit_reached_short": "تم الوصول إلى الحد الأقصى للمخزون",
     "product_stock_limit_warning": "فقط {stock} متاح. لديك {inCart} في السلة.",
     "cart_increase": "زيادة",
-    "cart_decrease": "إنقاص"
+    "cart_decrease": "إنقاص",
+    "app_download_overline": "تطبيق لوزوري",
+    "app_download_heading_1": "جمالك",
+    "app_download_heading_2": "رحلتك،",
+    "app_download_heading_3": "في أي وقت",
+    "app_download_subtitle": "احجز مواعيدك، واستكشف الخدمات المتميزة، واستمتع بتجربة سلسة مع تطبيق لوزوري.",
+    "app_download_apple_top": "تحميل من",
+    "app_download_apple_bottom": "App Store",
+    "app_download_google_top": "احصل عليه من",
+    "app_download_google_bottom": "Google Play"
+    
 }

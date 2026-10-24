@@ -27,18 +27,30 @@ export interface SearchResultCardProps {
 
 function collectServicesPreview(c: CenterDetailData, max = 3): Service[] {
   const collected: Service[] = [];
+  // Track unique service IDs to prevent duplicate keys
+  const seenIds = new Set<number | string>();
+
   for (const cat of c.categories || []) {
     for (const s of cat.services || []) {
-      collected.push(s);
-      if (collected.length >= max) return collected;
+      if (!seenIds.has(s.id)) {
+        seenIds.add(s.id);
+        collected.push(s);
+        if (collected.length >= max) return collected;
+      }
     }
   }
+  
+  // Fallback to c.services if we still need more
   if (collected.length < max && c.services?.length) {
     for (const s of c.services) {
-      collected.push(s);
-      if (collected.length >= max) break;
+      if (!seenIds.has(s.id)) {
+        seenIds.add(s.id);
+        collected.push(s);
+        if (collected.length >= max) break;
+      }
     }
   }
+  
   return collected;
 }
 

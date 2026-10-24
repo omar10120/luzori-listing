@@ -3,9 +3,10 @@
 import React, { useEffect, useMemo } from "react";
 import L from "leaflet";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import "leaflet/dist/leaflet.css"; // This is now safe with global.d.ts
+import "leaflet/dist/leaflet.css";
 
 export interface SearchMapMarker {
+  /** Stable id used for hover/active highlighting and click matching. */
   id: string;
   lat: number;
   lng: number;
@@ -110,11 +111,11 @@ export default function SearchMap({
       className="h-full w-full"
       style={{ height: "100%", width: "100%", background: "#eef2f4" }}
     >
-      {/* FIXED: Switched to CartoDB Voyager for reliable production tiles */}
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-      />
+    <TileLayer
+      // Using OSM France's free tile server
+      url="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png"
+      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+   />
       <FitBounds markers={markers} />
       <FlyToFocus markers={markers} focus={focus} />
 

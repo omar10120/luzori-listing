@@ -27,31 +27,18 @@ export interface SearchResultCardProps {
 
 function collectServicesPreview(c: CenterDetailData, max = 3): Service[] {
   const collected: Service[] = [];
-  // Create a Set to track unique IDs
-  const seenIds = new Set<number | string>();
-
   for (const cat of c.categories || []) {
     for (const s of cat.services || []) {
-      // Check if we've already added this service ID
-      if (!seenIds.has(s.id)) {
-        seenIds.add(s.id);
-        collected.push(s);
-        if (collected.length >= max) return collected;
-      }
+      collected.push(s);
+      if (collected.length >= max) return collected;
     }
   }
-  
-  // Fallback to c.services if we still need more
   if (collected.length < max && c.services?.length) {
     for (const s of c.services) {
-      if (!seenIds.has(s.id)) {
-        seenIds.add(s.id);
-        collected.push(s);
-        if (collected.length >= max) break;
-      }
+      collected.push(s);
+      if (collected.length >= max) break;
     }
   }
-  
   return collected;
 }
 

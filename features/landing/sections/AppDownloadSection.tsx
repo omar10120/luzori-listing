@@ -18,13 +18,14 @@ const AppDownloadSection: React.FC = () => {
             className="relative w-full py-16 sm:py-24 overflow-hidden bg-[#f8f5f0]"
         >
             {/* Full Section Background Image */}
-            <div className="absolute inset-0 w-full h-full z-0">
+            <div className="absolute inset-0 w-full h-full z-0 pointer-events-none">
                 <Image
                     src="/appdownload/Background.png"
                     alt="Background"
                     fill
                     className="object-cover object-center"
                     priority
+                    unoptimized // <--- FIX: Forces raw image delivery in production
                 />
                 {/* Soft overlay to ensure text is perfectly readable against the pattern */}
                 <div className="absolute inset-0 bg-gradient-to-r from-[#f8f5f0] via-[#f8f5f0]/80 to-transparent"></div>
@@ -77,24 +78,32 @@ const AppDownloadSection: React.FC = () => {
                     </div>
 
                     {/* Right — App Image with Soft Mask Blend */}
-                    <div className="relative flex justify-center lg:justify-end z-10 mt-12 lg:mt-0 h-full">
+                    <div className="relative w-full h-[400px] sm:h-[500px] lg:h-[600px] flex justify-center lg:justify-end">
                         <motion.div
-                            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                            initial={{ opacity: 0, x: 30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                            className="relative w-full max-w-md lg:max-w-none lg:w-[130%] lg:-mr-12 xl:-mr-24 h-[400px] sm:h-[500px] lg:h-[600px]"
+                            className="relative w-full max-w-md lg:max-w-none lg:w-[130%] h-full"
+                            style={{
+                                // Using inline styles guarantees this works in production
+                                maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 15%, black 100%)',
+                                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%), linear-gradient(to bottom, transparent 0%, black 15%, black 100%)',
+                                maskComposite: 'intersect',
+                                WebkitMaskComposite: 'source-in', // Safari support
+                                maskRepeat: 'no-repeat',
+                                WebkitMaskRepeat: 'no-repeat',
+                                maskSize: '100% 100%',
+                                WebkitMaskSize: '100% 100%',
+                            }}
                         >
                             <Image
-                                src="/appdownload/Luzori App.png"
+                                src="/appdownload/luzori-app.png"
                                 alt="Luzori App Screens"
                                 fill
-                                className="object-contain object-right drop-shadow-2xl 
-                                [mask-image:linear-gradient(to_right,transparent_0%,black_10%,black_90%,transparent_100%),linear-gradient(to_bottom,transparent_0%,black_15%,black_100%)] 
-                                [mask-composite:intersect] 
-                                [mask-repeat:no-repeat] 
-                                [mask-size:100%_100%]"
+                                className="object-contain object-right drop-shadow-2xl"
                                 priority
+                                unoptimized // <--- FIX: Forces raw image delivery in production
                             />
                         </motion.div>
                     </div>

@@ -46,7 +46,7 @@ export default function HeroBase({ center, isFav, onToggleFav }: HeroBaseProps) 
                         <span className="text-gray-300">•</span>
                         <div className="flex items-center gap-1">
                             <span className="font-semibold text-green-600">{t('open_now')}</span>
-                            <span>– {t('opens_at')} 10:00 AM</span>
+                            <span>– {t('opens_at')} 09:00 AM</span>
                         </div>
                         <span className="text-gray-300">•</span>
                         <div className="flex items-center gap-1">

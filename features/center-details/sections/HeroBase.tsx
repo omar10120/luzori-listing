@@ -1,5 +1,7 @@
-import React from 'react';
-import { ChevronRight, Star, MapPin, Share2, Heart } from 'lucide-react';
+"use client";
+
+import React, { useState } from 'react';
+import { ChevronRight, Star, MapPin, Share2, Heart, Check } from 'lucide-react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
@@ -13,6 +15,37 @@ interface HeroBaseProps {
 
 export default function HeroBase({ center, isFav, onToggleFav }: HeroBaseProps) {
     const t = useTranslations();
+    const [copied, setCopied] = useState(false);
+
+    const handleShare = async () => {
+        // Use the current URL
+        const shareUrl = window.location.href;
+        const shareTitle = center.name;
+        const shareText = `Check out ${center.name} on Luzori!`;
+
+        try {
+            // 1. Try Native Web Share API (Mobile)
+            if (navigator.share) {
+                await navigator.share({
+                    title: shareTitle,
+                    text: shareText,
+                    url: shareUrl,
+                });
+            } else {
+                // 2. Fallback: Copy to Clipboard (Desktop)
+                await navigator.clipboard.writeText(shareUrl);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000); // Reset icon after 2 seconds
+            }
+        } catch (error) {
+            console.error('Error sharing:', error);
+            // If the user cancels the share sheet, it throws an error. 
+            // We only want to alert if it's a real failure, not a cancellation.
+            if ((error as Error).name !== 'AbortError') {
+                alert('Could not share. Please try copying the URL from the address bar.');
+            }
+        }
+    };
 
     return (
         <div className="mb-6">
@@ -46,7 +79,6 @@ export default function HeroBase({ center, isFav, onToggleFav }: HeroBaseProps) 
                         <span className="text-gray-300">•</span>
                         <div className="flex items-center gap-1">
                             <span className="font-semibold text-green-600">{t('open_now')}</span>
-                            {/* <span>– {t('opens_at')} 09:00 AM</span> */}
                             <span>– {t('until')} {center.branches[0].open_time == null ? "9:00 AM" : center.branches[0].open_time}</span>
                         </div>
                         <span className="text-gray-300">•</span>
@@ -57,18 +89,34 @@ export default function HeroBase({ center, isFav, onToggleFav }: HeroBaseProps) 
                                     ? `${center.branches[0].address}, ${center.branches[0].city}`
                                     : center.domain}
                             </span>
-                            {/* <button className="text-blue-600 hover:underline font-medium ml-1 rtl:mr-1 rtl:ml-0">{t('get_directions')}</button> */}
                         </div>
                     </div>
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex items-center gap-2">
-                    <button className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors">
-                        <Share2 size={18} className="text-gray-700" />
+                    {/* Share Button */}
+                    <button 
+                        onClick={handleShare}
+                        aria-label={t('share')}
+                        className={cn(
+                            "flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border transition-colors",
+                            copied 
+                                ? "border-green-500 bg-green-50" 
+                                : "border-gray-200 hover:bg-gray-50"
+                        )}
+                    >
+                        {copied ? (
+                            <Check size={18} className="text-green-600" />
+                        ) : (
+                            <Share2 size={18} className="text-gray-700" />
+                        )}
                     </button>
+
+                    {/* Favorite Button */}
                     <button
                         onClick={onToggleFav}
+                        aria-label={isFav ? t('remove_from_favorites') : t('add_to_favorites')}
                         className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 hover:bg-gray-50 transition-colors"
                     >
                         <Heart size={18} className={cn("text-gray-700", isFav && "fill-red-500 text-red-500 border-red-500")} />

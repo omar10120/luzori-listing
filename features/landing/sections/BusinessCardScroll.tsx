@@ -33,7 +33,7 @@ const BusinessCardScroll: React.FC<BusinessCardScrollProps> = ({
     };
 
     return (
-        <section className="py-6 sm:py-4">
+        <section className="py-3 sm:py-2">
             <Container>
                 <div className="flex items-end justify-between">
                     <div className="flex items-center gap-4 flex-wrap">

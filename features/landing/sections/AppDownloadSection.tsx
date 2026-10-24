@@ -89,8 +89,11 @@ const AppDownloadSection: React.FC = () => {
                                 src="/appdownload/Luzori App.png"
                                 alt="Luzori App Screens"
                                 fill
-                                // Updated mask to fade BOTH the left and right sides perfectly
-                                className="object-contain object-right drop-shadow-2xl [mask-image:linear-gradient(to_right,transparent_0%,black_10%,black_90%,transparent_100%)]"
+                                className="object-contain object-right drop-shadow-2xl 
+                                [mask-image:linear-gradient(to_right,transparent_0%,black_10%,black_90%,transparent_100%),linear-gradient(to_bottom,transparent_0%,black_15%,black_100%)] 
+                                [mask-composite:intersect] 
+                                [mask-repeat:no-repeat] 
+                                [mask-size:100%_100%]"
                                 priority
                             />
                         </motion.div>

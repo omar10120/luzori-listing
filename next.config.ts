@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from 'next-intl/plugin';
+
 const withNextIntl = createNextIntlPlugin();
+
 const nextConfig: NextConfig = {
   async rewrites() {
     const backend = (process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000").replace(
@@ -32,6 +34,12 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "www.dashboard.luzori.com",
       },
+      // Added for reliable map tiles if you use them in <Image>
+      {
+        protocol: "https",
+        hostname: "basemaps.cartocdn.com",
+      },
+      // Kept in case you still use static maps in Sidebar
       {
         protocol: "https",
         hostname: "staticmap.openstreetmap.de",

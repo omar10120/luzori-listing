@@ -57,13 +57,13 @@ const HeroSection: React.FC = () => {
                     className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-6"
                 >
                     <p className="text-sm text-gray-500">{t('hero_stats_text')}</p>
-                    <button
+                    {/* <button
                         type="button"
                         className="group inline-flex items-center gap-1.5 text-sm font-medium text-gray-900 transition-colors hover:text-purple-600"
                     >
                         {t('hero_app_cta')}
                         <ChevronDown size={14} className="transition-transform group-hover:translate-y-0.5" />
-                    </button>
+                    </button> */}
                 </motion.div>
             </Container>
         </section>

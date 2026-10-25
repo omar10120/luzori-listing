@@ -7,7 +7,6 @@ import {
   GlobalCategory,
   CenterDetailData,
 } from "./apiEndpoints";
-import { fetchCenterWorkers } from "./api";
 
 function isGlobalCategory(item: unknown): item is GlobalCategory {
   return (
@@ -57,7 +56,6 @@ export async function fetchGlobalCategoriesClient(): Promise<GlobalCategory[]> {
     if (Array.isArray(fallback.data)) return fallback.data.filter(isGlobalCategory);
     return [];
   } catch (e) {
-
     console.error("[global-categories]", e);
     return [];
   }
@@ -76,10 +74,28 @@ export async function fetchCentersSearchClient(
 ): Promise<CenterDetailData[]> {
   try {
     const qs = new URLSearchParams();
-    qs.set("include", "global_categories,branches,categories,services,packages,about_us,vacations");
+    
+    // 👇 FIX 1: Add 'workers' to the include list if requested, so the backend loads them for us
+    const includeList = [
+      "global_categories",
+      "branches",
+      "categories",
+      "services",
+      "packages",
+      "about_us",
+      "vacations"
+    ];
+    if (options.includeWorkers) {
+      includeList.push("workers");
+    }
+    qs.set("include", includeList.join(","));
+
     if (params.search?.trim()) qs.set("search", params.search.trim());
     if (params.global_category_id) qs.set("global_category_id", params.global_category_id);
+    
+    // 👇 This is sending it correctly! The backend just needs to read it.
     if (params.global_category_slug) qs.set("global_category_slug", params.global_category_slug);
+    
     if (params.rate) qs.set("rate", params.rate);
 
     const url = qs.toString() ? `${API_ENDPOINTS.CENTERS}?${qs}` : API_ENDPOINTS.CENTERS;
@@ -93,6 +109,7 @@ export async function fetchCentersSearchClient(
       },
       cache: "no-store",
     });
+    
     if (!res.ok) {
       console.error("[centers-search] HTTP", res.status, res.statusText);
       return [];
@@ -100,32 +117,16 @@ export async function fetchCentersSearchClient(
 
     const json: CenterResponse | CenterListResponse = await res.json();
     const centers = Array.isArray(json.data) ? json.data : json.data.data;
+    
     if (!Array.isArray(centers)) {
       console.error("[centers-search] Unexpected response shape", json);
       return [];
     }
 
-    if (!options.includeWorkers) return centers;
+    // 👇 FIX 2: Removed the Promise.all manual fetching. 
+    // If options.includeWorkers is true, the backend now includes the `workers` relation directly in the center object.
+    return centers;
 
-    return Promise.all(
-      centers.map(async (center) => {
-        const firstPage = await fetchCenterWorkers(center.id, 1, 100);
-        const remainingPages = await Promise.all(
-          Array.from(
-            { length: Math.max(0, firstPage.pagination.last_page - 1) },
-            (_, index) => fetchCenterWorkers(center.id, index + 2, 100)
-          )
-        );
-
-        return {
-          ...center,
-          workers: [
-            ...firstPage.workers,
-            ...remainingPages.flatMap((page) => page.workers),
-          ],
-        };
-      })
-    );
   } catch (error) {
     console.error("[centers-search]", error);
     return [];

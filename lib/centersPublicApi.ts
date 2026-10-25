@@ -75,7 +75,7 @@ export async function fetchCentersSearchClient(
   try {
     const qs = new URLSearchParams();
     
-    // 👇 FIX 1: Add 'workers' to the include list if requested, so the backend loads them for us
+    // 1. Build the include list dynamically
     const includeList = [
       "global_categories",
       "branches",
@@ -85,17 +85,17 @@ export async function fetchCentersSearchClient(
       "about_us",
       "vacations"
     ];
+    
+    // Only add 'workers' if requested. The backend will fetch them in ONE query.
     if (options.includeWorkers) {
       includeList.push("workers");
     }
+    
     qs.set("include", includeList.join(","));
 
     if (params.search?.trim()) qs.set("search", params.search.trim());
     if (params.global_category_id) qs.set("global_category_id", params.global_category_id);
-    
-    // 👇 This is sending it correctly! The backend just needs to read it.
     if (params.global_category_slug) qs.set("global_category_slug", params.global_category_slug);
-    
     if (params.rate) qs.set("rate", params.rate);
 
     const url = qs.toString() ? `${API_ENDPOINTS.CENTERS}?${qs}` : API_ENDPOINTS.CENTERS;
@@ -123,8 +123,8 @@ export async function fetchCentersSearchClient(
       return [];
     }
 
-    // 👇 FIX 2: Removed the Promise.all manual fetching. 
-    // If options.includeWorkers is true, the backend now includes the `workers` relation directly in the center object.
+    // 2. We completely removed the Promise.all loop. 
+    // If includeWorkers was true, the backend already attached the workers to the center object.
     return centers;
 
   } catch (error) {

@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
-import { Map as MapIcon, List as ListIcon } from "lucide-react";
+import { Map as MapIcon, List as ListIcon, ChevronLeft, ChevronRight } from "lucide-react";
 
 import LandingSearchBar from "@/components/search/LandingSearchBar";
 import Container from "@/components/ui/Container";
@@ -54,6 +54,15 @@ export default function SearchPageClient() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    lastPage: 1,
+    total: 0,
+    perPage: 20,
+  });
+
   const [tab, setTab] = useState<Tab>("venues");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -76,45 +85,84 @@ export default function SearchPageClient() {
     return p;
   }, [search, slug, id, rate]);
 
-  // Fetch data when query changes
-  useEffect(() => {
-    let cancelled = false;
+  // ✅ FIX 1: Detect BOTH queryArgs AND page changes during render
+  const [lastArgs, setLastArgs] = useState(queryArgs);
+  const [lastPage, setLastPage] = useState(page);
+  const [lastTab, setLastTab] = useState(tab); // ✅ Added tab tracking
+
+  // Reset everything when filters change
+  if (lastArgs !== queryArgs) {
+    setLastArgs(queryArgs);
+    setPage(1);
+    setLastPage(1);
     setLoading(true);
     setError(false);
+  }
 
-    void fetchCentersSearchClient(queryArgs, { includeWorkers: true })
-      .then((data) => {
+  // Show loading when page changes
+  if (lastPage !== page) {
+    setLastPage(page);
+    setLoading(true);
+    setError(false);
+  }
+
+  // ✅ FIX 2: Reset active/hovered states during render (not in useEffect)
+  if (lastTab !== tab) {
+    setLastTab(tab);
+    setActiveId(null);
+    setHoveredId(null);
+    setFocus(null);
+  }
+
+  // Fetch data
+  useEffect(() => {
+    let cancelled = false;
+
+    void fetchCentersSearchClient({ 
+      ...queryArgs, 
+      page, 
+      per_page: 20 
+    }, { includeWorkers: false })
+      .then((res) => {
         if (cancelled) return;
-        setCenters(data);
+        
+        const fetchedCenters = Array.isArray(res) ? res : (res?.centers || []);
+        setCenters(fetchedCenters);
+
+        if (res && !Array.isArray(res)) {
+          setPagination({
+            currentPage: res.currentPage || 1,
+            lastPage: res.lastPage || 1,
+            total: res.total || fetchedCenters.length,
+            perPage: res.perPage || 20,
+          });
+        }
+        
         setLoading(false);
       })
       .catch((err) => {
         if (cancelled) return;
         console.error("Search failed:", err);
         setError(true);
+        setCenters([]); 
         setLoading(false);
       });
 
     return () => {
       cancelled = true;
     };
-  }, [queryArgs]);
+  }, [queryArgs, page]);
 
-  // Reset active/hovered states when switching tabs
-  useEffect(() => {
-    setActiveId(null);
-    setHoveredId(null);
-    setFocus(null);
-  }, [tab]);
+  const safeCenters = Array.isArray(centers) ? centers : [];
 
   const professionals = useMemo<Professional[]>(
-    () => buildProfessionals(centers),
-    [centers]
+    () => buildProfessionals(safeCenters),
+    [safeCenters]
   );
 
   const venueMarkers = useMemo<SearchMapMarker[]>(
-    () => buildVenueMarkers(centers),
-    [centers]
+    () => buildVenueMarkers(safeCenters),
+    [safeCenters]
   );
   
   const professionalMarkers = useMemo<SearchMapMarker[]>(
@@ -123,7 +171,7 @@ export default function SearchPageClient() {
   );
 
   const markers = tab === "venues" ? venueMarkers : professionalMarkers;
-  const listCount = tab === "venues" ? centers.length : professionals.length;
+  const listCount = tab === "venues" ? safeCenters.length : professionals.length;
 
   const handleSelect = useCallback((key: string) => {
     setActiveId(key);
@@ -143,6 +191,11 @@ export default function SearchPageClient() {
     },
     []
   );
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <div className="min-h-screen bg-[#F7F7F7] pb-16">
@@ -187,7 +240,7 @@ export default function SearchPageClient() {
             {!loading && !error && (
               <span className="hidden text-sm text-gray-500 sm:inline">
                 {t("search_summary", {
-                  venues: listCount,
+                  venues: pagination.total,
                   markers: markers.length,
                 })}
               </span>
@@ -224,15 +277,40 @@ export default function SearchPageClient() {
             ) : error ? (
               <ErrorState label={t("connection_error") || "Something went wrong."} />
             ) : tab === "venues" ? (
-              <VenuesList
-                centers={centers}
-                locale={locale}
-                activeId={activeId}
-                onHover={setHoveredId}
-                onSelect={handleSelect}
-                setCardRef={setCardRef}
-                emptyLabel={t("search_no_results")}
-              />
+              <>
+                <VenuesList
+                  centers={safeCenters}
+                  locale={locale}
+                  activeId={activeId}
+                  onHover={setHoveredId}
+                  onSelect={handleSelect}
+                  setCardRef={setCardRef}
+                  emptyLabel={t("search_no_results")}
+                />
+                
+                {/* Pagination UI */}
+                {pagination.lastPage > 1 && (
+                  <div className="mt-8 flex items-center justify-center gap-4">
+                    <button
+                      onClick={() => handlePageChange(pagination.currentPage - 1)}
+                      disabled={pagination.currentPage === 1 || loading}
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <ChevronLeft size={18} className="rtl:rotate-180" />
+                    </button>
+                    <span className="text-sm font-medium text-gray-600">
+                      Page {pagination.currentPage} of {pagination.lastPage}
+                    </span>
+                    <button
+                      onClick={() => handlePageChange(pagination.currentPage + 1)}
+                      disabled={pagination.currentPage === pagination.lastPage || loading}
+                      className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-700 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <ChevronRight size={18} className="rtl:rotate-180" />
+                    </button>
+                  </div>
+                )}
+              </>
             ) : (
               <ProfessionalsList
                 professionals={professionals}
@@ -266,15 +344,7 @@ export default function SearchPageClient() {
   );
 }
 
-function TabButton({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
+function TabButton({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode; }) {
   return (
     <button
       type="button"
@@ -283,9 +353,7 @@ function TabButton({
       onClick={onClick}
       className={cn(
         "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
-        active
-          ? "bg-gray-900 text-white shadow-sm"
-          : "text-gray-700 hover:text-gray-900"
+        active ? "bg-gray-900 text-white shadow-sm" : "text-gray-700 hover:text-gray-900"
       )}
     >
       {children}
@@ -327,15 +395,7 @@ interface VenuesListProps {
   emptyLabel: string;
 }
 
-function VenuesList({
-  centers,
-  locale,
-  activeId,
-  onHover,
-  onSelect,
-  setCardRef,
-  emptyLabel,
-}: VenuesListProps) {
+function VenuesList({ centers, locale, activeId, onHover, onSelect, setCardRef, emptyLabel }: VenuesListProps) {
   if (!centers.length) return <EmptyState label={emptyLabel} />;
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -367,14 +427,7 @@ interface ProfessionalsListProps {
   emptyLabel: string;
 }
 
-function ProfessionalsList({
-  professionals,
-  locale,
-  activeId,
-  onHover,
-  setCardRef,
-  emptyLabel,
-}: ProfessionalsListProps) {
+function ProfessionalsList({ professionals, locale, activeId, onHover, setCardRef, emptyLabel }: ProfessionalsListProps) {
   if (!professionals.length) return <EmptyState label={emptyLabel} />;
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

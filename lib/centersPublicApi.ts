@@ -66,16 +66,27 @@ export type CentersSearchParams = {
   global_category_id?: string;
   global_category_slug?: string;
   rate?: string;
+  page?: number;
+  per_page?: number;
 };
+
+// ✅ New interface to return both centers and pagination data
+export interface CentersSearchResponse {
+  centers: CenterDetailData[];
+  total: number;
+  lastPage: number;
+  currentPage: number;
+  perPage: number;
+}
 
 export async function fetchCentersSearchClient(
   params: CentersSearchParams,
   options: { includeWorkers?: boolean } = {}
-): Promise<CenterDetailData[]> {
+): Promise<CentersSearchResponse> {
   try {
     const qs = new URLSearchParams();
     
-    // 👇 FIX 1: Add 'workers' to the include list if requested, so the backend loads them for us
+    // Add 'workers' to the include list if requested
     const includeList = [
       "global_categories",
       "branches",
@@ -92,11 +103,12 @@ export async function fetchCentersSearchClient(
 
     if (params.search?.trim()) qs.set("search", params.search.trim());
     if (params.global_category_id) qs.set("global_category_id", params.global_category_id);
-    
-    // 👇 This is sending it correctly! The backend just needs to read it.
     if (params.global_category_slug) qs.set("global_category_slug", params.global_category_slug);
-    
     if (params.rate) qs.set("rate", params.rate);
+    
+    // ✅ Append pagination params
+    if (params.page) qs.set("page", params.page.toString());
+    if (params.per_page) qs.set("per_page", params.per_page.toString());
 
     const url = qs.toString() ? `${API_ENDPOINTS.CENTERS}?${qs}` : API_ENDPOINTS.CENTERS;
 
@@ -112,23 +124,48 @@ export async function fetchCentersSearchClient(
     
     if (!res.ok) {
       console.error("[centers-search] HTTP", res.status, res.statusText);
-      return [];
+      throw new Error(`Failed to fetch centers: ${res.status}`);
     }
 
     const json: CenterResponse | CenterListResponse = await res.json();
-    const centers = Array.isArray(json.data) ? json.data : json.data.data;
+    
+    // ✅ Safely parse pagination based on Laravel's default structure
+    const isPaginated = !Array.isArray(json.data) && json.data && "current_page" in json.data;
+    
+    let centers: CenterDetailData[] = [];
+    let total = 0;
+    let lastPage = 1;
+    let currentPage = 1;
+    let perPage = 20;
+
+    if (isPaginated) {
+      const paginatedData = json.data as any;
+      centers = Array.isArray(paginatedData.data) ? paginatedData.data : [];
+      total = paginatedData.total ?? 0;
+      lastPage = paginatedData.last_page ?? 1;
+      currentPage = paginatedData.current_page ?? 1;
+      perPage = paginatedData.per_page ?? 20;
+    } else {
+      // Fallback for non-paginated responses (like single center details)
+      centers = Array.isArray(json.data) ? json.data : (json.data as any).data || [];
+      total = centers.length;
+    }
     
     if (!Array.isArray(centers)) {
       console.error("[centers-search] Unexpected response shape", json);
-      return [];
+      return { centers: [], total: 0, lastPage: 1, currentPage: 1, perPage: 20 };
     }
 
-    // 👇 FIX 2: Removed the Promise.all manual fetching. 
-    // If options.includeWorkers is true, the backend now includes the `workers` relation directly in the center object.
-    return centers;
+    return {
+      centers,
+      total,
+      lastPage,
+      currentPage,
+      perPage
+    };
 
   } catch (error) {
     console.error("[centers-search]", error);
-    return [];
+    throw error; // Throw so the frontend can catch it and show an error state
   }
 }

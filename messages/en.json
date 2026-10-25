@@ -463,5 +463,6 @@
     "app_download_apple_top": "Download on the",
     "app_download_apple_bottom": "App Store",
     "app_download_google_top": "GET IT ON",
-    "app_download_google_bottom": "Google Play"
+    "app_download_google_bottom": "Google Play",
+    "loading" : "Loading"
 }

@@ -80,7 +80,7 @@ export default function ProfessionalPageClient({ slug }: Props) {
 
     let cancelled = false;
 
-    void fetchCentersSearchClient({}, { includeWorkers: true })
+    void fetchCentersSearchClient({}, { includeWorkers: false })
       .then((res) => {
         if (cancelled) return;
         

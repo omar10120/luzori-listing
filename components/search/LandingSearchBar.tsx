@@ -119,8 +119,10 @@ export default function LandingSearchBar({
   const loadCenters = useCallback(async () => {
     setCentersLoading(true);
     try {
-      const rows = await fetchCentersSearchClient({}, { includeWorkers: true });
-      setCenters(rows);
+      const res = await fetchCentersSearchClient({}, { includeWorkers: true });
+      // ✅ FIX: Extract the centers array from the new response object
+      const centersArray = Array.isArray(res) ? res : (res?.centers || []);
+      setCenters(centersArray);
       setCentersLoaded(true);
     } finally {
       setCentersLoading(false);

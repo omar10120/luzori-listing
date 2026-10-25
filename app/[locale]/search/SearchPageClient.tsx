@@ -52,6 +52,7 @@ export default function SearchPageClient() {
 
   const [centers, setCenters] = useState<CenterDetailData[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const [tab, setTab] = useState<Tab>("venues");
   const [hoveredId, setHoveredId] = useState<string | null>(null);
@@ -75,31 +76,36 @@ export default function SearchPageClient() {
     return p;
   }, [search, slug, id, rate]);
 
-  const [lastArgs, setLastArgs] = useState(queryArgs);
-  if (lastArgs !== queryArgs) {
-    setLastArgs(queryArgs);
-    setLoading(true);
-  }
-
+  // Fetch data when query changes
   useEffect(() => {
     let cancelled = false;
-    void fetchCentersSearchClient(queryArgs, { includeWorkers: true }).then((data) => {
-      if (cancelled) return;
-      setCenters(data);
-      setLoading(false);
-    });
+    setLoading(true);
+    setError(false);
+
+    void fetchCentersSearchClient(queryArgs, { includeWorkers: true })
+      .then((data) => {
+        if (cancelled) return;
+        setCenters(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error("Search failed:", err);
+        setError(true);
+        setLoading(false);
+      });
+
     return () => {
       cancelled = true;
     };
   }, [queryArgs]);
 
-  const [lastTab, setLastTab] = useState(tab);
-  if (lastTab !== tab) {
-    setLastTab(tab);
+  // Reset active/hovered states when switching tabs
+  useEffect(() => {
     setActiveId(null);
     setHoveredId(null);
     setFocus(null);
-  }
+  }, [tab]);
 
   const professionals = useMemo<Professional[]>(
     () => buildProfessionals(centers),
@@ -110,6 +116,7 @@ export default function SearchPageClient() {
     () => buildVenueMarkers(centers),
     [centers]
   );
+  
   const professionalMarkers = useMemo<SearchMapMarker[]>(
     () => buildProfessionalMarkers(professionals),
     [professionals]
@@ -177,7 +184,7 @@ export default function SearchPageClient() {
                 {t("tab_professionals")}
               </TabButton>
             </div>
-            {!loading && (
+            {!loading && !error && (
               <span className="hidden text-sm text-gray-500 sm:inline">
                 {t("search_summary", {
                   venues: listCount,
@@ -186,6 +193,7 @@ export default function SearchPageClient() {
               </span>
             )}
           </div>
+          
           <div className="flex items-center gap-2 lg:hidden">
             <button
               type="button"
@@ -213,6 +221,8 @@ export default function SearchPageClient() {
           >
             {loading ? (
               <LoadingState />
+            ) : error ? (
+              <ErrorState label={t("connection_error") || "Something went wrong."} />
             ) : tab === "venues" ? (
               <VenuesList
                 centers={centers}
@@ -295,6 +305,14 @@ function EmptyState({ label }: { label: string }) {
   return (
     <div className="rounded-2xl bg-white p-12 text-center ring-1 ring-gray-100">
       <p className="text-gray-500">{label}</p>
+    </div>
+  );
+}
+
+function ErrorState({ label }: { label: string }) {
+  return (
+    <div className="rounded-2xl bg-red-50 p-12 text-center ring-1 ring-red-100">
+      <p className="text-red-600 font-medium">{label}</p>
     </div>
   );
 }

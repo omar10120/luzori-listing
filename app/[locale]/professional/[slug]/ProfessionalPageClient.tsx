@@ -71,18 +71,36 @@ export default function ProfessionalPageClient({ slug }: Props) {
     setLoading(Boolean(ids));
   }
 
-  useEffect(() => {
-    if (!ids) return;
-    let cancelled = false;
-    void fetchCentersSearchClient({}, { includeWorkers: true }).then((centers) => {
-      if (cancelled) return;
-      setProfile(findProfessionalProfile(centers, ids.centerId, ids.workerId));
+   useEffect(() => {
+    // 1. Handle the null case first to prevent crashes
+    if (!ids) {
       setLoading(false);
-    });
+      return;
+    }
+
+    let cancelled = false;
+
+    void fetchCentersSearchClient({}, { includeWorkers: true })
+      .then((res) => {
+        if (cancelled) return;
+        
+        // 2. Safely extract the centers array from the new response object
+        const centersArray = Array.isArray(res) ? res : (res?.centers || []);
+        
+        setProfile(findProfessionalProfile(centersArray, ids.centerId, ids.workerId));
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        console.error("Failed to fetch professional profile:", err);
+        setLoading(false);
+      });
+
     return () => {
       cancelled = true;
     };
-  }, [ids]);
+    // 3. Use optional chaining in the dependency array to avoid React lint warnings
+  }, [ids?.centerId, ids?.workerId]);
 
   const notFound = !loading && !profile;
 

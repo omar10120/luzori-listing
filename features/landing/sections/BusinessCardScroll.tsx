@@ -35,35 +35,47 @@ const BusinessCardScroll: React.FC<BusinessCardScrollProps> = ({
     return (
         <section className="py-3 sm:py-2">
             <Container>
-                <div className="flex items-end justify-between">
-                    <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex items-center justify-between gap-4">
+                    
+                    {/* Left Side: Heading */}
+                    <div className="flex-1 min-w-0">
                         <SectionHeader heading={heading} className="mb-0 sm:mb-0 text-[#F5DBBA]" />
+                    </div>
+
+                    {/* Right Side: See More + Scroll Buttons */}
+                    <div className="flex items-center gap-2 sm:gap-4 shrink-0">
                         {rate && (
                             <Link
                                 href={`/centers?rate=${rate}`}
-                                className="text-sm font-medium text-[#00000] hover:text-white transition-colors mt-2"
+                                className="group flex items-center gap-1.5 rounded-full bg-[#225D5C] px-4 py-2 text-sm font-semibold text-[#F5DBBA] hover:bg-[#1a4a49] hover:text-white transition-all duration-300 shadow-sm"
                             >
                                 {t("see_more") || "See More"}
+                                <ChevronRight 
+                                    size={16} 
+                                    className="transition-transform duration-300 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 rtl:rotate-180" 
+                                />
                             </Link>
                         )}
-                    </div>
-                    <div className="hidden gap-2 sm:flex">
-                        <button
-                            type="button"
-                            onClick={() => scroll("left")}
-                            aria-label="Scroll left"
-                            className="flex h-9 w-9 items-center justify-center rounded-full border transition-colors hover:bg-[#1a4a49] bg-[#225D5C] text-[#F5DBBA]"
-                        >
-                            <ChevronLeft size={18} />
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => scroll("right")}
-                            aria-label="Scroll right"
-                            className="flex h-9 w-9 items-center justify-center rounded-full border transition-colors hover:bg-[#1a4a49] bg-[#225D5C] text-[#F5DBBA]"
-                        >
-                            <ChevronRight size={18} />
-                        </button>
+                        
+                        {/* Scroll Buttons (Hidden on Mobile) */}
+                        <div className="hidden gap-2 sm:flex">
+                            <button
+                                type="button"
+                                onClick={() => scroll("left")}
+                                aria-label="Scroll left"
+                                className="flex h-9 w-9 items-center justify-center rounded-full border transition-colors hover:bg-[#1a4a49] bg-[#225D5C] text-[#F5DBBA] hover:text-white"
+                            >
+                                <ChevronLeft size={18} className="rtl:rotate-180" />
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => scroll("right")}
+                                aria-label="Scroll right"
+                                className="flex h-9 w-9 items-center justify-center rounded-full border transition-colors hover:bg-[#1a4a49] bg-[#225D5C] text-[#F5DBBA] hover:text-white"
+                            >
+                                <ChevronRight size={18} className="rtl:rotate-180" />
+                            </button>
+                        </div>
                     </div>
 
                 </div>

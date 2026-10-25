@@ -40,7 +40,7 @@ const AppDownloadSection: React.FC = () => {
                     {/* Left content */}
                     <div className="flex flex-col items-start px-4 lg:px-0">
                         {/* Overline Text */}
-                        <span className="mb-3 sm:mb-4 text-xs sm:text-sm font-semibold tracking-widest text-[#C29A5C] uppercase">
+                        <span className="mb-3 sm:mb-4 text-xs sm:text-sm font-semibold tracking-widest text-[#0E3D35] uppercase">
                             {t('app_download_overline')}
                         </span>
 

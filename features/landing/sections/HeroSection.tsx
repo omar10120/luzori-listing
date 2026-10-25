@@ -13,7 +13,7 @@ import { useTranslations } from "next-intl";
 const HeroSection: React.FC = () => {
     const t = useTranslations();
     return (
-        <section className=" py-8 sm:pt-14 sm:pb:10 overflow-hidden">
+        <section className=" py-8 mt-16  sm:pt-14 sm:pb:10 overflow-hidden">
             {/* Soft gradient blobs */}
             <div className="pointer-events-none absolute -left-40 -top-40 h-[500px] rounded-full bg-purple-200/30 blur-3xl" />
             <div className="pointer-events-none absolute -right-40 top-20 h-[400px] rounded-full bg-pink-200/30 blur-3xl" />

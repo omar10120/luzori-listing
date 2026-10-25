@@ -13,9 +13,6 @@ import type { CenterDetailData, Service } from "@/lib/apiEndpoints";
 const FALLBACK_IMG =
   "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=800&h=500&fit=crop";
 
-const RATING = 5;
-const REVIEW_COUNT = 128;
-
 export interface SearchResultCardProps {
   center: CenterDetailData;
   entityKey: string;
@@ -27,12 +24,12 @@ export interface SearchResultCardProps {
 
 function collectServicesPreview(c: CenterDetailData, max = 3): Service[] {
   const collected: Service[] = [];
-  // Track unique service IDs to prevent duplicate keys
   const seenIds = new Set<number | string>();
 
   for (const cat of c.categories || []) {
-    for (const s of cat.services || []) {
-      if (!seenIds.has(s.id)) {
+    for (const s of cat?.services || []) {
+      // Ensure the service exists and has an ID
+      if (s && s.id !== undefined && !seenIds.has(s.id)) {
         seenIds.add(s.id);
         collected.push(s);
         if (collected.length >= max) return collected;
@@ -40,10 +37,9 @@ function collectServicesPreview(c: CenterDetailData, max = 3): Service[] {
     }
   }
   
-  // Fallback to c.services if we still need more
   if (collected.length < max && c.services?.length) {
     for (const s of c.services) {
-      if (!seenIds.has(s.id)) {
+      if (s && s.id !== undefined && !seenIds.has(s.id)) {
         seenIds.add(s.id);
         collected.push(s);
         if (collected.length >= max) break;
@@ -63,7 +59,11 @@ export default function SearchResultCard({
   onSelect,
 }: SearchResultCardProps) {
   const t = useTranslations();
-  const slug = generateCenterSlug(center.name, center.id);
+  
+  // Ensure slug is safely encoded so special characters don't break the router
+  const rawSlug = generateCenterSlug(center.name || "center", center.id || "0");
+  const safeSlug = encodeURIComponent(rawSlug);
+
   const cover =
     (center.primary_images?.length ? center.primary_images[0] : center.logo) ||
     FALLBACK_IMG;
@@ -72,6 +72,10 @@ export default function SearchResultCard({
   const branch = center.branches?.[0];
   const services = collectServicesPreview(center, 3);
   const branchCount = center.branches?.length ?? 0;
+
+  // Use actual rating data instead of hardcoded numbers
+  const rating = center.avg_rating ? Number(center.avg_rating).toFixed(1) : "0.0";
+  const reviewCount = center.reviews_count ? center.reviews_count.toLocaleString() : "0";
 
   const isNew = center.rate === "new_to";
   const isTrending = center.rate === "trending";
@@ -89,7 +93,8 @@ export default function SearchResultCard({
           : "ring-gray-100 hover:shadow-md hover:ring-gray-200"
       )}
     >
-      <Link href={`/${locale}/center/${slug}`} className="block">
+      {/* Use the safe encoded slug here */}
+      <Link href={`/${locale}/center/${safeSlug}`} className="block">
         <div className="relative aspect-[5/3] w-full overflow-hidden bg-gray-100">
           <img
             src={cover}
@@ -105,9 +110,9 @@ export default function SearchResultCard({
 
           <div className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-1 text-xs font-semibold text-gray-900 shadow-sm backdrop-blur">
             <Star size={12} className="fill-amber-400 text-amber-400" />
-            {RATING.toFixed(1)}
+            {rating}
             <span className="font-normal text-gray-500">
-              ({REVIEW_COUNT.toLocaleString()})
+              ({reviewCount})
             </span>
           </div>
         </div>
@@ -143,9 +148,10 @@ export default function SearchResultCard({
 
         {services.length > 0 && (
           <ul className="mt-1 divide-y divide-gray-100 overflow-hidden rounded-xl bg-gray-50/70">
-            {services.map((s) => (
+            {services.map((s, index) => (
               <li
-                key={s.id}
+                // Fallback to index if ID is somehow still missing
+                key={s.id ? `service-${s.id}` : `service-idx-${index}`}
                 className="flex items-center justify-between gap-3 px-3 py-2 text-sm"
               >
                 <span className="truncate text-gray-800">{s.name}</span>
